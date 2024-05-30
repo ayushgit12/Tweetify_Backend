@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import TweetCard from "./TweetCard";
 import { useRef } from "react";
+import Fade from "react-reveal/Fade";
+import Zoom from "react-reveal/Zoom";
 
 const Me = () => {
      const ref = useRef(0)
@@ -91,16 +93,37 @@ const Me = () => {
         <p className="text-center pr-96 pt-24 text-6xl font-extrabold ">
           Welcome
         </p>
+        <Zoom duration={1500}>
         <p className="text-center text-8xl font-extrabold ">
           {user.fullName} !
         </p>
-        <button className="absolute bottom-48 right-1/2" onClick={slideUp}>
+        </Zoom>
+        <div className="flex justify-around pt-8 flex-wrap">
+        
+        
+          <span>
+          <dotlottie-player src="https://lottie.host/f34ac4e7-126b-4fd6-a695-499d2915a8f1/PuyTiVUtS7.json" background="transparent" speed="0.5" style={{width: "275px", height: "275px"}} loop autoplay></dotlottie-player>
+          <Fade delay={1500} bottom duration={1500}>
+            <p className="text-center text-3xl">Spark ideas,</p>
+            </Fade>
+            </span>
+            {/* </Fade> */}
+            <span className="pt-16"><dotlottie-player src="https://lottie.host/66815490-488b-473c-aabc-5d2090cec74d/RAF0m2lcbq.json" background="transparent" speed="0.75" style={{width: "150px", height: "150px"}} loop autoplay></dotlottie-player>
+        <Fade delay={3000} bottom duration={1500}><p className="text-center text-3xl pt-14">Raise Issues, </p></Fade>
+        </span>
+
+        <span><dotlottie-player src="https://lottie.host/925c768e-93f0-4b29-a025-4a2fca344f10/QpI0bC7CWd.json" background="transparent" speed="0.75" style={{width: "275px", height: "275px"}} loop autoplay></dotlottie-player>
+        <Fade delay={4500} bottom duration={1500}><p className="text-center text-3xl"> Share moments</p></Fade>
+        </span>
+          </div>
+        <div className="flex justify-center"><button className="absolute bottom-48 " onClick={slideUp}>
           <lord-icon
             style={{ width: "130px", height: "130px" }}
             src="https://cdn.lordicon.com/xcrjfuzb.json"
             trigger="hover"
           ></lord-icon>
         </button>
+        </div>
       </div>
      <div className="h-24 bg-gradient-to-b from-white to-slate-300"></div>
       <div className="bg-slate-300" ref={ref}>
