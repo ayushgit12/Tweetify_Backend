@@ -17,6 +17,8 @@ const Homepage = () => {
 }
   const navigate = useNavigate();
   const [tweets, setTweets] = useState([]);
+
+  
   //  console.log(user)
 
   const handleLogout = async (e) => {
@@ -64,6 +66,10 @@ const Homepage = () => {
       .then((response) => {
         console.log("Success:", response.data.data);
         setTweets(response.data.data.reverse());
+        console.log(response.data.data);
+        // const noOfActiveUsers = response.data.data.length;
+
+        localStorage.setItem("noOfUsers", JSON.stringify(response.data.data.length));
         // alert("Tweets fetched successfully");
       })
       .catch((error) => {
@@ -88,6 +94,11 @@ const Homepage = () => {
             <div className="w-full text-center py-4 text-white">
               <NavLink to="/post">
                 <li>Post</li>
+              </NavLink>
+            </div>
+            <div className="w-full text-center py-4 text-white">
+              <NavLink to="/aboutApp">
+                <li>About App</li>
               </NavLink>
             </div>
             <div className="w-full text-center py-4 text-white">
