@@ -8,6 +8,10 @@ const socket = io("http://localhost:3001");
 
 const worldChat = () => {
 
+  if(!localStorage.getItem("token") || !localStorage.getItem("user")){
+    window.location.href = "/login";
+  }
+
 
   const [messageList, setMessageList] = useState([])
   const keepDown = useRef(0)
@@ -27,9 +31,17 @@ const worldChat = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
-    console.log(user.fullName);
+
+    if(localStorage.getItem("messageList") !== null){
+      // console.log("Message List is not null" , JSON.parse(localStorage.getItem("messageList")));
+      setMessageList(JSON.parse(localStorage.getItem("messageList")))
+      
+      // console.log("Message List is not null" , messageList);
+    }
+
+    // console.log(user.fullName);
     const fullName = user.fullName;
-    setMessageList([...messageList, { author: "System", message: `${user.fullName} joined the world`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
+    setMessageList([...messageList, { author: "System", message: `${user.fullName} joined the world`, room: "world", time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
 
     socket.emit("join_room", fullName, "world");
     socket.on("message", (message) => {
@@ -45,6 +57,7 @@ const worldChat = () => {
     
     socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
+
     })
   }, [socket])
   
@@ -63,7 +76,8 @@ const worldChat = () => {
         room: "world",
         time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()
       };
-      setMessageList((list) => [...list, messageData]);
+      await setMessageList((list) => [...list, messageData]);
+      await localStorage.setItem("messageList", JSON.stringify(messageList));
 
       await socket.emit("send_message", messageData);
 
@@ -93,7 +107,7 @@ const worldChat = () => {
         <div className="messages min-h-[calc(100vh-80px)]">
           {messageList.map((message, index) => {
             return (
-              <div className={`flex my-4 ${message.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
+              <div key={index} className={`flex my-4 ${message.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
               <div key={index} className={`message p-3 mx-1 rounded-e-xl max-w-2/3 break-words ${message.author === user.fullName ? 'bg-green-500 ' : 'bg-pink-400'}`}>
               <p className="text-xl text-wrap w-96 py-2 break-words">{message.message}</p>
               <p className="text-sm font-bold">{message.author}</p>

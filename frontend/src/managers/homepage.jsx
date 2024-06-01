@@ -97,8 +97,8 @@ const Homepage = () => {
               </NavLink>
             </div>
             <div className="w-full text-center py-4 text-white">
-              <NavLink to="/aboutApp">
-                <li>About App</li>
+              <NavLink to="/chat">
+                <li>Chat</li>
               </NavLink>
             </div>
             <div className="w-full text-center py-4 text-white">

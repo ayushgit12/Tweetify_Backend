@@ -2,7 +2,7 @@
 import Me from "./managers/me.jsx";
 import Register from "./managers/register.jsx";
 import { Routes } from "react-router-dom";
-import Homepage from "./managers/homepage.jsx";
+import Homepage from "./managers/Homepage.jsx";
 import Post from "./managers/Post.jsx";
 import { Route } from "react-router-dom";
 import Login from "./managers/login.jsx";

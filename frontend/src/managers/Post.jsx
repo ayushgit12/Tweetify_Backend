@@ -60,25 +60,30 @@ const Post = () => {
   return (
      <div>
      <div className="flex min-h-full flex-1 flex-col justify-center">
-       <nav className="bg-slate-900 ">
-         <ul className="flex justify-around">
-           <div className="w-full text-center py-4 text-white">
-             <a href="/homepage">
-               <li>Home</li>
-             </a>
-           </div>
-           <div className="w-full text-center py-4 text-white">
-             <NavLink to="/post">
-               <li>Post</li>
-             </NavLink>
-           </div>
-           <div className="w-full text-center py-4 text-white">
-             <NavLink to="/me">
-               <li>Me</li>
-             </NavLink>
-           </div>
-         </ul>
-       </nav>
+     <nav className="bg-slate-900 ">
+          <ul className="flex justify-around">
+            <div className="w-full text-center py-4 text-white">
+              <a href="/homepage">
+                <li>Home</li>
+              </a>
+            </div>
+            <div className="w-full text-center py-4 text-white">
+              <NavLink to="/post">
+                <li>Post</li>
+              </NavLink>
+            </div>
+            <div className="w-full text-center py-4 text-white">
+              <NavLink to="/chat">
+                <li>Chat</li>
+              </NavLink>
+            </div>
+            <div className="w-full text-center py-4 text-white">
+              <NavLink to="/me">
+                <li>Me</li>
+              </NavLink>
+            </div>
+          </ul>
+        </nav>
 
        <div className="main m-10">
          <h1 className="text-5xl p-5 font-bold text-center">
