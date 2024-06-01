@@ -30,6 +30,7 @@ io.on('connection', (socket) => {
 
   socket.on("join_room", (data,room) => {
     socket.join(room);
+    socket.to(room).emit("join_room", data);
     console.log(data + " joined " + room);
   }
   )
@@ -39,6 +40,12 @@ io.on('connection', (socket) => {
     socket.to(data.room).emit("receive_message", data);
 
   })
+
+  // socket.on("leave_room", (data, room) => {
+  //   socket.to(room).emit("leave_room", data);
+  //   console.log(data + " left " + room);
+  //   socket.leave(room);
+  // })
 })
 server.listen(3001, () => {
   console.log('listening on *:8000');

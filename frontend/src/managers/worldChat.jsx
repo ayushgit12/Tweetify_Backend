@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
-import ScrollToBottom from "react-scroll-to-bottom";
+
 const socket = io("http://localhost:3001");
 
 
@@ -89,8 +89,8 @@ const worldChat = () => {
           </ul>
         </nav>
 
-          <ScrollToBottom className="overflow-y-scroll h-full">
-        <div className="messages min-h-[calc(100vh-95px)]">
+
+        <div className="messages min-h-[calc(100vh-80px)]">
           {messageList.map((message, index) => {
             return (
               <div className={`flex my-4 ${message.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
@@ -104,7 +104,7 @@ const worldChat = () => {
             );
           })}
         </div>
-          </ScrollToBottom>
+
 
         <div className="sendMessage flex gap-2 bottom-8 fixed left-1/3 w-screen">
           <input
