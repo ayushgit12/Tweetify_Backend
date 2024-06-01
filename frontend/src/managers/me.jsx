@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import TweetCard from "./TweetCard";
+import TweetCardForMe from "./TweetCardForMe";
 import { useRef } from "react";
 import Fade from "react-reveal/Fade";
 import Zoom from "react-reveal/Zoom";
@@ -116,7 +116,7 @@ const Me = () => {
         <Fade delay={4500} bottom duration={1500}><p className="text-center text-3xl"> Share moments</p></Fade>
         </span>
           </div>
-        <div className="flex justify-center"><button className="absolute bottom-48 " onClick={slideUp}>
+        <div className="flex justify-center"><button className="absolute bottom-16 " onClick={slideUp}>
           <lord-icon
             style={{ width: "130px", height: "130px" }}
             src="https://cdn.lordicon.com/xcrjfuzb.json"
@@ -134,12 +134,23 @@ const Me = () => {
           <div>
           {tweets.map((tweet, index) => {
             
-            return <TweetCard key={index} tweet={tweet} />;
+            return <TweetCardForMe key={index} tweet={tweet} />;
           })}
         </div>
 
+      <div className="h-24 bg-gradient-to-b from-slate-300 to-slate-600"></div>
+
+      <div className="bg-slate-600 h-48 flex justify-center items-center">
+      <div className="w-full text-center text-white">
+              <NavLink to="/aboutApp"><button className="">About App</button>
+              </NavLink>
+            </div>
+      </div>
         
       </div>
+
+
+
     </div>
   );
 };

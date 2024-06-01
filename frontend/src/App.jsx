@@ -7,6 +7,8 @@ import Post from "./managers/Post.jsx";
 import { Route } from "react-router-dom";
 import Login from "./managers/login.jsx";
 import AboutApp from "./managers/AboutApp.jsx";
+import Chat from "./managers/Chat.jsx";
+import WorldChat from "./managers/worldChat.jsx";
 
 
 function App() {
@@ -33,6 +35,12 @@ function App() {
         </Route>
         <Route path="/aboutApp"
           element={<AboutApp />}>
+        </Route>
+        <Route path="/chat"
+          element={<Chat />}>
+        </Route>
+        <Route path="/worldChat"
+          element={<WorldChat />}>
         </Route>
       </Routes>
     </>
