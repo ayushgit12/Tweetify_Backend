@@ -3,12 +3,46 @@ import { urlencoded } from 'express'
 import cors from 'cors'
 import userRouter from './routes/user.routes.js'
 import cookieParser from 'cookie-parser'
-
+import { Server } from 'socket.io'
+import http from 'http'
 
 
 
 
 const app = express();
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  
+  }
+
+})
+
+io.on('connection', (socket) => {
+  console.log('a user connected ' + socket.id);
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  socket.on("join_room", (data,room) => {
+    socket.join(room);
+    console.log(data + " joined " + room);
+  }
+  )
+
+  socket.on("send_message", (data) => {
+    console.log(data);
+    socket.to(data.room).emit("receive_message", data);
+
+  })
+})
+server.listen(3001, () => {
+  console.log('listening on *:8000');
+})
 
 
 app.use(cors({
