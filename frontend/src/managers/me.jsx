@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import TweetCard from "./TweetCard";
+import TweetCardForMe from "./TweetCardForMe";
 import { useRef } from "react";
 import Fade from "react-reveal/Fade";
 import Zoom from "react-reveal/Zoom";
@@ -134,7 +134,7 @@ const Me = () => {
           <div>
           {tweets.map((tweet, index) => {
             
-            return <TweetCard key={index} tweet={tweet} />;
+            return <TweetCardForMe key={index} tweet={tweet} />;
           })}
         </div>
 
