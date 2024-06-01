@@ -97,8 +97,8 @@ const Homepage = () => {
               </NavLink>
             </div>
             <div className="w-full text-center py-4 text-white">
-              <NavLink to="/chat">
-                <li>Chat</li>
+              <NavLink to="/aboutApp">
+                <li>About App</li>
               </NavLink>
             </div>
             <div className="w-full text-center py-4 text-white">
@@ -119,7 +119,7 @@ const Homepage = () => {
         <div>
           {tweets.map((tweet, index) => {
             
-            return <TweetCard key={index} tweet={tweet} />;
+            return <TweetCard key={index} color={tweet.color} tweet={tweet} />;
           })}
         </div>
 
