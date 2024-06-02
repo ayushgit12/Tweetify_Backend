@@ -6,14 +6,15 @@ import io from "socket.io-client";
 const socket = io("http://localhost:3001");
 
 
-const worldChat = () => {
-
+const ChatRoom = () => {
+     // console.log(window.location.pathname.split("/")[2])
+     const world = window.location.pathname.split("/")[2]
 
   const [messageList, setMessageList] = useState([])
   const keepDown = useRef(0)
 
   const handleLeftTheChat = () => {
-    setMessageList([...messageList, { author: "System", message: `${user.fullName} left the world`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
+    setMessageList([...messageList, { author: "System", message: `${user.fullName} left ${world}`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
 
     
   }
@@ -29,9 +30,9 @@ const worldChat = () => {
   useEffect(() => {
     console.log(user.fullName);
     const fullName = user.fullName;
-    setMessageList([...messageList, { author: "System", message: `${user.fullName} joined the world`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
+    setMessageList([...messageList, { author: "System", message: `${user.fullName} joined ${world}`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
 
-    socket.emit("join_room", fullName, "world");
+    socket.emit("join_room", fullName, world);
     socket.on("message", (message) => {
       console.log(message);
     });
@@ -60,7 +61,7 @@ const worldChat = () => {
       const messageData = {
         author: user.fullName,
         message: message,
-        room: "world",
+        room: world,
         time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()
       };
       setMessageList((list) => [...list, messageData]);
@@ -83,7 +84,7 @@ const worldChat = () => {
             </div>
             <div className="w-full text-center py-4 text-white">
               <NavLink to="/worldChat">
-                <li>World Chat</li>
+                <li>Private Chat</li>
               </NavLink>
             </div>
           </ul>
@@ -93,7 +94,7 @@ const worldChat = () => {
         <div className="messages min-h-[calc(100vh-80px)]">
           {messageList.map((message, index) => {
             return (
-              <div className={`flex my-4 ${message.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
+              <div key={index} className={`flex my-4 ${message.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
               <div key={index} className={`message p-3 mx-1 rounded-e-xl max-w-2/3 break-words ${message.author === user.fullName ? 'bg-green-500 ' : 'bg-pink-400'}`}>
               <p className="text-xl text-wrap w-96 py-2 break-words">{message.message}</p>
               <p className="text-sm font-bold">{message.author}</p>
@@ -129,4 +130,4 @@ const worldChat = () => {
   );
 };
 
-export default worldChat;
+export default ChatRoom;

@@ -24,13 +24,13 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
   console.log('a user connected ' + socket.id);
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+  // socket.on('disconnect', () => {
+  //   console.log('user disconnected');
+  // });
 
   socket.on("join_room", (data,room) => {
     socket.join(room);
-    socket.to(room).emit("join_room", data);
+    socket.to(room).emit("join_room_data", data);
     console.log(data + " joined " + room);
   }
   )
@@ -41,11 +41,11 @@ io.on('connection', (socket) => {
 
   })
 
-  // socket.on("leave_room", (data, room) => {
-  //   socket.to(room).emit("leave_room", data);
-  //   console.log(data + " left " + room);
-  //   socket.leave(room);
-  // })
+  socket.on("leave_room", (data, room) => {
+    socket.to(room).emit("leave_room", data);
+    console.log(data + " left " + room);
+    socket.leave(room);
+  })
 })
 server.listen(3001, () => {
   console.log('listening on *:8000');
