@@ -119,7 +119,7 @@ const Homepage = () => {
         <div>
           {tweets.map((tweet, index) => {
             
-            return <TweetCard key={index} color={tweet.color} tweet={tweet} />;
+            return <TweetCard key={index} tweet={tweet} />;
           })}
         </div>
 

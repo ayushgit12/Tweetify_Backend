@@ -12,6 +12,12 @@ const tweetSchema = new mongoose.Schema({
           ref: 'User',
           required: true
      },
+     likes: {
+          users:[{
+               type: String,
+          }]
+
+     }
 },
 {
      timestamps: true
