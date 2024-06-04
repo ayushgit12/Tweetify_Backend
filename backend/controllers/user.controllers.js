@@ -158,9 +158,14 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const getUserDetails = asyncHandler(async (req, res) => {
   // console.log(req.user)
+
+  const userID = req.body.userID
+
+  const user = await User.findById(userID).select("-password -refreshToken");
+
   return res
     .status(200)
-    .json(new APIresponse(200, req.user, "User details fetched successfully"));
+    .json(new APIresponse(200, user, "User details fetched successfully"));
 });
 
 const postTweet = asyncHandler(async (req, res) => {

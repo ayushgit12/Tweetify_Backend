@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import TweetCard from "./TweetCard";
 import { useEffect, useState } from "react";
+import Popup from "reactjs-popup";
 
 const Homepage = () => {
   // const user = localStorage.getItem("user");
@@ -12,13 +13,15 @@ const Homepage = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  if(localStorage.getItem("token") === null || localStorage.getItem("user") === null){
+  if (
+    localStorage.getItem("token") === null ||
+    localStorage.getItem("user") === null
+  ) {
     window.location.href = "/login";
-}
+  }
   const navigate = useNavigate();
   const [tweets, setTweets] = useState([]);
 
-  
   //  console.log(user)
 
   const handleLogout = async (e) => {
@@ -69,7 +72,10 @@ const Homepage = () => {
         console.log(response.data.data);
         // const noOfActiveUsers = response.data.data.length;
 
-        localStorage.setItem("noOfUsers", JSON.stringify(response.data.data.length));
+        localStorage.setItem(
+          "noOfUsers",
+          JSON.stringify(response.data.data.length)
+        );
         // alert("Tweets fetched successfully");
       })
       .catch((error) => {
@@ -109,31 +115,63 @@ const Homepage = () => {
           </ul>
         </nav>
 
-        
-          <h1 className="text-5xl p-5 font-bold text-center">
-            Welcome {user.fullName}!
-          </h1>
-          <p className="text-3xl font-bold p-5">Today's Feed</p>
-        </div>
-
-        <div>
-          {tweets.map((tweet, index) => {
-
-            
-            return <TweetCard key={index} tweet={tweet} />;
-          })}
-        </div>
-
-        <div className="flex justify-center">
-          <button
-            className="bg-green-500 p-2 rounded-xl text-whit4 hover:bg-green-700"
-            onClick={handleLogout}
-          >
-            Logout Now
-          </button>
-        </div>
+        <h1 className="text-5xl p-5 font-bold text-center">
+          Welcome {user.fullName}!
+        </h1>
+        <p className="text-3xl font-bold p-5">Today's Feed</p>
       </div>
 
+      <div>
+        {tweets.map((tweet, index) => {
+          return <TweetCard key={index} tweet={tweet} />;
+        })}
+      </div>
+
+      <div className="flex justify-center">
+        <Popup
+          trigger={
+            <button className="button bg-red-600 p-2 rounded-lg text-white hover:bg-red-800">
+              {" "}
+              Logout Now{" "}
+            </button>
+          }
+          modal
+          nested
+        >
+          {(close) => (
+            <div className="modal border border-slate-800 w-96 h-48 bg-white">
+              <div className="flex bg-slate-800 text-white py-1 items-center">
+                <button className="close text-2xl ml-3" onClick={close}>
+                  &times;
+                </button>
+                <div className="header ml-28"> Logout Window </div>
+              </div>
+              <div className="content mt-5 p-2">
+                {" "}
+                Are you sure you want to logout?{" "}
+              </div>
+              <div className="actions flex gap-3 mt-10 ml-3">
+                <button
+                  className="bg-red-500 px-2 py-1 rounded-lg hover:bg-red-700 hover:text-white"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+                <button
+                  className="button bg-slate-400 px-2 py-1 rounded-lg hover:bg-slate-600 hover:text-white"
+                  onClick={() => {
+                    console.log("modal closed ");
+                    close();
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </Popup>
+      </div>
+    </div>
   );
 };
 

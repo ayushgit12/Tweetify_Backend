@@ -5,6 +5,7 @@ import { postTweet } from "../controllers/user.controllers.js";
 import { deleteTweet } from "../controllers/user.controllers.js";
 import { likeTweet } from "../controllers/user.controllers.js";
 import { showLikeTweet } from "../controllers/user.controllers.js";
+import { getUserDetails } from "../controllers/user.controllers.js";
 
 
 const router = Router();
@@ -17,6 +18,7 @@ router.route('/showTweets').post(showTweet)
 router.route('/deleteTweet').delete(deleteTweet);
 router.route('/likeTweet').post(likeTweet);
 router.route('/showLikeTweet').post(showLikeTweet);
+router.route('/getUserDetails').post(getUserDetails);
 
 
 
