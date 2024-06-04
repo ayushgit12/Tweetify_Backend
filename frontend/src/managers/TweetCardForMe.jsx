@@ -43,6 +43,10 @@ function TweetCardForMe({tweet}) {
           <div className={`bg-white-600 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2`}>
                <div className="text-gray-900 font-bold text-xl mb-2">{tweet.tweet}</div>
                <div className="text-gray-900 font-bold text-xl mb-2 text-end pr-10">-{tweet.user.fullName}</div>
+               <div className="text-gray-700 text-base text-start">
+          Likes: {tweet.likes.users.length}
+        </div>
+        
                <div className="text-gray-700 text-base">Posted At {date.getHours()}:{date.getMinutes()}:{date.getSeconds()}</div>
                <div className="text-gray-700 text-base">Dated: {date.getDate()}/{date.getMonth()}/{date.getFullYear()}</div>
                <button className='text-left bg-slate-700 w-fit p-2 text-white mt-8 rounded-md' onClick={deleteTweet}>Delete</button>

@@ -211,7 +211,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
 const showLikeTweet = asyncHandler(async (req, res) => {
   const tweetId = req.body.tweetId;
   const user = req.body.user;
-  console.log(user);
+  // console.log(user);
   const tweet = await Tweet.findById(tweetId);
 
   if (!tweet) {
@@ -222,15 +222,15 @@ const showLikeTweet = asyncHandler(async (req, res) => {
   // console.log("hello")
   // console.log(tweet.likes)
   // console.log(User.findById(user))
-  console.log(tweet.likes.users.includes(user));
+  // console.log(tweet.tweet + " returns " + tweet.likes.users.includes(user));
   if (tweet.likes.users.includes(user)) {
     // console.log("yes");
-    isLiked = false;
+    isLiked = true;
     // console.log(isLiked + "**********")
   } else {
     // console.log(isLiked + "**********")
-    console.log(tweet.likes.users);
-    isLiked = true;
+    // console.log(tweet.likes.users);
+    isLiked = false;
   }
 
   return res
