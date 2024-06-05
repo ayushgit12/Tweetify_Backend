@@ -6,16 +6,18 @@ import { BiSolidLike } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 
+
 function TweetCard({ tweet }) {
   const [isLiked, setIsLiked] = useState(false);
   const refLike = useRef(0)
   const buttonRef = useRef(0)
   const navigate = useNavigate();
+
   // const [start, setstart] = useState(1)
 
 
   const date = new Date(tweet.createdAt);
-  console.log(tweet.likes.users.length);
+  // console.log(tweet.likes.users.length);
 
   // const deleteTweet = async () => {
   //   const token = JSON.parse(localStorage.getItem("token"));
@@ -66,7 +68,7 @@ function TweetCard({ tweet }) {
         }
       )
       .then((response) => {
-        console.log("Success:", response.data.data.isLiked);
+        // console.log("Success:", response.data.data.isLiked);
         setIsLiked(response.data.data.isLiked);
 
         if(response.data.data.isLiked){
@@ -107,7 +109,7 @@ function TweetCard({ tweet }) {
         }
       )
       .then((response) => {
-        console.log("Success:", response.data.data.isLiked);
+        // console.log("Success:", response.data.data.isLiked);
         setIsLiked(response.data.data.isLiked);
 
         if(response.data.data.isLiked){
@@ -144,8 +146,9 @@ function TweetCard({ tweet }) {
         }
       )
       .then((response) => {
-        console.log("Success:", response.data.data);
-        return response.data.data;
+        console.log("Success:", response.data.data.fullName);
+        
+        return response.data.data.fullName;
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -202,7 +205,7 @@ function TweetCard({ tweet }) {
         <Popup
           trigger={
             <button className="text-gray-700 text-base text-start">
-          Likes: {tweet.likes.users.length}
+          <u>Likes</u>: {tweet.likes.users.length}
         </button>
           }
           modal
@@ -217,7 +220,12 @@ function TweetCard({ tweet }) {
                 <div className="header ml-28"> Liked Users </div>
               </div>
               {
+                
                 tweet.likes.users.length>0 && tweet.likes.users.map((user, index) => { 
+                  // console.log(tweet.likes)
+                  
+                  // console.log(user);
+                  // console.log(getUser(user).then((fullName) => fullName));
                   return <div key={index} className="content p-1"> {user} </div>
                 })
                 

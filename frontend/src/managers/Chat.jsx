@@ -5,32 +5,9 @@ const Chat = () => {
   return (
     <div>
       <div className="flex min-h-full flex-1 flex-col justify-center">
-        <nav className="bg-slate-900 ">
-          <ul className="flex justify-around">
-            <div className="w-full text-center py-4 text-white">
-              <a href="/homepage">
-                <li>Home</li>
-              </a>
-            </div>
-            <div className="w-full text-center py-4 text-white">
-              <NavLink to="/post">
-                <li>Post</li>
-              </NavLink>
-            </div>
-            <div className="w-full text-center py-4 text-white">
-              <NavLink to="/chat">
-                <li>Chat</li>
-              </NavLink>
-            </div>
-            <div className="w-full text-center py-4 text-white">
-              <NavLink to="/me">
-                <li>Me</li>
-              </NavLink>
-            </div>
-          </ul>
-        </nav>
+        
 
-        <div>
+        <div className="mt-16">
           <div className="flex items-center justify-center mt-3 flex-wrap">
             <lord-icon
               src="https://cdn.lordicon.com/ayhtotha.json"

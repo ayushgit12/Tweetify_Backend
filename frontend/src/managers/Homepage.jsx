@@ -1,15 +1,18 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+
 import TweetCard from "./TweetCard";
 import { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
+
+
 
 const Homepage = () => {
   // const user = localStorage.getItem("user");
 
   // console.log(response)
+
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -89,33 +92,11 @@ const Homepage = () => {
 
   return (
     <div>
-      <div className="flex min-h-full flex-1 flex-col justify-center">
-        <nav className="bg-slate-900 ">
-          <ul className="flex justify-around">
-            <div className="w-full text-center py-4 text-white">
-              <a href="/homepage">
-                <li>Home</li>
-              </a>
-            </div>
-            <div className="w-full text-center py-4 text-white">
-              <NavLink to="/post">
-                <li>Post</li>
-              </NavLink>
-            </div>
-            <div className="w-full text-center py-4 text-white">
-              <NavLink to="/chat">
-                <li>Chat</li>
-              </NavLink>
-            </div>
-            <div className="w-full text-center py-4 text-white">
-              <NavLink to="/me">
-                <li>Me</li>
-              </NavLink>
-            </div>
-          </ul>
-        </nav>
 
-        <h1 className="text-5xl p-5 font-bold text-center">
+      <div className="flex min-h-full flex-1 flex-col justify-center">
+
+
+        <h1 className="text-5xl p-5 font-bold text-center mt-16">
           Welcome {user.fullName}!
         </h1>
         <p className="text-3xl font-bold p-5">Today's Feed</p>

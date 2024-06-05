@@ -17,6 +17,23 @@ const ChatWithFriends = () => {
     setCreatedRoomID(e.target.value);
   };
 
+  const handleCreateRoom = () => {
+    if (createdRoomID.length === 0) {
+      alert("Please enter a room ID");
+      return;
+    }
+    window.location.href = `/ChatRoom/${createdRoomID}`;
+  }
+
+  const handleJoinRoom = () => {
+    if (joinRoomID.length === 0) {
+      alert("Please enter a room ID");
+      return;
+    }
+    window.location.href = `/ChatRoom/${joinRoomID}`;
+  }
+
+
   return (
     <div>
       <div className="flex min-h-full flex-1 flex-col justify-center">
@@ -58,9 +75,9 @@ const ChatWithFriends = () => {
           </div>
 
           <div className="border-slate-900 rounded-full md:w-1/3 w-48 text-center h-36 hover:bg-slate-900 hover:text-white cursor-pointer text-2xl m-16 flex items-center justify-center border-4 flex-col">
-            <NavLink to={`/ChatRoom/${createdRoomID}`}>
-              <p>Create a Room</p>
-            </NavLink>
+            
+              <p onClick={handleCreateRoom}>Create a Room</p>
+            {/* </NavLink> */}
             <p className="text-lg">Enter a room ID:</p>
             <input
               value={createdRoomID}
@@ -71,9 +88,9 @@ const ChatWithFriends = () => {
           </div>
 
           <div className="border-slate-900 flex-col rounded-full md:w-1/3 w-48 text-center h-36 hover:bg-slate-900 hover:text-white cursor-pointer text-2xl m-16 flex items-center justify-center border-4">
-            <NavLink to={`/ChatRoom/${joinRoomID}`}>
-              <p>Join a Room</p>
-            </NavLink>
+            {/* <NavLink to={`/ChatRoom/${joinRoomID}`}> */}
+              <p onClick={handleJoinRoom}>Join a Room</p>
+            {/* </NavLink> */}
             <p className="text-lg">Enter the room ID:</p>
             <input
               value={joinRoomID}
