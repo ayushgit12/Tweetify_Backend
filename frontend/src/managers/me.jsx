@@ -7,9 +7,11 @@ import { useRef } from "react";
 import Fade from "react-awesome-reveal";
 import Zoom from "react-awesome-reveal";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Me = () => {
   const ref = useRef(0);
+  const navigate = useNavigate();
 
   if (
     localStorage.getItem("token") === null ||
@@ -143,6 +145,7 @@ const Me = () => {
         </div>
       </div>
       <div className="h-24 bg-gradient-to-b from-white to-slate-300"></div>
+      <button onClick={()=>navigate('/accountSettings')} className="bg-slate-900 hover:bg-slate-700 text-white absolute px-3 py-2 rounded-lg text-xl">Account Settings</button>
       <div className="bg-slate-300" ref={ref}>
         <h1 className="text-5xl text-center font-extrabold pb-20 pt-8">
           Your Posts

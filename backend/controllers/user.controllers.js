@@ -276,6 +276,31 @@ const likeTweet = asyncHandler(async (req, res) => {
     .json(new APIresponse(200, { isLiked }, "Like Process Successful"));
 });
 
+const changePassword = asyncHandler(async (req, res) => { 
+  const { oldPassword, newPassword } = req.body;
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const isPasswordValid = await user.isPasswordCorrect(oldPassword);
+
+  if (!isPasswordValid) {
+    throw new ApiError(401, "Invalid user credentials");
+  }
+
+  user.password = newPassword;
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, {}, "Password changed successfully"));
+  
+});
+
 export {
   registerUser,
   loginUser,
@@ -286,4 +311,5 @@ export {
   deleteTweet,
   likeTweet,
   showLikeTweet,
+  changePassword
 };

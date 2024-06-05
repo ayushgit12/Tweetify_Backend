@@ -11,6 +11,7 @@ import Chat from "./managers/Chat.jsx";
 import WorldChat from "./managers/worldChat.jsx";
 import ChatWithFriends from "./managers/chatWithFriends.jsx";
 import ChatRoom from "./managers/ChatRoom.jsx";
+import AccountSettings from "./managers/accountSettings.jsx";
 
 
 function App() {
@@ -49,6 +50,9 @@ function App() {
         </Route>
         <Route path="/ChatRoom/:slug"
           element={<ChatRoom />}>
+        </Route>
+        <Route path="accountSettings"
+          element={<AccountSettings />}>
         </Route>
        
       </Routes>
