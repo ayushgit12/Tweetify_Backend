@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import Navbar from '../components/Navbar';
 
 const AboutApp = () => {
 
@@ -17,7 +18,7 @@ console.log(tweetsSize);
     <div>
       
 
-
+      <Navbar />
 
         <div className='mt-16'>
           <h1 className="text-5xl p-5 font-bold text-center">

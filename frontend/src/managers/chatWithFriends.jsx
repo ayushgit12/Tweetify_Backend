@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import "flowbite"
 import bulb from "../assets/bulb2.png"
+import { Toaster, toast } from "react-hot-toast";
+import Navbar from "../components/Navbar";
 
 
 const ChatWithFriends = () => {
@@ -19,7 +21,7 @@ const ChatWithFriends = () => {
 
   const handleCreateRoom = () => {
     if (createdRoomID.length === 0) {
-      alert("Please enter a room ID");
+      toast.error("Please enter a room ID");
       return;
     }
     window.location.href = `/ChatRoom/${createdRoomID}`;
@@ -27,7 +29,7 @@ const ChatWithFriends = () => {
 
   const handleJoinRoom = () => {
     if (joinRoomID.length === 0) {
-      alert("Please enter a room ID");
+      toast.error("Please enter a room ID");
       return;
     }
     window.location.href = `/ChatRoom/${joinRoomID}`;
@@ -36,7 +38,9 @@ const ChatWithFriends = () => {
 
   return (
     <div>
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="flex min-h-full flex-1 flex-col justify-center">
+        <Navbar />
         <nav className="bg-slate-900 ">
           <ul className="flex justify-around">
             <div className="w-full text-center py-4 text-white">
@@ -103,7 +107,7 @@ const ChatWithFriends = () => {
             data-tooltip-target="tooltip-dark"
             data-tooltip-style="dark"
             type="button"
-            class={`${joinRoomID.length === 0 ? 'opacity-0' : 'opacity-1'} ml-20 text-white bg-slate-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center `}
+            className={`${joinRoomID.length === 0 ? 'opacity-0' : 'opacity-1'} ml-20 text-white bg-slate-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center `}
           >
             <img src={bulb} height={"50px"} width={"50px"} alt="" />
           </button>
@@ -111,10 +115,10 @@ const ChatWithFriends = () => {
           <div
             id="tooltip-dark"
             role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
+            className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
           >
             If a room with that room ID does not exists, a room will be created.
-            <div class="tooltip-arrow" data-popper-arrow></div>
+            <div className="tooltip-arrow" data-popper-arrow></div>
           </div>
         </div>
       </div>

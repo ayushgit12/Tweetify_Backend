@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
+import Navbar from "../components/Navbar";
 
 const Post = () => {
   if (
@@ -59,8 +60,9 @@ const Post = () => {
   return (
     <div>
       <Toaster position="top-center" reverseOrder={false} />
+
       <div className="flex min-h-full flex-1 flex-col justify-center">
-        
+      <Navbar />
 
         <div className="main m-10 mt-16">
           <h1 className="text-5xl p-5 font-bold text-center">POST HERE!</h1>

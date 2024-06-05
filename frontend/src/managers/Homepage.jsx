@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import TweetCard from "./TweetCard";
 import { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
+import Navbar from "../components/Navbar";
 
 
 
@@ -94,6 +95,7 @@ const Homepage = () => {
     <div>
 
       <div className="flex min-h-full flex-1 flex-col justify-center">
+        <Navbar />
 
 
         <h1 className="text-5xl p-5 font-bold text-center mt-16">

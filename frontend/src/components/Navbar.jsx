@@ -4,13 +4,13 @@ import { NavLink } from 'react-router-dom'
 
 const Navbar = () => {
   return (
-    <div className='fixed w-full top-0'>
-      <nav className="bg-slate-900 ">
+    <div className='fixed w-full top-0 z-40'>
+      <nav className="bg-slate-900">
           <ul className="flex justify-around">
             <div className="w-full text-center py-4 text-white">
-              <a href="/homepage">
+              <NavLink to="/homepage">
                 <li>Home</li>
-              </a>
+              </NavLink>
             </div>
             <div className="w-full text-center py-4 text-white">
               <NavLink to="/post">

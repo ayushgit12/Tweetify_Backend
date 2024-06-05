@@ -1,10 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const Chat = () => {
   return (
     <div>
       <div className="flex min-h-full flex-1 flex-col justify-center">
+        <Navbar />
         
 
         <div className="mt-16">
