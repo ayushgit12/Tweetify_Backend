@@ -12,39 +12,14 @@ function TweetCard({ tweet }) {
   const refLike = useRef(0)
   const buttonRef = useRef(0)
   const navigate = useNavigate();
+  const [likedUsers, setlikedUsers] = useState([])
+  // console.log(tweet)
 
   // const [start, setstart] = useState(1)
 
 
   const date = new Date(tweet.createdAt);
-  // console.log(tweet.likes.users.length);
-
-  // const deleteTweet = async () => {
-  //   const token = JSON.parse(localStorage.getItem("token"));
-  //   // console.log(token);
-  //   if(!token){
-  //     alert("User token expired, please login again");
-  //     window.location.href = "/login";
-  //     return;
-  //   }
-
-  //   await axios
-  //     .delete(
-  //       "http://localhost:8000/api/v1/users/deleteTweet",
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //         data: { tweetId: tweet._id },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       console.log("Success:", response.data);
-  //       alert("Tweet deleted successfully");
-  //       window.location.reload();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // }
+  
 
 
   useEffect(() => {
@@ -146,9 +121,9 @@ function TweetCard({ tweet }) {
         }
       )
       .then((response) => {
-        console.log("Success:", response.data.data.fullName);
-        
-        return response.data.data.fullName;
+        console.log("Success:", response.data.data.fullName)
+        setlikedUsers((likedUsers) => [...likedUsers, response.data.data.fullName]);
+
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -158,6 +133,15 @@ function TweetCard({ tweet }) {
 
 
   useEffect(() => {
+
+    tweet.likes.users.map((user, index) => {
+      
+      getUser(user);
+    })
+
+
+
+
     const handleHover = () => {
       refLike.current.style.opacity = 1;
     };
@@ -221,11 +205,11 @@ function TweetCard({ tweet }) {
               </div>
               {
                 
-                tweet.likes.users.length>0 && tweet.likes.users.map((user, index) => { 
+                tweet.likes.users.length>0 && likedUsers.map((user, index) => { 
                   // console.log(tweet.likes)
                   
                   // console.log(user);
-                  // console.log(getUser(user).then((fullName) => fullName));
+                  // console.log(getUser(user));
                   return <div key={index} className="content p-1"> {user} </div>
                 })
                 

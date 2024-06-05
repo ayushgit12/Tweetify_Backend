@@ -152,9 +152,9 @@ const Me = () => {
           })}
         </div>
 
-        <div className="h-24 bg-gradient-to-b from-slate-300 to-slate-600"></div>
+        {/* <div className="h-24 bg-gradient-to-b from-slate-300 to-slate-600"></div> */}
 
-        <div className="bg-slate-600 h-48 flex justify-center items-center">
+        <div className="bg-slate-800 h-24 flex justify-center items-center">
           <div className="w-full text-center text-white">
             <NavLink to="/aboutApp">
               <button className="">About App</button>
