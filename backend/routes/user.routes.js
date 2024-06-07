@@ -7,6 +7,7 @@ import { likeTweet } from "../controllers/user.controllers.js";
 import { showLikeTweet } from "../controllers/user.controllers.js";
 import { getUserDetails } from "../controllers/user.controllers.js";
 import { changePassword } from "../controllers/user.controllers.js";
+import { sendEmail } from "../controllers/email.controllers.js";
 
 
 const router = Router();
@@ -21,6 +22,7 @@ router.route('/likeTweet').post(likeTweet);
 router.route('/showLikeTweet').post(showLikeTweet);
 router.route('/getUserDetails').post(getUserDetails);
 router.route('/changePassword').post(verifyJWT,changePassword);
+router.route('/sendEmail').post(sendEmail);
 
 
 

@@ -4,18 +4,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
 const Register = () => {
-
   const [fullName, setfullName] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const navigate = useNavigate();
-
-
-
-
-
 
   const handleRegisterEmailChange = (e) => {
     setRegisterEmail(e.target.value);
@@ -28,52 +21,65 @@ const Register = () => {
     setfullName(e.target.value);
   };
 
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
+    console.log(fullName, registerEmail, registerPassword);
 
+    await axios
+      .post("http://localhost:8000/api/v1/users/register", {
+        fullName: fullName,
+        email: registerEmail,
+        password: registerPassword,
+      })
+      .then((response) => {
+        console.log("Success:", response.data);
+        toast.success("Registration Successful!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          toastId: "registerSuccess", // Optional unique ID for the toast
+        });
 
-     const handleRegister = async (e) => {
-          e.preventDefault();
-      
-      
-          console.log(fullName, registerEmail, registerPassword);
-      
-          await axios
-            .post("http://localhost:8000/api/v1/users/register", {
-              fullName: fullName,
-              email: registerEmail,
-              password: registerPassword,
+        const sendEmail = async () => {
+          let dataSend = {
+            email: registerEmail,
+            subject: "Welcome to Tweetify!",
+            message: `Hi ${fullName},\n\nThanks for signing up for Tweetify, your one-stop platform for tweeting, messaging, and posting! We're thrilled to have you on board and can't wait for you to connect with the world.\n\nGetting Started with Tweetify\n\nOnce you've logged in to your account, you can:\n\nCraft compelling tweets: Share your thoughts, experiences, and updates with the world in 280 characters or less.\nDirect message your friends: Have private conversations with your followers through direct messages.\nEngage in discussions: Reply to tweets, retweet interesting content, and join conversations happening around the world.\nPost multimedia content: Spruce up your tweets with images, videos, and GIFs.\nDiscover new voices: Follow friends, family, influencers, and thought leaders to stay updated on what interests you.\nExplore Tweetify's Features\n\nWe offer a variety of features to make your tweeting experience enjoyable and engaging. Explore your profile, personalize your settings, and discover new communities through hashtags and trending topics.\n\nStay Connected\n\nWe're here to help you get the most out of Tweetify.\n\nHappy tweeting!\n\nThe Tweetify Team`,
+          };
+
+          const res = await axios
+            .post("http://localhost:8000/api/v1/users/sendEmail", {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              data: JSON.stringify(dataSend),
             })
-            .then((response) => {
-              console.log("Success:", response.data);
-              toast.success("Registration Successful!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                toastId: "registerSuccess", // Optional unique ID for the toast
-
-
-              });
-              navigate("/login");
-      
-
-      
-      
-              
+            .then((res) => {
+              console.log("Email sent successfully");
             })
             .catch((error) => {
               console.error("Error:", error);
-              toast.error("Registration Failed!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                toastId: "registerError", // Optional unique ID for the toast
-              });
             });
         };
 
-
+        sendEmail();
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        toast.error("Registration Failed!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          toastId: "registerError", // Optional unique ID for the toast
+        });
+      });
+  };
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative">

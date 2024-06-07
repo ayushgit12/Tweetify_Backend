@@ -194,6 +194,8 @@ const showTweet = asyncHandler(async (req, res) => {
     throw new ApiError(404, "No tweets found");
   }
 
+  // console.log(tweets);
+
   return res
     .status(200)
     .json(new APIresponse(200, tweets, "Tweets fetched successfully"));

@@ -105,7 +105,9 @@ const Homepage = () => {
       </div>
 
       <div>
-        {tweets.map((tweet, index) => {
+        
+      {
+        tweets.map((tweet, index) => {
           return <TweetCard key={index} tweet={tweet} />;
         })}
       </div>

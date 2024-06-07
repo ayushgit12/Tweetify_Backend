@@ -8,6 +8,9 @@ import Popup from "reactjs-popup";
 
 
 function TweetCard({ tweet }) {
+
+
+  // console.log(tweet.user.fullName);
   const [isLiked, setIsLiked] = useState(false);
   const refLike = useRef(0)
   const buttonRef = useRef(0)

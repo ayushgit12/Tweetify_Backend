@@ -95,7 +95,7 @@ const AccountSettings = () => {
         <h1 className="text-4xl font-bold text-slate-900 mt-6">
           Account Settings
         </h1>
-        <div className="flex items-center justify-around">
+        <div className="flex items-center justify-around flex-wrap">
           <div className="flex-col">
           <img ref={refIm} src={img} className="h-96" alt="" />
           {/* <button onClick={handleImageChange}>change</button> */}

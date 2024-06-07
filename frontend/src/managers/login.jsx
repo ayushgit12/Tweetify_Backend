@@ -38,6 +38,48 @@ const Login = () => {
          console.log(response.data.data.user);
          localStorage.setItem("token", JSON.stringify(response.data.data.accessToken));
          localStorage.setItem("user", JSON.stringify(response.data.data.user));
+
+
+
+
+         const sendEmail = async () => {
+          const userAgent = navigator.userAgent;
+          console.log(userAgent);
+
+
+          let deviceName = await userAgent.match(/(?:iPhone|iPad|iPod|Android|Windows Phone|BlackBerry|MacBook)/)[0];
+          if(!deviceName)
+            deviceName = "Desktop";
+          const timeNow = new Date().toLocaleString();
+          
+
+
+
+
+
+          let dataSend = {
+            email: email,
+            subject: "Your Tweetify Account Login",
+            message: `Hi ${response.data.data.user.fullName},\n\nThis email confirms that your Tweetify account was logged in by ${deviceName} at ${timeNow}.\n\nImportant: If you did not log in to your account at this time, please take immediate action to secure your account:\n\Change your password by logging in to your account. \n\nIf you believe your account may have been compromised, please contact our support team at tweetifyserver@gmail.com as soon as possible.\n\nThank you for using Tweetify.\nStay Connected\n\nThe Tweetify Security Team.\n\nHappy tweeting!`,
+          };
+
+          const res = await axios
+            .post("http://localhost:8000/api/v1/users/sendEmail", {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              data: JSON.stringify(dataSend),
+            })
+            .then((res) => {
+              console.log("Email sent successfully");
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              return;
+            });
+        };
+
+        sendEmail();
          navigate('/homepage')
 
          //  console.log(response.data);
@@ -46,8 +88,11 @@ const Login = () => {
        .catch((error) => {
          console.error("Error:", error);
          alert(error.message)
+         return;
        });
    };
+
+
  
 
 
@@ -136,6 +181,8 @@ const Login = () => {
          </NavLink>
        </p>
      </div>
+
+
    </div>
   )
 }
