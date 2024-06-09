@@ -17,7 +17,21 @@ const tweetSchema = new mongoose.Schema({
                type: String,
           }]
 
-     }
+     },
+
+     comments: [{
+          user: {
+               type: Schema.Types.ObjectId,
+               ref: 'User'
+          },
+          comment: {
+               type: String,
+               required: true
+          }
+     
+     }]
+
+
 },
 {
      timestamps: true

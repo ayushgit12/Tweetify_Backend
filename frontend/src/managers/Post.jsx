@@ -51,6 +51,7 @@ const Post = () => {
       .then((response) => {
         console.log("Success:", response.data);
         toast.success("Tweet posted successfully");
+        settweet("");
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -3,36 +3,36 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
+import { FaComment } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
+import { Toaster, toast } from "react-hot-toast";
+import profile from "../assets/profile.png";
 
 import sound1 from "../assets/like.wav";
-import Dropdown from 'react-bootstrap/Dropdown';
-
 
 function TweetCard({ tweet }) {
-  
+  const reportRef = useRef(0);
+  const reportButtonRef = useRef(0);
+
   // console.log(tweet.user.fullName);
   const [isLiked, setIsLiked] = useState(false);
   const tweetRef = useRef(0);
   const readMoreRef = useRef(0);
-  const refLike = useRef(0)
-  const buttonRef = useRef(0)
+  const refLike = useRef(0);
+  const buttonRef = useRef(0);
   const navigate = useNavigate();
-  const [likedUsers, setlikedUsers] = useState([])
+  const [likedUsers, setlikedUsers] = useState([]);
   // console.log(tweet)
-  
+
   // const [start, setstart] = useState(1)
   const sound = new Audio(sound1);
-
 
   const date = new Date(tweet.createdAt);
 
   // useEffect(() => {
   //   window.location.reload();
   // });
-  
-
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -58,13 +58,11 @@ function TweetCard({ tweet }) {
         // console.log("Success:", response.data.data.isLiked);
         setIsLiked(response.data.data.isLiked);
 
-        if(response.data.data.isLiked){
+        if (response.data.data.isLiked) {
           buttonRef.current.style.backgroundColor = "red";
-        }
-        else{
+        } else {
           buttonRef.current.style.backgroundColor = "black";
         }
-
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -73,7 +71,37 @@ function TweetCard({ tweet }) {
 
   // console.log(tweet);
 
+  const handleReport = () => {
+    const sendEmail = async () => {
+      const timeNow = new Date().toLocaleString();
+      const user = JSON.parse(localStorage.getItem("user"));
 
+      let dataSend = {
+        email: user.email,
+        subject: "Your Tweetify Account Login",
+        message: `Hi ${user.fullName},\n\nThank you for reporting the tweet at ${timeNow}. We will review your report and will let you know whether it violates our [Platform Guidelines] \n\nHere's what you need to do next:\n\n • If you've been impacted by the content of the tweet, please let us know if there's further assistance we can offer (e.g., reporting the user for harassment). \n\n • If you have any further details about the reported tweet or the user, please reply to this email with those specifics.\n\nWe appreciate your vigilance in helping us keep our platform safe.\nSincerely,\n\nThe Tweetify Team.\n\nHappy tweeting!`,
+      };
+
+      const res = await axios
+        .post("http://localhost:8000/api/v1/users/sendEmail", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: JSON.stringify(dataSend),
+        })
+        .then((res) => {
+          console.log("Email sent successfully");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          return;
+        });
+    };
+    toast.success("Tweet reported successfully");
+    sendEmail();
+
+    // close();
+  };
 
   const handleLike = async () => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -99,15 +127,12 @@ function TweetCard({ tweet }) {
         // console.log("Success:", response.data.data.isLiked);
         setIsLiked(response.data.data.isLiked);
 
-        if(response.data.data.isLiked){
+        if (response.data.data.isLiked) {
           buttonRef.current.style.backgroundColor = "red";
           sound.play();
-        }
-        else{
+        } else {
           buttonRef.current.style.backgroundColor = "black";
         }
-
-        
 
         // alert("Tweet liked successfully");
         const loc = useLocation();
@@ -119,25 +144,19 @@ function TweetCard({ tweet }) {
       });
   };
 
-
-
-  const handleReadMore  = () => {
-
-    if(tweetRef.current.style.height === "auto"){
-      tweetRef.current.style.height = "40px";
+  const handleReadMore = () => {
+    if (tweetRef.current.style.height === "auto") {
+      tweetRef.current.style.height = "80px";
       tweetRef.current.style.overflow = "hidden";
       readMoreRef.current.innerHTML = "Read More...";
-    }
-    else{
-        tweetRef.current.style.height = "auto";
+    } else {
+      tweetRef.current.style.height = "auto";
       tweetRef.current.style.overflow = "auto";
       readMoreRef.current.innerHTML = "Read Less...";
     }
-
-  }
+  };
 
   const getUser = async (userID) => {
-
     const token = JSON.parse(localStorage.getItem("token"));
     // console.log(token);
 
@@ -153,25 +172,20 @@ function TweetCard({ tweet }) {
       )
       .then((response) => {
         // console.log("Success:", response.data.data.fullName)
-        setlikedUsers((likedUsers) => [...likedUsers, [response.data.data.fullName,response.data.data._id]]);
-
+        setlikedUsers((likedUsers) => [
+          ...likedUsers,
+          [response.data.data.fullName, response.data.data._id],
+        ]);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-  }
-
-
+  };
 
   useEffect(() => {
-
     tweet.likes.users.map((user, index) => {
-      
       getUser(user);
-    })
-
-
-
+    });
 
     const handleHover = () => {
       refLike.current.style.opacity = 1;
@@ -179,114 +193,243 @@ function TweetCard({ tweet }) {
     const handleLeave = () => {
       refLike.current.style.opacity = 0;
     };
-    buttonRef.current.addEventListener('mouseover', handleHover);
-    buttonRef.current.addEventListener('mouseout', handleLeave);
-  
+    const handleHoverReport = () => {
+      reportRef.current.style.opacity = 1;
+    };
+    const handleLeaveReport = () => {
+      reportRef.current.style.opacity = 0;
+    };
+    buttonRef.current.addEventListener("mouseover", handleHover);
+    reportButtonRef.current.addEventListener("mouseover", handleHoverReport);
+    buttonRef.current.addEventListener("mouseout", handleLeave);
+    reportButtonRef.current.addEventListener("mouseout", handleLeaveReport);
     // Cleanup function to remove event listeners on unmount
     return () => {
       try {
-        
-        buttonRef.current.removeEventListener('mouseover', handleHover);
-        buttonRef.current.removeEventListener('mouseout', handleLeave);
-      } catch (error) {
-        
-      }
+        buttonRef.current.removeEventListener("mouseover", handleHover);
+        buttonRef.current.removeEventListener("mouseout", handleLeave);
+      } catch (error) {}
     };
   }, []);
 
-
-
-
   return (
-
     <div>
-      
+      <Toaster />
+
       <div
         className={`bg-white-600 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2`}
       >
-        <div ref={tweetRef} className="text-gray-900 h-10 font-bold text-xl mb-2 overflow-hidden">
+        <div className="text-gray-900 font-bold text-xl text-start pr-10 flex gap-1 items-center">
+          <img src={profile} className="h-10" alt="" />
+          <p className="pb-1">{tweet.user.fullName}</p>
+        </div>
+        <div
+          ref={tweetRef}
+          className="text-gray-900 h-20 overflow-hidden text-xl mb-2 pl-1"
+        >
           {tweet.tweet}
         </div>
-        <p ref={readMoreRef} className={`${readMoreRef.current.scrollHeight > readMoreRef.current.setHeight?"opacity-100 cursor-pointer ": "opacity-0 cursor-default"}`} onClick={handleReadMore}>Read More...</p>
-        <div className="text-gray-900 font-bold text-xl mb-2 text-end pr-10">
-          -{tweet.user.fullName}
-        </div>
-        <div className="relative w-32">
-        <button
-        ref={buttonRef}
-          className=" text-white w-fit p-2 rounded-lg my-2"
-          onClick={handleLike}
+        {console.log(tweet.tweet.length)}
+        <p
+          ref={readMoreRef}
+          className={`${
+            tweet.tweet.length > 500
+              ? "opacity-100 cursor-pointer pl-1"
+              : "opacity-0 cursor-default"
+          }`}
+          onClick={handleReadMore}
         >
-          {isLiked ? <div className="flex "><BiSolidLike className="w-6 h-6" /><div className="opacity-0 absolute w-20 p-1 rounded-lg right-0 top-0 bg-red-500" ref={refLike}>I Like this!</div></div> : <div className="flex"><BiLike className="w-6 h-6" /><div className="opacity-0 absolute w-20 p-1 rounded-lg right-0 top-0 bg-slate-600" ref={refLike}>I Don't Like this!</div></div>}
-        </button>
+          Read More...
+        </p>
+        <div className="relative w-32 mt-5 flex items-center gap-3">
+          
+            {isLiked ? (
+              <div className="flex">
+                <button
+              ref={buttonRef}
+              className=" text-white w-fit p-2 rounded-lg my-2"
+              onClick={handleLike}
+            >
+                <BiSolidLike className="w-6 h-6" />
+                </button>
+                <div
+                  className="opacity-0 absolute w-20 p-1 rounded-lg right-0 text-white text-center top-0 bg-red-500"
+                  ref={refLike}
+                >
+                  I Like this!
+                </div>
+              </div>
+            ) : (
+              <div className="flex">
+                <button
+            ref={buttonRef}
+            className=" text-white w-fit p-2 rounded-lg my-2"
+            onClick={handleLike}
+          >
+                <BiLike className="w-6 h-6" />
+                </button>
+                <div
+                  className="opacity-0 absolute w-20 p-1 rounded-lg right-0 top-0 text-white text-center bg-slate-600"
+                  ref={refLike}
+                >
+                  I Don't Like this!
+                </div>
+              </div>
+            )}
+
+          <button className="text-white bg-slate-900 p-2 rounded-lg">
+            <FaComment className="h-6 w-6" />
+            </button>
         </div>
         <div className="w-32">
-        
+          <Popup
+            trigger={
+              <button className="text-gray-700 text-base text-start">
+                <u>Likes</u>: {tweet.likes.users.length}
+              </button>
+            }
+            modal
+            nested
+          >
+            {(close, index) => (
+              <div
+                key={index}
+                className="modal border border-slate-800 w-96 min-h-48 overflow-scroll max-h-80 bg-white"
+              >
+                <div className="flex bg-slate-800 text-white py-1 items-center">
+                  <button className="close text-2xl ml-3" onClick={close}>
+                    &times;
+                  </button>
+                  <div className="header ml-28"> Liked Users </div>
+                </div>
+                {tweet.likes.users.length > 0 &&
+                  likedUsers.map((user, index) => {
+                    // console.log(tweet.likes.users)
 
-        <Popup
-          trigger={
-            <button className="text-gray-700 text-base text-start">
-          <u>Likes</u>: {tweet.likes.users.length}
-        </button>
-          }
-          modal
-          nested
-        >
-          {(close,index) => (
-            <div key={index} className="modal border border-slate-800 w-96 min-h-48 overflow-scroll max-h-80 bg-white">
-              <div className="flex bg-slate-800 text-white py-1 items-center">
-                <button className="close text-2xl ml-3" onClick={close}>
-                  &times;
-                </button>
-                <div className="header ml-28"> Liked Users </div>
+                    // console.log(user);
+                    // console.log(getUser(user));
+                    // console.log(user)
+                    return (
+                      <button
+                        className="w-full text-start"
+                        key={index}
+                        onClick={() =>
+                          (window.location.href = `/accountProfile/${user[1]}`)
+                        }
+                      >
+                        <div className="content p-1"> {user[0]} </div>
+                      </button>
+                    );
+                  })}
+                {tweet.likes.users.length === 0 && (
+                  <div className="content p-1 text-center pt-14">
+                    {" "}
+                    No Likes Yet!{" "}
+                  </div>
+                )}
               </div>
-              {
-                
-                tweet.likes.users.length>0 && likedUsers.map((user, index) => { 
-                  // console.log(tweet.likes.users)
-                  
-                  // console.log(user);
-                  // console.log(getUser(user));
-                  // console.log(user)
-                  return <button className="w-full text-start" key={index}  onClick={()=>window.location.href =`/accountProfile/${user[1]}` } ><div className="content p-1"> {user[0]} </div></button>
-                })
-                
-              }
-              {tweet.likes.users.length === 0 && <div className="content p-1 text-center pt-14"> No Likes Yet! </div>}
-            </div> 
-          )}
-        </Popup>
-
-
-
-
-
+            )}
+          </Popup>
         </div>
+        <div className="flex justify-between">
         
+        <div>
         <div className="text-gray-700 text-base">
           Posted At {date.getHours()}:{date.getMinutes()}:{date.getSeconds()}
         </div>
         <div className="text-gray-700 text-base">
           Dated: {date.getDate()}/{date.getMonth()}/{date.getFullYear()}
         </div>
-        <div>
-        <Dropdown>
-      <Dropdown.Toggle className="bg-orange-400 flex items-center p-1 rounded-lg mt-2" variant="success" id="dropdown-basic">
-      <lord-icon
-    src="https://cdn.lordicon.com/abvsilxn.json"
-    trigger="hover"
-    style={{ width: "25px", height: "25px" }}>
-</lord-icon>
-      </Dropdown.Toggle>
-
-      <Dropdown.Menu>
-        <Dropdown.Item href="#/action-1">Report this Tweet?</Dropdown.Item>
-        
-      </Dropdown.Menu>
-    </Dropdown>
         </div>
-        {/* <button className='text-left bg-slate-700 w-fit p-2 text-white mt-8 rounded-md' onClick={deleteTweet}>Delete</button> */}
+        <div className="relative">
+          <div
+            className="bg-orange-400 flex items-center p-1 px-2 rounded-lg w-fit cursor-pointer"
+            ref={reportButtonRef}
+          >
+            <Popup
+              trigger={
+                <button>
+                  <lord-icon
+                    src="https://cdn.lordicon.com/abvsilxn.json"
+                    trigger="hover"
+                    style={{ width: "25px", height: "25px", paddingTop: "3px" }}
+                  ></lord-icon>
+                </button>
+              }
+              modal
+              nested
+            >
+              {(close) => (
+                <div className="modal border border-slate-800 w-full pb-8  bg-white">
+                  <div className="flex bg-slate-800 text-white py-1 items-center">
+                    <button className="close text-2xl ml-3" onClick={close}>
+                      &times;
+                    </button>
+                    <div className="header ml-28"> Report this Tweet? </div>
+                  </div>
+                  <div className="content mt-5 p-2">
+                    {" "}
+                    What best describes your concern regarding this tweet?{" "}
+                  </div>
+                  <div className="ml-3">
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" name="" id="" /> Sexual Harassment{" "}
+                    </div>
 
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" name="" id="" /> Violence{" "}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" name="" id="" /> Hate Speech{" "}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" name="" id="" /> Spam{" "}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" name="" id="" /> False Information{" "}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" name="" id="" /> Others{" "}
+                    </div>
+                    <input type="text" placeholder="Please specify" className="h-6 ml-6" />
+                  </div>
+
+                  <div className="actions flex gap-3 mt-10 ml-3">
+                    <button
+                      className="bg-red-500 px-2 py-1 rounded-lg hover:bg-red-700 hover:text-white"
+                      onClick={handleReport}
+                    >
+                      Report
+                    </button>
+                    <button
+                      className="button bg-slate-400 px-2 py-1 rounded-lg hover:bg-slate-600 hover:text-white"
+                      onClick={() => {
+                        console.log("modal closed ");
+                        close();
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </Popup>
+          </div>
+
+          <div
+            ref={reportRef}
+            className="w-24 right-12 top-0 mt-2 opacity-0 bg-slate-300 p-1 rounded-lg absolute"
+          >
+            Report this?
+          </div>
+        </div>
+        </div>
+
+        {/* <button className='text-left bg-slate-700 w-fit p-2 text-white mt-8 rounded-md' onClick={deleteTweet}>Delete</button> */}
       </div>
     </div>
   );
