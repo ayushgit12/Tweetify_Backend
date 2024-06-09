@@ -47,7 +47,7 @@ const Login = () => {
           console.log(userAgent);
 
 
-          let deviceName = await userAgent.match(/(?:iPhone|iPad|iPod|Android|Windows Phone|BlackBerry|MacBook)/)[0];
+          let deviceName = await userAgent.match(/(?:iPhone|iPad|iPod|Android|Windows Phone|BlackBerry|Macintosh)/)[0];
           if(!deviceName)
             deviceName = "Desktop";
           const timeNow = new Date().toLocaleString();

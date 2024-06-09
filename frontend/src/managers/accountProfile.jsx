@@ -10,6 +10,12 @@ import TweetCard from "./TweetCard";
 const accountProfile = () => {
      const navigate = useNavigate();
   const { slug } = useParams();
+  
+  useEffect(() => {
+     //   window.location.reload();
+    window.scrollTo(0, 0);
+  }, [])
+  
 
   const [data, setData] = useState([]);
 

@@ -223,7 +223,7 @@ function TweetCard({ tweet }) {
                   // console.log(user);
                   // console.log(getUser(user));
                   console.log(user)
-                  return <NavLink key={index}  to={`/accountProfile/${user[1]}`}><div className="content p-1"> {user[0]} </div></NavLink>
+                  return <button className="w-full text-start" key={index}  onClick={()=>window.location.href =`/accountProfile/${user[1]}` } ><div className="content p-1"> {user[0]} </div></button>
                 })
                 
               }
