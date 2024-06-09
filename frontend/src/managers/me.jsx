@@ -145,7 +145,11 @@ const Me = () => {
         </div>
       </div>
       <div className="h-24 bg-gradient-to-b from-white to-slate-300"></div>
-      <button onClick={()=>navigate('/accountSettings')} className="bg-slate-900 hover:bg-slate-700 text-white absolute px-3 py-2 rounded-lg text-xl">Account Settings</button>
+      <button onClick={()=>navigate('/accountSettings')} className="bg-slate-300 right-0 text-white absolute px-3 py-2 rounded-lg text-xl"><lord-icon
+    src="https://cdn.lordicon.com/ifsxxxte.json"
+    trigger="hover"
+    style={{ width: "130px", height: "130px" }}>
+</lord-icon></button>
       <div className="bg-slate-300" ref={ref}>
         <h1 className="text-5xl text-center font-extrabold pb-20 pt-8">
           Your Posts

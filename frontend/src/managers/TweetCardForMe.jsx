@@ -2,9 +2,53 @@ import React from "react";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 import Popup from "reactjs-popup";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function TweetCardForMe({ tweet }) {
   const date = new Date(tweet.createdAt);
+
+  const navigate = useNavigate();
+  const [likedUsers, setlikedUsers] = useState([])
+
+
+
+  const getUser = async (userID) => {
+
+    const token = JSON.parse(localStorage.getItem("token"));
+    // console.log(token);
+
+    await axios
+      .post(
+        "http://localhost:8000/api/v1/users/getUserDetails",
+        {
+          userID: userID,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((response) => {
+        console.log("Success:", response.data.data.fullName)
+        setlikedUsers((likedUsers) => [...likedUsers, [response.data.data.fullName,response.data.data._id]]);
+
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+
+
+  useEffect(() => {
+
+    tweet.likes.users.map((user, index) => {
+      
+      getUser(user);
+    })
+
+
+  }, []);
 
   const deleteTweet = async () => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -34,8 +78,7 @@ function TweetCardForMe({ tweet }) {
 
   return (
     <div>
-
-  <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
       <div
         className={`bg-white-600 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2`}
       >
@@ -45,9 +88,47 @@ function TweetCardForMe({ tweet }) {
         <div className="text-gray-900 font-bold text-xl mb-2 text-end pr-10">
           -{tweet.user.fullName}
         </div>
-        <div className="text-gray-700 text-base text-start">
-          Likes: {tweet.likes.users.length}
-        </div>
+        <Popup
+          trigger={
+            <button className="text-gray-700 text-base text-start">
+              <u>Likes</u>: {tweet.likes.users.length}
+            </button>
+          }
+          modal
+          nested
+        >
+          {(close,index) => (
+            <div key={index} className="modal border border-slate-800 w-96 min-h-48 overflow-scroll max-h-80 bg-white">
+              <div className="flex bg-slate-800 text-white py-1 items-center">
+                <button className="close text-2xl ml-3" onClick={close}>
+                  &times;
+                </button>
+                <div className="header ml-28"> Liked Users </div>
+              </div>
+              {tweet.likes.users.length > 0 &&
+                likedUsers.map((user, index) => {
+                  console.log(tweet.likes.users);
+
+                  // console.log(user);
+                  // console.log(getUser(user));
+                  return (
+                    <NavLink to={`/accountProfile/${user[1]}`}>
+                      <div key={index} className="content p-1">
+                        {" "}
+                        {user[0]}{" "}
+                      </div>
+                    </NavLink>
+                  );
+                })}
+              {tweet.likes.users.length === 0 && (
+                <div className="content p-1 text-center pt-14">
+                  {" "}
+                  No Likes Yet!{" "}
+                </div>
+              )}
+            </div>
+          )}
+        </Popup>
 
         <div className="text-gray-700 text-base">
           Posted At {date.getHours()}:{date.getMinutes()}:{date.getSeconds()}
@@ -58,11 +139,9 @@ function TweetCardForMe({ tweet }) {
 
         <Popup
           trigger={
-            <button
-          className="text-left bg-slate-700 w-fit p-2 text-white mt-8 rounded-md"
-        >
-          Delete
-        </button>
+            <button className="text-left bg-slate-700 w-fit p-2 text-white mt-8 rounded-md">
+              Delete
+            </button>
           }
           modal
           nested
@@ -99,12 +178,6 @@ function TweetCardForMe({ tweet }) {
             </div>
           )}
         </Popup>
-
-
-
-
-
-        
       </div>
     </div>
   );

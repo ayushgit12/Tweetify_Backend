@@ -3,8 +3,9 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
+import { NavLink } from "react-router-dom";
 
 
 function TweetCard({ tweet }) {
@@ -22,6 +23,10 @@ function TweetCard({ tweet }) {
 
 
   const date = new Date(tweet.createdAt);
+
+  // useEffect(() => {
+  //   window.location.reload();
+  // });
   
 
 
@@ -100,8 +105,9 @@ function TweetCard({ tweet }) {
         
 
         // alert("Tweet liked successfully");
+        const loc = useLocation();
 
-        navigate("/homepage");
+        navigate(loc);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -124,8 +130,8 @@ function TweetCard({ tweet }) {
         }
       )
       .then((response) => {
-        console.log("Success:", response.data.data.fullName)
-        setlikedUsers((likedUsers) => [...likedUsers, response.data.data.fullName]);
+        // console.log("Success:", response.data.data.fullName)
+        setlikedUsers((likedUsers) => [...likedUsers, [response.data.data.fullName,response.data.data._id]]);
 
       })
       .catch((error) => {
@@ -166,6 +172,9 @@ function TweetCard({ tweet }) {
     };
   }, []);
 
+
+
+
   return (
     <div>
       <div
@@ -198,8 +207,8 @@ function TweetCard({ tweet }) {
           modal
           nested
         >
-          {(close) => (
-            <div className="modal border border-slate-800 w-96 min-h-48 overflow-scroll max-h-80 bg-white">
+          {(close,index) => (
+            <div key={index} className="modal border border-slate-800 w-96 min-h-48 overflow-scroll max-h-80 bg-white">
               <div className="flex bg-slate-800 text-white py-1 items-center">
                 <button className="close text-2xl ml-3" onClick={close}>
                   &times;
@@ -209,11 +218,12 @@ function TweetCard({ tweet }) {
               {
                 
                 tweet.likes.users.length>0 && likedUsers.map((user, index) => { 
-                  // console.log(tweet.likes)
+                  // console.log(tweet.likes.users)
                   
                   // console.log(user);
                   // console.log(getUser(user));
-                  return <div key={index} className="content p-1"> {user} </div>
+                  console.log(user)
+                  return <NavLink key={index}  to={`/accountProfile/${user[1]}`}><div className="content p-1"> {user[0]} </div></NavLink>
                 })
                 
               }

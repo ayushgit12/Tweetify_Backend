@@ -13,6 +13,7 @@ import ChatWithFriends from "./managers/chatWithFriends.jsx";
 import ChatRoom from "./managers/ChatRoom.jsx";
 import AccountSettings from "./managers/accountSettings.jsx";
 import LandingPage from "./managers/landingPage.jsx";
+import AccountProfile from "./managers/accountProfile.jsx";
 
 
 function App() {
@@ -57,6 +58,9 @@ function App() {
         </Route>
         <Route path="/"
           element={<LandingPage />}>
+        </Route>
+        <Route path="/accountProfile/:slug"
+          element={<AccountProfile />}>
         </Route>
        
       </Routes>
