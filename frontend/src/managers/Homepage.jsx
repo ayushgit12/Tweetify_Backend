@@ -6,6 +6,8 @@ import TweetCard from "./TweetCard";
 import { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
 import Navbar from "../components/Navbar";
+import { Zoom } from "react-awesome-reveal";
+
 
 
 
@@ -96,11 +98,12 @@ const Homepage = () => {
 
       <div className="flex min-h-full flex-1 flex-col justify-center">
         <Navbar />
+        <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
 
 
-        <h1 className="text-5xl p-5 font-bold text-center mt-16">
+        <Zoom triggerOnce={true} delay={200}><h1 className="text-5xl p-5 font-bold text-center mt-16">
           Welcome {user.fullName}!
-        </h1>
+        </h1></Zoom>
         <p className="text-3xl font-bold p-5">Today's Feed</p>
       </div>
 

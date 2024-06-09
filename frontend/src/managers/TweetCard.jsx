@@ -5,21 +5,25 @@ import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
 import { useLocation, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
-import { NavLink } from "react-router-dom";
+
+import sound1 from "../assets/like.wav";
+import Dropdown from 'react-bootstrap/Dropdown';
 
 
 function TweetCard({ tweet }) {
-
-
+  
   // console.log(tweet.user.fullName);
   const [isLiked, setIsLiked] = useState(false);
+  const tweetRef = useRef(0);
+  const readMoreRef = useRef(0);
   const refLike = useRef(0)
   const buttonRef = useRef(0)
   const navigate = useNavigate();
   const [likedUsers, setlikedUsers] = useState([])
   // console.log(tweet)
-
+  
   // const [start, setstart] = useState(1)
+  const sound = new Audio(sound1);
 
 
   const date = new Date(tweet.createdAt);
@@ -97,6 +101,7 @@ function TweetCard({ tweet }) {
 
         if(response.data.data.isLiked){
           buttonRef.current.style.backgroundColor = "red";
+          sound.play();
         }
         else{
           buttonRef.current.style.backgroundColor = "black";
@@ -113,6 +118,23 @@ function TweetCard({ tweet }) {
         console.error("Error:", error);
       });
   };
+
+
+
+  const handleReadMore  = () => {
+
+    if(tweetRef.current.style.height === "auto"){
+      tweetRef.current.style.height = "40px";
+      tweetRef.current.style.overflow = "hidden";
+      readMoreRef.current.innerHTML = "Read More...";
+    }
+    else{
+        tweetRef.current.style.height = "auto";
+      tweetRef.current.style.overflow = "auto";
+      readMoreRef.current.innerHTML = "Read Less...";
+    }
+
+  }
 
   const getUser = async (userID) => {
 
@@ -176,13 +198,16 @@ function TweetCard({ tweet }) {
 
 
   return (
+
     <div>
+      
       <div
         className={`bg-white-600 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2`}
       >
-        <div className="text-gray-900 font-bold text-xl mb-2">
+        <div ref={tweetRef} className="text-gray-900 h-10 font-bold text-xl mb-2 overflow-hidden">
           {tweet.tweet}
         </div>
+        <p ref={readMoreRef} className={`${readMoreRef.current.scrollHeight > readMoreRef.current.setHeight?"opacity-100 cursor-pointer ": "opacity-0 cursor-default"}`} onClick={handleReadMore}>Read More...</p>
         <div className="text-gray-900 font-bold text-xl mb-2 text-end pr-10">
           -{tweet.user.fullName}
         </div>
@@ -222,7 +247,7 @@ function TweetCard({ tweet }) {
                   
                   // console.log(user);
                   // console.log(getUser(user));
-                  console.log(user)
+                  // console.log(user)
                   return <button className="w-full text-start" key={index}  onClick={()=>window.location.href =`/accountProfile/${user[1]}` } ><div className="content p-1"> {user[0]} </div></button>
                 })
                 
@@ -243,6 +268,22 @@ function TweetCard({ tweet }) {
         </div>
         <div className="text-gray-700 text-base">
           Dated: {date.getDate()}/{date.getMonth()}/{date.getFullYear()}
+        </div>
+        <div>
+        <Dropdown>
+      <Dropdown.Toggle className="bg-orange-400 flex items-center p-1 rounded-lg mt-2" variant="success" id="dropdown-basic">
+      <lord-icon
+    src="https://cdn.lordicon.com/abvsilxn.json"
+    trigger="hover"
+    style={{ width: "25px", height: "25px" }}>
+</lord-icon>
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu>
+        <Dropdown.Item href="#/action-1">Report this Tweet?</Dropdown.Item>
+        
+      </Dropdown.Menu>
+    </Dropdown>
         </div>
         {/* <button className='text-left bg-slate-700 w-fit p-2 text-white mt-8 rounded-md' onClick={deleteTweet}>Delete</button> */}
 
