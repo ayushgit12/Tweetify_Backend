@@ -23,18 +23,19 @@ const Chat = () => {
           </div>
 
           <NavLink to="/worldChat">
-            <div className="border-slate-900 rounded-full md:w-1/3 w-48 text-center h-36 hover:bg-slate-900 hover:text-white cursor-pointer text-2xl m-16 flex items-center justify-center border-4">
+            <div className="border-slate-900 rounded-full md:w-1/3 w-72 text-center h-36 hover:bg-slate-900 hover:text-white cursor-pointer text-2xl m-16 flex items-center justify-center border-4">
               <p>World Chat</p>
             </div>
           </NavLink>
 
           <NavLink to="/chatWithFriends">
-          <div className="border-slate-900 rounded-full md:w-1/3 w-48 text-center h-36 hover:bg-slate-900 hover:text-white cursor-pointer text-2xl m-16 flex items-center justify-center border-4">
+          <div className="border-slate-900 rounded-full md:w-1/3 w-72 text-center h-36 hover:bg-slate-900 hover:text-white cursor-pointer text-2xl m-16 flex items-center justify-center border-4">
             <p>Chat With Friends</p>
           </div>
           </NavLink>
         </div>
       </div>
+      
     </div>
   );
 };

@@ -8,12 +8,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { Toaster, toast } from "react-hot-toast";
 import profile from "../assets/profile.png";
+import logo2 from "../assets/logo2.png";
 
 import sound1 from "../assets/like.wav";
 
 function TweetCard({ tweet }) {
   const reportRef = useRef(0);
   const reportButtonRef = useRef(0);
+  const imgHover = useRef(0);
 
   // console.log(tweet.user.fullName);
   const [isLiked, setIsLiked] = useState(false);
@@ -33,6 +35,13 @@ function TweetCard({ tweet }) {
   // useEffect(() => {
   //   window.location.reload();
   // });
+
+
+  const handleCommentRedirect = () => {
+    // const location = useLocation();
+    navigate(`/comment/${tweet._id}`, {state : tweet});
+  
+  }
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -102,6 +111,9 @@ function TweetCard({ tweet }) {
 
     // close();
   };
+
+
+  
 
   const handleLike = async () => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -189,9 +201,11 @@ function TweetCard({ tweet }) {
 
     const handleHover = () => {
       refLike.current.style.opacity = 1;
+      refLike.current.style.zIndex = 40;
     };
     const handleLeave = () => {
       refLike.current.style.opacity = 0;
+      refLike.current.style.zIndex = 0;
     };
     const handleHoverReport = () => {
       reportRef.current.style.opacity = 1;
@@ -203,6 +217,8 @@ function TweetCard({ tweet }) {
     reportButtonRef.current.addEventListener("mouseover", handleHoverReport);
     buttonRef.current.addEventListener("mouseout", handleLeave);
     reportButtonRef.current.addEventListener("mouseout", handleLeaveReport);
+
+    
     // Cleanup function to remove event listeners on unmount
     return () => {
       try {
@@ -211,14 +227,16 @@ function TweetCard({ tweet }) {
       } catch (error) {}
     };
   }, []);
+  
 
   return (
-    <div>
+    <div className="">
       <Toaster />
 
       <div
-        className={`bg-white-600 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2`}
+        className={`bg-white-600 shadow-md rounded px-8 pt-6 pb-8 relative h-full mb-4 flex flex-col my-2`}
       >
+        <img src={logo2} alt="" className="h-60 opacity-10 absolute bottom-16 -scale-x-100 left-1/2" ref={imgHover}/>
         <div className="text-gray-900 font-bold text-xl text-start pr-10 flex gap-1 items-center">
           <img src={profile} className="h-10" alt="" />
           <p className="pb-1">{tweet.user.fullName}</p>
@@ -231,16 +249,17 @@ function TweetCard({ tweet }) {
         </div>
         {console.log(tweet.tweet.length)}
         <p
-          ref={readMoreRef}
-          className={`${
-            tweet.tweet.length > 500
-              ? "opacity-100 cursor-pointer pl-1"
-              : "opacity-0 cursor-default"
-          }`}
-          onClick={handleReadMore}
-        >
-          Read More...
-        </p>
+      ref={readMoreRef}
+      className={`${
+        tweet.tweet.length > 500
+          ? "opacity-100 text-blue-700 cursor-pointer pl-1"
+          : "opacity-0 cursor-default"
+      }`}
+      onClick={handleReadMore}
+    >
+      Read More...
+    </p>
+      <br />
         <div className="relative w-32 mt-5 flex items-center gap-3">
           
             {isLiked ? (
@@ -277,7 +296,7 @@ function TweetCard({ tweet }) {
               </div>
             )}
 
-          <button className="text-white bg-slate-900 p-2 rounded-lg">
+          <button onClick={handleCommentRedirect} className="text-white z-30 bg-slate-900 p-2 rounded-lg">
             <FaComment className="h-6 w-6" />
             </button>
         </div>

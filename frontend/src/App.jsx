@@ -14,6 +14,7 @@ import ChatRoom from "./managers/ChatRoom.jsx";
 import AccountSettings from "./managers/accountSettings.jsx";
 import LandingPage from "./managers/landingPage.jsx";
 import AccountProfile from "./managers/accountProfile.jsx";
+import Comment from "./managers/Comment.jsx";
 
 
 function App() {
@@ -61,6 +62,9 @@ function App() {
         </Route>
         <Route path="/accountProfile/:slug"
           element={<AccountProfile />}>
+        </Route>
+        <Route path="/comment/:slug"
+          element={<Comment />}>
         </Route>
        
       </Routes>

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
 import Navbar from "../components/Navbar";
 import { Zoom } from "react-awesome-reveal";
+import logo2 from "../assets/logo2.png";
 
 
 
@@ -102,7 +103,7 @@ const Homepage = () => {
         <Navbar />
         <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
 
-
+        <img src={logo2} className="absolute h-16 top-16"  alt="" />
         <Zoom triggerOnce={true} delay={200}><h1 className="text-5xl p-5 font-bold text-center mt-16">
           Welcome {user.fullName}!
         </h1></Zoom>

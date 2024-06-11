@@ -130,7 +130,7 @@ const Me = () => {
               autoplay
             ></dotlottie-player>
             <Fade delay={4500} bottom duration={1500}>
-              <p className="text-center text-3xl"> Share moments</p>
+              <p className="text-center text-3xl"> Share thoughts!</p>
             </Fade>
           </span>
         </div>

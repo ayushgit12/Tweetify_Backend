@@ -8,6 +8,8 @@ import { showLikeTweet } from "../controllers/user.controllers.js";
 import { getUserDetails } from "../controllers/user.controllers.js";
 import { changePassword } from "../controllers/user.controllers.js";
 import { sendEmail } from "../controllers/email.controllers.js";
+import { commentAdded } from "../controllers/user.controllers.js";
+import { getComments } from "../controllers/user.controllers.js";
 
 
 const router = Router();
@@ -23,6 +25,8 @@ router.route('/showLikeTweet').post(showLikeTweet);
 router.route('/getUserDetails').post(getUserDetails);
 router.route('/changePassword').post(verifyJWT,changePassword);
 router.route('/sendEmail').post(sendEmail);
+router.route('/commentAdded').post(commentAdded);
+router.route('/getComments').post(getComments);
 
 
 

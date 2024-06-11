@@ -303,6 +303,47 @@ const changePassword = asyncHandler(async (req, res) => {
   
 });
 
+
+const commentAdded = asyncHandler(async (req, res) => {
+  const tweetId = req.body.tweetId;
+  const comment = req.body.comment;
+  const user = req.body.user;
+  const date = new Date();
+  const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+  const dateData = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+  console.log(time, dateData);
+
+  const tweet = await Tweet.findById(tweetId);
+
+  if (!tweet) {
+    throw new ApiError(404, "Tweet not found");
+  }
+
+  tweet.comments.push({ user, comment, date: dateData, time});
+
+  await tweet.save();
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, {}, "Comment added successfully"));
+})
+
+const getComments = asyncHandler(async (req, res) => {
+  const tweetId = req.body.tweetId;
+
+  const tweet = await Tweet.findById(tweetId);
+
+  if (!tweet) {
+    throw new ApiError(404, "Tweet not found");
+  }
+
+  const comments = tweet.comments;
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, comments, "Comments fetched successfully"));
+})
+
 export {
   registerUser,
   loginUser,
@@ -313,5 +354,7 @@ export {
   deleteTweet,
   likeTweet,
   showLikeTweet,
-  changePassword
+  changePassword,
+  commentAdded,
+  getComments
 };

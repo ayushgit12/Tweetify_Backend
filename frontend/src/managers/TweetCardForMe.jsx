@@ -4,12 +4,33 @@ import { Toaster, toast } from "react-hot-toast";
 import Popup from "reactjs-popup";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useRef } from "react";
+import profile from "../assets/profile.png";
 
 function TweetCardForMe({ tweet }) {
   const date = new Date(tweet.createdAt);
+  const tweetRef = useRef(0);
+  const readMoreRef = useRef(0);
 
   const navigate = useNavigate();
   const [likedUsers, setlikedUsers] = useState([])
+
+
+
+
+
+  const handleReadMore = () => {
+    if (tweetRef.current.style.height === "auto") {
+      tweetRef.current.style.height = "80px";
+      tweetRef.current.style.overflow = "hidden";
+      readMoreRef.current.innerHTML = "Read More...";
+    } else {
+      tweetRef.current.style.height = "auto";
+      tweetRef.current.style.overflow = "auto";
+      readMoreRef.current.innerHTML = "Read Less...";
+    }
+  };
+
 
 
 
@@ -81,13 +102,30 @@ function TweetCardForMe({ tweet }) {
       <Toaster position="top-center" reverseOrder={false} />
       <div
         className={`bg-white-600 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2`}
-      >
-        <div className="text-gray-900 font-bold text-xl mb-2">
-          {tweet.tweet}
-        </div>
-        <div className="text-gray-900 font-bold text-xl mb-2 text-end pr-10">
-          -{tweet.user.fullName}
-        </div>
+      ><div className="text-gray-900 font-bold text-xl text-start pr-10 flex gap-1 items-center">
+      <img src={profile} className="h-10" alt="" />
+      <p className="pb-1">{tweet.user.fullName}</p>
+    </div>
+    <div
+      ref={tweetRef}
+      className="text-gray-900 h-20 overflow-hidden text-xl mb-2 pl-1"
+    >
+      {tweet.tweet}
+    </div>
+    {console.log(tweet.tweet.length)}
+    <p
+      ref={readMoreRef}
+      className={`${
+        tweet.tweet.length > 500
+          ? "opacity-100 text-blue-700 cursor-pointer pl-1"
+          : "opacity-0 cursor-default"
+      }`}
+      onClick={handleReadMore}
+    >
+      Read More...
+    </p>
+      <br />
+
         <Popup
           trigger={
             <button className="text-gray-700 text-base text-start">
@@ -139,8 +177,12 @@ function TweetCardForMe({ tweet }) {
 
         <Popup
           trigger={
-            <button className="text-left bg-slate-700 w-fit p-2 text-white mt-8 rounded-md">
-              Delete
+            <button className="pt-1 bg-red-300 hover:bg-red-500 w-9 text-center mt-8 rounded-md">
+              <lord-icon
+    src="https://cdn.lordicon.com/skkahier.json"
+    trigger="hover"
+    style={{width:"30px", height:"30px"}}>
+</lord-icon>
             </button>
           }
           modal
