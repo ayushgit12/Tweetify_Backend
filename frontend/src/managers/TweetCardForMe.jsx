@@ -151,10 +151,7 @@ function TweetCardForMe({ tweet }) {
                   // console.log(getUser(user));
                   return (
                     <NavLink to={`/accountProfile/${user[1]}`}>
-                      <div key={index} className="content p-1">
-                        {" "}
-                        {user[0]}{" "}
-                      </div>
+                      <div className="content p-1 flex gap-1 items-center"><img src={profile} className="h-8 pt-1" alt="" /> {user[0]} </div>
                     </NavLink>
                   );
                 })}
@@ -167,6 +164,7 @@ function TweetCardForMe({ tweet }) {
             </div>
           )}
         </Popup>
+        <div className="cursor-pointer" onClick={()=>navigate(`/comment/${tweet._id}`, {state : tweet})}>Comments: {tweet.comments.length}</div>
 
         <div className="text-gray-700 text-base">
           Posted At {date.getHours()}:{date.getMinutes()}:{date.getSeconds()}

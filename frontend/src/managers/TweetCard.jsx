@@ -25,6 +25,7 @@ function TweetCard({ tweet }) {
   const buttonRef = useRef(0);
   const navigate = useNavigate();
   const [likedUsers, setlikedUsers] = useState([]);
+
   // console.log(tweet)
 
   // const [start, setstart] = useState(1)
@@ -239,7 +240,7 @@ function TweetCard({ tweet }) {
         <img src={logo2} alt="" className="h-60 opacity-10 absolute bottom-16 -scale-x-100 left-1/2" ref={imgHover}/>
         <div className="text-gray-900 font-bold text-xl text-start pr-10 flex gap-1 items-center">
           <img src={profile} className="h-10" alt="" />
-          <p className="pb-1">{tweet.user.fullName}</p>
+          <p className="pb-1 cursor-pointer" onClick={()=>navigate(`/accountProfile/${tweet.user._id}`)}>{tweet.user.fullName}</p>
         </div>
         <div
           ref={tweetRef}
@@ -336,7 +337,7 @@ function TweetCard({ tweet }) {
                           (window.location.href = `/accountProfile/${user[1]}`)
                         }
                       >
-                        <div className="content p-1"> {user[0]} </div>
+                        <div className="content p-1 flex gap-1 items-center"><img src={profile} className="h-8 pt-1" alt="" /> {user[0]} </div>
                       </button>
                     );
                   })}
@@ -349,7 +350,9 @@ function TweetCard({ tweet }) {
               </div>
             )}
           </Popup>
+
         </div>
+        <div className="cursor-pointer" onClick={()=>navigate(`/comment/${tweet._id}`, {state : tweet})}>Comments: {tweet.comments.length}</div>
         <div className="flex justify-between">
         
         <div>
