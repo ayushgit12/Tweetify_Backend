@@ -9,6 +9,7 @@ import Zoom from "react-awesome-reveal";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 
+
 const Me = () => {
   const ref = useRef(0);
   const navigate = useNavigate();
@@ -81,12 +82,13 @@ const Me = () => {
 
       <div className="relative min-h-screen w-full bg-white mt-16">
         <Navbar />
+        
         <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
 
         <p className="text-center pr-96 pt-24 text-6xl font-extrabold ">
           Welcome
         </p>
-        <Zoom duration={1500}>
+        <Zoom triggerOnce={true} duration={1500}>
           <p className="text-center text-8xl font-extrabold ">
             {user.fullName} !
           </p>
@@ -101,7 +103,7 @@ const Me = () => {
               loop
               autoplay
             ></dotlottie-player>
-            <Fade delay={1500} bottom duration={1500}>
+            <Fade triggerOnce={true} delay={1500} bottom duration={1500}>
               <p className="text-center text-3xl">Spark ideas,</p>
             </Fade>
           </span>
@@ -115,7 +117,7 @@ const Me = () => {
               loop
               autoplay
             ></dotlottie-player>
-            <Fade delay={3000} bottom duration={1500}>
+            <Fade triggerOnce={true} delay={3000} bottom duration={1500}>
               <p className="text-center text-3xl pt-14">Raise Issues, </p>
             </Fade>
           </span>
@@ -129,7 +131,7 @@ const Me = () => {
               loop
               autoplay
             ></dotlottie-player>
-            <Fade delay={4500} bottom duration={1500}>
+            <Fade triggerOnce={true} delay={4500} bottom duration={1500}>
               <p className="text-center text-3xl"> Share thoughts!</p>
             </Fade>
           </span>
@@ -151,12 +153,12 @@ const Me = () => {
     style={{ width: "130px", height: "130px" }}>
 </lord-icon></button>
       <div className="bg-slate-300" ref={ref}>
-        <h1 className="text-5xl text-center font-extrabold pb-20 pt-8">
+        <h1 className="text-5xl text-center font-extrabold pb-20 pt-24">
           Your Posts
         </h1>
 
         <div>
-          {tweets.map((tweet, index) => {
+          {tweets.reverse().map((tweet, index) => {
             return <TweetCardForMe key={index} tweet={tweet} />;
           })}
         </div>

@@ -344,6 +344,30 @@ const getComments = asyncHandler(async (req, res) => {
     .json(new APIresponse(200, comments, "Comments fetched successfully"));
 })
 
+
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  user.password = newPassword;
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, {}, "Password changed successfully"));
+
+
+
+
+});
+
 export {
   registerUser,
   loginUser,
@@ -356,5 +380,6 @@ export {
   showLikeTweet,
   changePassword,
   commentAdded,
-  getComments
+  getComments,
+  forgotPassword
 };

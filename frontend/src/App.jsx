@@ -15,7 +15,9 @@ import AccountSettings from "./managers/accountSettings.jsx";
 import LandingPage from "./managers/landingPage.jsx";
 import AccountProfile from "./managers/accountProfile.jsx";
 import Comment from "./managers/Comment.jsx";
-
+import ForgotPassword from "./managers/ForgotPassword.jsx";
+import ResetPassword from "./managers/resetPassword.jsx";
+import SearchFriends from "./managers/SearchFriends.jsx";
 
 function App() {
 
@@ -65,6 +67,15 @@ function App() {
         </Route>
         <Route path="/comment/:slug"
           element={<Comment />}>
+        </Route>
+        <Route path="/forgotPassword"
+          element={<ForgotPassword />}>
+        </Route>
+        <Route path="/resetPassword"
+          element={<ResetPassword />}>
+        </Route>
+        <Route path="/searchFriends"
+          element={<SearchFriends />}>
         </Route>
        
       </Routes>

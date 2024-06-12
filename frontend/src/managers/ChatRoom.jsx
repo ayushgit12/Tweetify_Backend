@@ -83,7 +83,7 @@ const ChatRoom = () => {
               </NavLink>
             </div>
             <div className="w-full text-center py-4 text-white">
-              <NavLink to="/worldChat">
+              <NavLink to={window.location}>
                 <li>Private Chat</li>
               </NavLink>
             </div>

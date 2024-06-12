@@ -2,9 +2,14 @@ import React from "react";
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+
+import { useEffect } from "react";
+import { Toaster, toast } from "react-hot-toast";
+
 
 const Register = () => {
+
+
   const [fullName, setfullName] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
@@ -20,6 +25,22 @@ const Register = () => {
   const handleFullNameChange = (e) => {
     setfullName(e.target.value);
   };
+
+
+
+  useEffect(() => {
+    if(localStorage.getItem("token")){
+     setTimeout(() => {
+       
+       toast.success("Already Logged In. Redirecting to Homepage...");
+     }, 1000);
+     setTimeout(() => {
+      window.location.href = '/homepage'
+     }, 3500);
+    }
+  
+    
+  }, )
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -83,6 +104,7 @@ const Register = () => {
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative">
+      <Toaster />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Create your account
@@ -138,14 +160,7 @@ const Register = () => {
               >
                 Password
               </label>
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-indigo-600 hover:text-indigo-500"
-                >
-                  Forgot password?
-                </a>
-              </div>
+              
             </div>
             <div className="mt-2">
               <input

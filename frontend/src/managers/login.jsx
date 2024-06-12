@@ -2,13 +2,15 @@ import React from 'react'
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
+import { toast, Toaster } from "react-hot-toast";
 
 const Login = () => {
 
      const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-     const navigate = useNavigate();
+
 
 
 
@@ -33,7 +35,7 @@ const Login = () => {
        })
        .then((response) => {
          console.log("Success:", response.data);
-         alert(response.data.message)
+         toast.success("Login Successful. Redirecting to Homepage...");
 
          console.log(response.data.data.user);
          localStorage.setItem("token", JSON.stringify(response.data.data.accessToken));
@@ -80,17 +82,39 @@ const Login = () => {
         };
 
         sendEmail();
-         navigate('/homepage')
+        setTimeout(() => {
+          
+          window.location.href = '/homepage'
+        }, 2000);
 
          //  console.log(response.data);
           // console.log(response.data.data);
        })
        .catch((error) => {
-         console.error("Error:", error);
-         alert(error.message)
+         toast.error("Invalid Credentials");
          return;
        });
+
+
+
+
    };
+
+
+   useEffect(() => {
+     if(localStorage.getItem("token")){
+      setTimeout(() => {
+        
+        toast.success("Already Logged In. Redirecting to Homepage...");
+      }, 1000);
+      setTimeout(() => {
+       window.location.href = '/homepage'
+      }, 3500);
+     }
+   
+     
+   }, )
+   
 
 
  
@@ -100,6 +124,7 @@ const Login = () => {
 
   return (
      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative">
+      <Toaster />
      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
          Log Into your account
@@ -139,12 +164,12 @@ const Login = () => {
                Password
              </label>
              <div className="text-sm">
-               <a
-                 href="#"
+               <NavLink
+                 to="/forgotPassword"
                  className="font-semibold text-indigo-600 hover:text-indigo-500"
                >
                  Forgot password?
-               </a>
+               </NavLink>
              </div>
            </div>
            <div className="mt-2">

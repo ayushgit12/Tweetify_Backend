@@ -88,7 +88,7 @@ function TweetCard({ tweet }) {
 
       let dataSend = {
         email: user.email,
-        subject: "Your Tweetify Account Login",
+        subject: "Report of a tweet on Tweetify",
         message: `Hi ${user.fullName},\n\nThank you for reporting the tweet at ${timeNow}. We will review your report and will let you know whether it violates our [Platform Guidelines] \n\nHere's what you need to do next:\n\n • If you've been impacted by the content of the tweet, please let us know if there's further assistance we can offer (e.g., reporting the user for harassment). \n\n • If you have any further details about the reported tweet or the user, please reply to this email with those specifics.\n\nWe appreciate your vigilance in helping us keep our platform safe.\nSincerely,\n\nThe Tweetify Team.\n\nHappy tweeting!`,
       };
 

@@ -126,7 +126,8 @@ function convertTime(time) {
      const amPm = hours >= 12 ? "PM" : "AM";
    
      // Create the formatted time string
-     const formattedTime = `${newHours.toString().padStart(2, "0")}:${minutes}:${seconds ? seconds : "00"} ${amPm}`;
+    //  console.log(minutes)
+     const formattedTime = `${newHours.toString().padStart(2, "0")}:${minutes.length==1?"0"+minutes: minutes}:${seconds ? seconds : "00"} ${amPm}`;
    
      return formattedTime;
    }
