@@ -73,7 +73,7 @@ const Post = () => {
           <div>
             <label
               htmlFor="tweet"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-lg font-bold leading-6 text-gray-900"
             >
               Tweet Here
             </label>
@@ -91,10 +91,16 @@ const Post = () => {
               </textarea>
               <div className="flex gap-5 items-center mt-5">
                 <button
-                  className="p-3 bg-blue-700 rounded-lg text-white"
+                  className="p-3 bg-blue-700 rounded-lg text-white flex items-center gap-1"
                   onClick={handlePost}
                 >
-                  POST
+                  <lord-icon
+    src="https://cdn.lordicon.com/zfzufhzk.json"
+    trigger="hover"
+    delay="1500"
+    state="hover-line"
+    style={{width:"30px", height:"30px"}}>
+</lord-icon>POST
                 </button>
               </div>
             </div>

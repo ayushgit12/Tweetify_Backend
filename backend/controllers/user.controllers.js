@@ -368,6 +368,22 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 });
 
+
+const emailToUserID = asyncHandler(async (req, res) => {
+
+  const { email } = req.body;
+
+  const user = await User.findOne({email})
+
+  if(!user){
+    throw new ApiError(404, "User not found")
+  }
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, user, "User found successfully"))
+})
+
 export {
   registerUser,
   loginUser,
@@ -381,5 +397,6 @@ export {
   changePassword,
   commentAdded,
   getComments,
-  forgotPassword
+  forgotPassword,
+  emailToUserID
 };

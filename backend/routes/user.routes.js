@@ -11,6 +11,7 @@ import { sendEmail } from "../controllers/email.controllers.js";
 import { commentAdded } from "../controllers/user.controllers.js";
 import { getComments } from "../controllers/user.controllers.js";
 import { forgotPassword } from "../controllers/user.controllers.js";
+import { emailToUserID } from "../controllers/user.controllers.js";
 
 
 const router = Router();
@@ -29,6 +30,7 @@ router.route('/sendEmail').post(sendEmail);
 router.route('/commentAdded').post(commentAdded);
 router.route('/getComments').post(getComments);
 router.route('/forgotPassword').post(forgotPassword);
+router.route('/emailToUserID').post(emailToUserID);
 
 
 
