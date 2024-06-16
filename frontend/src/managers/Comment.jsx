@@ -9,12 +9,15 @@ import axios from "axios";
 
 const Comment = () => {
   const tweet = useLocation().state;
-//   console.log(tweet);
-  const date = new Date(tweet.createdAt);
+ const date = new Date();
+
+
+  // console.log(date);
   const [commentAdded, setCommentAdded] = useState("");
   const [userFullNameId, setUserFullNameId] = useState([]);
 
   const getUser = async (userID, comment, date, time) => {
+    console.log(date,time);
 
     const token = JSON.parse(localStorage.getItem("token"));
     // console.log(token);
@@ -153,7 +156,7 @@ function convertTime(time) {
       <div>
         <div>
           <div className="flex justify-center">
-            <div className="w-1/2 bg-white p-4 m-4 rounded-lg">
+            <div className="w-full md:w-1/2 bg-white p-4 m-4 rounded-lg">
               <div>
                 <div>
                   <h1 className="text-lg font-bold flex items-center gap-2">
@@ -201,7 +204,7 @@ function convertTime(time) {
 
                 <div>
                     {console.log(userFullNameId)}
-                  {userFullNameId.reverse().map((comment, index) => {
+                  {userFullNameId.map((comment, index) => {
                     return (
                       <div key={index} className="mt-4 border rounded-lg p-3">
                         <div>

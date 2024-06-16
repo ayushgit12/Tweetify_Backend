@@ -310,8 +310,8 @@ const commentAdded = asyncHandler(async (req, res) => {
   const user = req.body.user;
   const date = new Date();
   const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-  const dateData = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
-  console.log(time, dateData);
+  
+  console.log(time, date);
 
   const tweet = await Tweet.findById(tweetId);
 
@@ -319,7 +319,7 @@ const commentAdded = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Tweet not found");
   }
 
-  tweet.comments.push({ user, comment, date: dateData, time});
+  tweet.comments.push({ user, comment, date: date, time});
 
   await tweet.save();
 
@@ -384,6 +384,14 @@ const emailToUserID = asyncHandler(async (req, res) => {
     .json(new APIresponse(200, user, "User found successfully"))
 })
 
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}).select("-password -refreshToken");
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, users, "Users fetched successfully"));
+})
+
 export {
   registerUser,
   loginUser,
@@ -398,5 +406,6 @@ export {
   commentAdded,
   getComments,
   forgotPassword,
-  emailToUserID
+  emailToUserID,
+  getAllUsers
 };

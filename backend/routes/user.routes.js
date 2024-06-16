@@ -12,6 +12,7 @@ import { commentAdded } from "../controllers/user.controllers.js";
 import { getComments } from "../controllers/user.controllers.js";
 import { forgotPassword } from "../controllers/user.controllers.js";
 import { emailToUserID } from "../controllers/user.controllers.js";
+import { getAllUsers } from "../controllers/user.controllers.js";
 
 
 const router = Router();
@@ -31,6 +32,7 @@ router.route('/commentAdded').post(commentAdded);
 router.route('/getComments').post(getComments);
 router.route('/forgotPassword').post(forgotPassword);
 router.route('/emailToUserID').post(emailToUserID);
+router.route('/getAllUsers').get(getAllUsers);
 
 
 

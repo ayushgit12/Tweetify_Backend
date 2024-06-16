@@ -54,11 +54,11 @@ const accountProfile = () => {
 
   const getTweets = async () => {
     const token = JSON.parse(localStorage.getItem("token"));
-    // console.log(token);
-    if (token === null) {
-      alert("Please login first");
-      navigate("/login")
-    }
+    // // console.log(token);
+    // if (token === null) {
+    //   alert("Please login first");
+    //   navigate("/login")
+    // }
 
     await axios
       .post(

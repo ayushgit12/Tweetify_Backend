@@ -50,6 +50,7 @@ function TweetCard({ tweet }) {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!token) {
+      toast.error("User token expired, please login again");
       return; // No need to fetch like status if not logged in
     }
 
@@ -120,7 +121,7 @@ function TweetCard({ tweet }) {
     const token = JSON.parse(localStorage.getItem("token"));
     // console.log(token);
     if (!token) {
-      alert("User token expired, please login again");
+      toast.error("User token expired, please login again");
       window.location.href = "/login";
       return;
     }
@@ -171,6 +172,12 @@ function TweetCard({ tweet }) {
 
   const getUser = async (userID) => {
     const token = JSON.parse(localStorage.getItem("token"));
+
+    if(!token){
+      toast.error("User token expired, please login again");
+      window.location.href = "/login";
+      return;
+    }
     // console.log(token);
 
     await axios
@@ -240,7 +247,7 @@ function TweetCard({ tweet }) {
         <img src={logo2} alt="" className="h-60 opacity-10 absolute bottom-16 -scale-x-100 left-1/2" ref={imgHover}/>
         <div className="text-gray-900 font-bold text-xl text-start pr-10 flex gap-1 items-center">
           <img src={profile} className="h-10" alt="" />
-          <p className="pb-1 cursor-pointer" onClick={()=>navigate(`/accountProfile/${tweet.user._id}`)}>{tweet.user.fullName}</p>
+          <p className="pb-1 cursor-pointer" onClick={()=> navigate(`/accountProfile/${tweet.user._id}`)}>{tweet.user.fullName}</p>
         </div>
         <div
           ref={tweetRef}
@@ -248,7 +255,7 @@ function TweetCard({ tweet }) {
         >
           {tweet.tweet}
         </div>
-        {console.log(tweet.tweet.length)}
+        {/* {console.log(tweet.tweet.length)} */}
         <p
       ref={readMoreRef}
       className={`${
