@@ -24,6 +24,7 @@
     "nodemailer": "^6.9.13",
     "nodemon": "^3.1.1",
     "react-toastify": "^10.0.5",
+    "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "universal-cookie": "^7.1.4"
   }
