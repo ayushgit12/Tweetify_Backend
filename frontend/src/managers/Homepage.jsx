@@ -93,6 +93,9 @@ const Homepage = () => {
       alert("Please login first");
       return;
     }
+    toast('Logging Out!', {
+      icon: '⏳',
+    });
     await axios
       .post(
         `${BASE_URL}/api/v1/users/logout`,
@@ -106,7 +109,10 @@ const Homepage = () => {
         localStorage.removeItem("user");
         // console.log("Success:", response.data);
 
-        navigate("/login");
+        setTimeout(() => {
+          
+          navigate("/login");
+        }, 3500);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -248,7 +254,7 @@ const Homepage = () => {
                   aria-autocomplete="list"
         aria-controls="autocomplete-list"
                 />
-                {console.log(suggestions)}
+                {/* {console.log(suggestions)} */}
                  {suggestions.length > 0 && (
         <ul id="autocomplete-list" className="suggestions-list" role="listbox">
           {suggestions.map((suggestion, index) => (

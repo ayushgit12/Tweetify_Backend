@@ -188,7 +188,7 @@ function TweetCard({ tweet }) {
           userID: userID,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          // headers: { Authorization: `Bearer ${token}` },
         }
       )
       .then((response) => {

@@ -10,6 +10,13 @@ import http from 'http'
 
 
 const app = express();
+app.all('*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  next();
+  
+})
 
 const server = http.createServer(app);
 
@@ -22,6 +29,12 @@ const io = new Server(server, {
 
 })
 
+app.use(cors({
+  origin: "*",
+  credentials: true
+}));
+
+
 io.on('connection', (socket) => {
   console.log('a user connected ' + socket.id);
   // socket.on('disconnect', () => {
@@ -31,6 +44,7 @@ io.on('connection', (socket) => {
   socket.on("join_room", (data,room) => {
     socket.join(room);
     socket.to(room).emit("join_room_data", data);
+    append(`${data} joined the room`, "left")
     console.log(data + " joined " + room);
   }
   )
@@ -44,6 +58,7 @@ io.on('connection', (socket) => {
   socket.on("leave_room", (data, room) => {
     socket.to(room).emit("leave_room", data);
     console.log(data + " left " + room);
+    append(`${data} left the room`, "left")
     socket.leave(room);
   })
 })
@@ -52,10 +67,6 @@ server.listen(3001, () => {
 })
 
 
-app.use(cors({
-     origin: "*",
-     credentials: true
-}));
 
 app.use(express.json({
   limit: '16kb'

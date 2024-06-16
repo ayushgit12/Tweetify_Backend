@@ -6,11 +6,14 @@ import { useEffect } from "react";
 
 import { toast, Toaster } from "react-hot-toast";
 import { BASE_URL } from './helper';
+import { Spinner } from '../components/loader';
+
 
 const Login = () => {
 
      const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
+  const [loggedInState, setLoggedInState] = useState(false);
 
 
 
@@ -28,6 +31,23 @@ const Login = () => {
      e.preventDefault();
      // console.log("HI")
      // console.log(email, password);
+
+     if (email === "") {
+       toast.error("Email cannot be empty");
+       return;
+     }
+
+      if (password === "") {
+        toast.error("Please enter password");
+
+        return;
+      }
+      setLoggedInState(true);
+      toast('Authenticating User...', {
+        icon: '⏳',
+      });
+
+
  
      axios
        .post(`${BASE_URL}/api/v1/users/login`, {
@@ -108,6 +128,7 @@ const Login = () => {
         
         toast.success("Already Logged In. Redirecting to Homepage...");
       }, 1000);
+      
       setTimeout(() => {
        window.location.href = '/homepage'
       }, 3500);
@@ -126,6 +147,8 @@ const Login = () => {
   return (
      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative">
       <Toaster />
+
+      {loggedInState && <Spinner />}
      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
          Log Into your account
