@@ -6,6 +6,7 @@ import { IoSend } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
+import { BASE_URL } from "./helper.js";
 
 const Comment = () => {
   const tweet = useLocation().state;
@@ -26,7 +27,7 @@ const Comment = () => {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/getUserDetails",
+        `${BASE_URL}/api/v1/users/getUserDetails`,
         {
           userID: userID,
         },
@@ -68,7 +69,7 @@ const Comment = () => {
 //     console.log(user);
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/commentAdded",
+        `${BASE_URL}/api/v1/users/commentAdded`,
         {
           tweetId,
           comment,
@@ -93,7 +94,7 @@ const Comment = () => {
       const tweetId = tweet._id;
       await axios
         .post(
-          "http://localhost:8000/api/v1/users/getComments",
+          `${BASE_URL}/api/v1/users/getComments`,
           {
             tweetId,
           },

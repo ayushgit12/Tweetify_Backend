@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect } from "react";
 
 import { toast, Toaster } from "react-hot-toast";
+import { BASE_URL } from './helper';
 
 const Login = () => {
 
@@ -29,7 +30,7 @@ const Login = () => {
      // console.log(email, password);
  
      axios
-       .post("http://localhost:8000/api/v1/users/login", {
+       .post(`${BASE_URL}/api/v1/users/login`, {
          email: email,
          password: password,
        })
@@ -66,7 +67,7 @@ const Login = () => {
           };
 
           const res = await axios
-            .post("http://localhost:8000/api/v1/users/sendEmail", {
+            .post(`${BASE_URL}/api/v1/users/sendEmail`, {
               headers: {
                 "Content-Type": "application/json",
               },

@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import profile from "../assets/profile.png";
+import { BASE_URL } from "./helper";
 
 function TweetCardForMe({ tweet }) {
   const date = new Date(tweet.createdAt);
@@ -41,7 +42,7 @@ function TweetCardForMe({ tweet }) {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/getUserDetails",
+        `${BASE_URL}/api/v1/users/getUserDetails`,
         {
           userID: userID,
         },
@@ -81,7 +82,7 @@ function TweetCardForMe({ tweet }) {
     }
 
     await axios
-      .delete("http://localhost:8000/api/v1/users/deleteTweet", {
+      .delete(`${BASE_URL}/api/v1/users/deleteTweet`, {
         headers: { Authorization: `Bearer ${token}` },
         data: { tweetId: tweet._id },
       })

@@ -2,8 +2,9 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
+import { BASE_URL } from "./helper";
 
-const socket = io("http://localhost:3001");
+const socket = io(`http://localhost:3001`);
 
 
 const ChatRoom = () => {

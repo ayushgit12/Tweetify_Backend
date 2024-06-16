@@ -5,6 +5,7 @@ import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 import img from "../assets/user.png";
 import img2 from "../assets/user2.png";
+import { BASE_URL } from "./helper";
 
 
 const AccountSettings = () => {
@@ -52,7 +53,7 @@ const AccountSettings = () => {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/changePassword",
+        `http://${BASE_URL}/api/v1/users/changePassword`,
         {
           oldPassword: oldPassword,
           newPassword: newPassword,

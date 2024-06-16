@@ -11,6 +11,7 @@ import profile from "../assets/profile.png";
 import logo2 from "../assets/logo2.png";
 
 import sound1 from "../assets/like.wav";
+import { BASE_URL } from "./helper";
 
 function TweetCard({ tweet }) {
   const reportRef = useRef(0);
@@ -56,7 +57,7 @@ function TweetCard({ tweet }) {
 
     axios
       .post(
-        "http://localhost:8000/api/v1/users/showLikeTweet",
+        `${BASE_URL}/api/v1/users/showLikeTweet`,
         {
           tweetId: tweet._id,
           user: user._id,
@@ -94,7 +95,7 @@ function TweetCard({ tweet }) {
       };
 
       const res = await axios
-        .post("http://localhost:8000/api/v1/users/sendEmail", {
+        .post(`${BASE_URL}/api/v1/users/sendEmail`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -128,7 +129,7 @@ function TweetCard({ tweet }) {
     const user = JSON.parse(localStorage.getItem("user"));
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/likeTweet",
+        `${BASE_URL}/api/v1/users/likeTweet`,
         {
           tweetId: tweet._id,
           user: user._id,
@@ -182,7 +183,7 @@ function TweetCard({ tweet }) {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/getUserDetails",
+        `${BASE_URL}/api/v1/users/getUserDetails`,
         {
           userID: userID,
         },

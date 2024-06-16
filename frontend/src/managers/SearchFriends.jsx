@@ -5,6 +5,7 @@ import {toast, Toaster} from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import profile from "../assets/profile.png";
+import { BASE_URL } from "./helper";
 
 const SearchFriends = () => {
 
@@ -22,7 +23,7 @@ const SearchFriends = () => {
           }
           const token = JSON.parse(localStorage.getItem("token"));
 
-          await axios.post("http://localhost:8000/api/v1/users/emailToUserID", {
+          await axios.post(`${BASE_URL}/api/v1/users/emailToUserID`, {
                email: email
 
           },

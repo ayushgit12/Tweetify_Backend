@@ -10,6 +10,7 @@ import Navbar from "../components/Navbar";
 import { Zoom } from "react-awesome-reveal";
 import logo2 from "../assets/logo2.png";
 import { toast, Toaster } from "react-hot-toast";
+import { BASE_URL } from "./helper";
 
 const Homepage = () => {
   // const user = localStorage.getItem("user");
@@ -59,7 +60,7 @@ const Homepage = () => {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/emailToUserID",
+        `${BASE_URL}/api/v1/users/emailToUserID`,
         {
           email: email,
         },
@@ -94,7 +95,7 @@ const Homepage = () => {
     }
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/logout",
+        `${BASE_URL}/api/v1/users/logout`,
         {}, // Send empty body (optional)
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -119,7 +120,7 @@ const Homepage = () => {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/showTweets",
+        `${BASE_URL}/api/v1/users/showTweets`,
         {}, // Send empty body (optional)
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -149,7 +150,7 @@ const Homepage = () => {
       const token = JSON.parse(localStorage.getItem("token"));
       await axios
         .get(
-          "http://localhost:8000/api/v1/users/getAllUsers",
+          `${BASE_URL}/api/v1/users/getAllUsers`,
           {}, // Send empty body (optional)
           {
             headers: { Authorization: `Bearer ${token}` },

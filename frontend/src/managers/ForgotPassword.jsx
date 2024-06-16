@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
+import { BASE_URL } from "./helper";
 
 const ForgotPassword = () => {
   const resetButtonRef = useRef(0);
@@ -83,7 +84,7 @@ const ForgotPassword = () => {
           };
 
           const res = await axios
-            .post("http://localhost:8000/api/v1/users/sendEmail", {
+            .post(`http://${BASE_URL}/api/v1/users/sendEmail`, {
               headers: {
                 "Content-Type": "application/json",
               },

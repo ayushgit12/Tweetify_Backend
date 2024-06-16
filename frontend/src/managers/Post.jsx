@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 import Navbar from "../components/Navbar";
+import { BASE_URL } from "./helper";
 
 const Post = () => {
   if (
@@ -39,7 +40,7 @@ const Post = () => {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/postTweet",
+        `${BASE_URL}/api/v1/users/postTweet`,
         {
           tweet: tweet,
           user: user._id,

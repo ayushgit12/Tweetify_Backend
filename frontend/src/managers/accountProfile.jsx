@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import img from "../assets/user.png";
 import { useNavigate } from "react-router-dom";
 import TweetCard from "./TweetCard";
+import { BASE_URL } from "./helper";
 
 const accountProfile = () => {
      const navigate = useNavigate();
@@ -26,7 +27,7 @@ const accountProfile = () => {
 
       await axios
         .post(
-          "http://localhost:8000/api/v1/users/getUserDetails",
+          `http://${BASE_URL}/api/v1/users/getUserDetails`,
           {
             userID: userID,
           },
@@ -62,7 +63,7 @@ const accountProfile = () => {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/showTweets",
+        `http://${BASE_URL}/api/v1/users/showTweets`,
         {}, // Send empty body (optional)
         {
           headers: { Authorization: `Bearer ${token}` },

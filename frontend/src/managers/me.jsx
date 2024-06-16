@@ -8,6 +8,7 @@ import Fade from "react-awesome-reveal";
 import Zoom from "react-awesome-reveal";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "./helper";
 
 
 const Me = () => {
@@ -34,7 +35,7 @@ const Me = () => {
 
     await axios
       .post(
-        "http://localhost:8000/api/v1/users/showTweets",
+        `${BASE_URL}/api/v1/users/showTweets`,
         {}, // Send empty body (optional)
         {
           headers: { Authorization: `Bearer ${token}` },

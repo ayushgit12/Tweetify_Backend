@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
+import { BASE_URL } from './helper';
 
 const resetPassword = () => {
      const navigate = useNavigate();
@@ -41,7 +42,7 @@ const resetPassword = () => {
                 newPassword: password
                 }
      
-                axios.post("http://localhost:8000/api/v1/users/forgotPassword", data)
+                axios.post(`${BASE_URL}/api/v1/users/forgotPassword`, data)
                 .then((res) => {
                 console.log(res.data);
                 toast.success("Password changed successfully. Redirecting to login page");
