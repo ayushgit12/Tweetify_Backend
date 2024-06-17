@@ -11,7 +11,7 @@ import { FcAndroidOs } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import { MdLaptop } from "react-icons/md";
 import { RiMacbookLine } from "react-icons/ri";
-import './buttonCss.css';
+import "./buttonCss.css";
 // import dotted1 from "../assets/dotted33.png";
 
 function landingPage() {
@@ -19,10 +19,9 @@ function landingPage() {
 
   return (
     <div className="relative">
-      
       {/* <img className="absolute w-1/2 -rotate-90 left-72 h-full" src={dotted1} alt="" /> */}
-<div className="flex gap-10 m-8 absolute z-10">
-      <button
+      <div className="flex gap-10 pt-8 pl-8 fixed z-50 w-screen backdrop-blur-lg top-0">
+        <button
           onClick={() => navigate("/login")}
           className="bg-cyan-400 h-fit px-3 py-2 rounded-lg hover:bg-blue-600 hover:text-white"
         >
@@ -34,10 +33,9 @@ function landingPage() {
         >
           Join us Now
         </button>
-        </div>
+      </div>
 
-
-      <div className="absolute right-5 top-10">
+      <div className="absolute right-5 top-36">
         <Stage width={250} height={window.innerHeight}>
           <Layer>
             <Shape
@@ -78,7 +76,7 @@ function landingPage() {
               Tweetify
             </h1>
             <Bounce delay={1500}>
-              <h2 className="text-end text-xl text-cyan-600">
+              <h2 className="text-end text-xl text-cyan-600 ml-10 md:ml-0">
                 Tweet your heart out, connect with the world
               </h2>
             </Bounce>
@@ -90,11 +88,11 @@ function landingPage() {
       </div>
 
       <div className="flex justify-around bg-slate-300 relative h-screen">
-        
         <div className="absolute flex justify-center items-center flex-wrap-reverse pt-36">
           <div className="bg-slate-300">
             <p className="font-bold text-4xl md:text-6xl pt-36">
-              Tweet your <span className="text-cyan-400 text-6xl md:text-7xl">truth</span>,
+              Tweet your{" "}
+              <span className="text-cyan-400 text-6xl md:text-7xl">truth</span>,
             </p>
             <p className="font-bold text-4xl"> no matter the tech.</p>
           </div>
@@ -106,38 +104,69 @@ function landingPage() {
           <p className="text-center">Available On:</p>
           <br />
           <div className="flex gap-24 flex-wrap justify-center">
-          <p className="flex items-center"><FcAndroidOs className="h-8 w-8" />Android</p>
-          <p className="flex items-center"><FaApple className="h-8 w-8 pb-1" />iOS</p>
-          <p className="flex items-center"><MdLaptop  className="h-8 w-8 pb-1" />Windows</p>
-          <p className="flex items-center"><RiMacbookLine  className="h-8 w-8 pb-1" />Macbook</p>
-
+            <p className="flex items-center">
+              <FcAndroidOs className="h-8 w-8" />
+              Android
+            </p>
+            <p className="flex items-center">
+              <FaApple className="h-8 w-8 pb-1" />
+              iOS
+            </p>
+            <p className="flex items-center">
+              <MdLaptop className="h-8 w-8 pb-1" />
+              Windows
+            </p>
+            <p className="flex items-center">
+              <RiMacbookLine className="h-8 w-8 pb-1" />
+              Macbook
+            </p>
           </div>
           <br />
           <p className="text-center">and all other Platforms...</p>
-          </div>
+        </div>
       </div>
-      <div className="bg-slate-800 h-96">
+      <div className="bg-slate-800 h-screen md:h-96">
         {/* <p>5 main pillars : </p> */}
-        <div className="flex justify-around pt-16 pb-64 h-96 flex-wrap">
-        < CardForLandingPage title="Spark" desc="Ignite conversations. Spark the next big thing." />
-        < CardForLandingPage title="Chirp" desc="Chirp your thoughts. Flock together." />
-        < CardForLandingPage title="Pulse" desc="Get the pulse. Stay connected." />
-        < CardForLandingPage title="Huddle" desc="Huddle up. Share the buzz." />
-        < CardForLandingPage title="Hivemind" desc="Hivemind. Think together. Fly further." />
+        <div className="flex md:gap-0 gap-5 justify-around pt-48 md:pt-16 pb-64 h-screen md:h-96 flex-wrap">
+          <CardForLandingPage
+            title="Spark"
+            desc="Ignite conversations. Spark the next big thing."
+          />
+          <CardForLandingPage
+            title="Chirp"
+            desc="Chirp your thoughts. Flock together."
+          />
+          <CardForLandingPage
+            title="Pulse"
+            desc="Get the pulse. Stay connected."
+          />
+          <CardForLandingPage
+            title="Huddle"
+            desc="Huddle up. Share the buzz."
+          />
+          <CardForLandingPage
+            title="Hivemind"
+            desc="Hivemind. Think together. Fly further."
+          />
         </div>
 
         <div className="h-72  bg-black pt-16">
+          <p className="text-3xl text-center font-semibold text-white">
+            From laughter to learning,{" "}
+            <span className="text-cyan-400 text-4xl">Tweetify</span> has it all.
+          </p>
 
-        <p className="text-3xl text-center font-semibold text-white">
-From laughter to learning, <span className="text-cyan-400 text-4xl">Tweetify</span> has it all.
-
-
-</p>
-
-<p className="text-center  text-4xl mt-16"><button onClick={() => navigate("/register")} id="button1" className="text-center text-white">Join Now!</button></p>
-</div>
+          <p className="text-center  text-4xl mt-16">
+            <button
+              onClick={() => navigate("/register")}
+              id="button1"
+              className="text-center text-white"
+            >
+              Join Now!
+            </button>
+          </p>
+        </div>
       </div>
-
     </div>
   );
 }
