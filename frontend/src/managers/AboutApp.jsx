@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 const AboutApp = () => {
 
 const tweetsSize = localStorage.getItem("noOfUsers");
-console.log(tweetsSize);
+// console.log(tweetsSize);
 
 
 
