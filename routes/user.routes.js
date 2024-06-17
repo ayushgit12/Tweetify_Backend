@@ -25,7 +25,7 @@ router.route('/showTweets').post(showTweet)
 router.route('/deleteTweet').delete(deleteTweet);
 router.route('/likeTweet').post(likeTweet);
 router.route('/showLikeTweet').post(showLikeTweet);
-router.route('/getUserDetails').post(getUserDetails);
+router.route('/getUserDetails').post(verifyJWT, getUserDetails);
 router.route('/changePassword').post(verifyJWT,changePassword);
 router.route('/sendEmail').post(sendEmail);
 router.route('/commentAdded').post(commentAdded);
