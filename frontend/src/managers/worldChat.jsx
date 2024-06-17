@@ -93,7 +93,7 @@ const worldChat = () => {
         <div className="messages min-h-[calc(100vh-80px)]">
           {messageList.map((message, index) => {
             return (
-              <div className={`flex my-4 ${message.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
+              <div key={index} className={`flex my-4 ${message.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
               <div key={index} className={`message p-3 mx-1 rounded-e-xl max-w-2/3 break-words ${message.author === user.fullName ? 'bg-green-500 ' : 'bg-pink-400'}`}>
               <p className="text-xl text-wrap w-96 py-2 break-words">{message.message}</p>
               <p className="text-sm font-bold">{message.author}</p>

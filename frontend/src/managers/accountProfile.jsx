@@ -25,9 +25,10 @@ const accountProfile = () => {
       const token = JSON.parse(localStorage.getItem("token"));
       // console.log(token);
 
+
       await axios
         .post(
-          `http://${BASE_URL}/api/v1/users/getUserDetails`,
+          `${BASE_URL}/api/v1/users/getUserDetails`,
           {
             userID: userID,
           },
@@ -63,7 +64,7 @@ const accountProfile = () => {
 
     await axios
       .post(
-        `http://${BASE_URL}/api/v1/users/showTweets`,
+        `${BASE_URL}/api/v1/users/showTweets`,
         {}, // Send empty body (optional)
         {
           headers: { Authorization: `Bearer ${token}` },

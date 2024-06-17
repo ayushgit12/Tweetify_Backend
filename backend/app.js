@@ -44,7 +44,6 @@ io.on('connection', (socket) => {
   socket.on("join_room", (data,room) => {
     socket.join(room);
     socket.to(room).emit("join_room_data", data);
-    append(`${data} joined the room`, "left")
     console.log(data + " joined " + room);
   }
   )
@@ -58,7 +57,6 @@ io.on('connection', (socket) => {
   socket.on("leave_room", (data, room) => {
     socket.to(room).emit("leave_room", data);
     console.log(data + " left " + room);
-    append(`${data} left the room`, "left")
     socket.leave(room);
   })
 })

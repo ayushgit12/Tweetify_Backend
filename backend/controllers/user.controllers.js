@@ -152,16 +152,21 @@ const logoutUser = asyncHandler(async (req, res) => {
       .clearCookie("refreshToken", options)
       .json(new APIresponse(200, {}, "User logged out successfully"));
   } catch (error) {
-    alert(error);
+    console.error(error);
   }
 });
 
 const getUserDetails = asyncHandler(async (req, res) => {
   // console.log(req.user)
 
+  console.log("****" + req.body.userID + "****");
   const userID = req.body.userID
 
   const user = await User.findById(userID).select("-password -refreshToken");
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
 
   return res
     .status(200)

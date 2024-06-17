@@ -68,7 +68,7 @@ function landingPage() {
         </Stage>
       </div>
       <div className="h-screen flex items-center justify-center flex-col">
-        <div class="absolute inset-0 -z-10 h-screen w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]"></div>
+        <div className="absolute inset-0 -z-10 h-screen w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]"></div>
         <div className="flex items-center flex-wrap">
           <Slide delay={500}>
             <img src={img} className="h-56" alt="" />

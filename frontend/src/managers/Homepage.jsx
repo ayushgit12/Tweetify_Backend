@@ -123,6 +123,7 @@ const Homepage = () => {
   const getTweets = async () => {
     const token = JSON.parse(localStorage.getItem("token"));
     // console.log(token);
+    
 
     await axios
       .post(
@@ -150,7 +151,15 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-    getTweets();
+    toast.promise(
+      getTweets(),
+       {
+         loading: 'Fetching tweets...',
+         success: <b>Tweets Fetched Successfully!</b>,
+         error: <b>Could not save.</b>,
+       }
+     );
+    
 
     const getAllUsers = async () => {
       const token = JSON.parse(localStorage.getItem("token"));
