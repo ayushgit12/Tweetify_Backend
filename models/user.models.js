@@ -18,6 +18,12 @@ const userSchema = new mongoose.Schema({
      password:{
           type: String,
           required: [true, "Password is required"]
+     },
+     followers:{
+          users:[{
+               type: String
+          }]
+     
      }
 
 },
