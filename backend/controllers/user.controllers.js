@@ -159,7 +159,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 const getUserDetails = asyncHandler(async (req, res) => {
   // console.log(req.user)
 
-  console.log("****" + req.body.userID + "****");
+  // console.log("****" + req.body.userID + "****");
   const userID = req.body.userID
 
   const user = await User.findById(userID).select("-password -refreshToken");

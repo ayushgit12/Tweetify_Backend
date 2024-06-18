@@ -108,6 +108,9 @@ function TweetCard({ tweet }) {
           console.error("Error:", error);
           return;
         });
+
+
+        
     };
     toast.success("Tweet reported successfully");
     sendEmail();
@@ -115,6 +118,16 @@ function TweetCard({ tweet }) {
     // close();
   };
 
+
+  const handleFollow = async() => {
+    const token = JSON.parse(localStorage.getItem("token"))
+
+    if(!token){
+      toast.error("User token expired, please login again");
+      window.location.href = "/login";
+      return;
+    }
+  }
 
   
 
@@ -246,9 +259,10 @@ function TweetCard({ tweet }) {
         className={`bg-white-600 shadow-md rounded px-8 pt-6 pb-8 relative h-full mb-4 flex flex-col my-2`}
       >
         <img src={logo2} alt="" className="h-60 opacity-10 absolute bottom-16 -scale-x-100 left-1/2" ref={imgHover}/>
-        <div className="text-gray-900 font-bold text-xl text-start pr-10 flex gap-1 items-center">
+        <div className="text-gray-900 text-start pr-10 flex gap-1 items-center">
           <img src={profile} className="h-10" alt="" />
-          <p className="pb-1 cursor-pointer" onClick={()=> navigate(`/accountProfile/${tweet.user._id}`)}>{tweet.user.fullName}</p>
+          <p className="pb-1 cursor-pointer font-bold text-xl" onClick={()=> navigate(`/accountProfile/${tweet.user._id}`)}>{tweet.user.fullName}</p>
+          <button className="text-blue-500 border border-blue-600 rounded-md px-1 mb-1 ml-2 hover:bg-blue-600 hover:text-white" onClick={handleFollow}>Follow</button>
         </div>
         <div
           ref={tweetRef}
