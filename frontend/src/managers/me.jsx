@@ -81,12 +81,12 @@ const Me = () => {
     <div>
       
 
-      <div className="relative min-h-screen w-full bg-white mt-16">
+      <div className="relative min-h-screen w-full bg-white">
         <Navbar />
         
         <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
 
-        <p className="text-center pr-96 pt-24 text-6xl font-extrabold ">
+        <p className="text-center pr-96 pt-36 text-6xl font-extrabold ">
           Welcome
         </p>
         <Zoom triggerOnce={true} duration={1500}>
@@ -148,11 +148,7 @@ const Me = () => {
         </div>
       </div>
       <div className="h-24 bg-gradient-to-b from-white to-slate-300"></div>
-      <button onClick={()=>navigate('/accountSettings')} className="bg-slate-300 right-0 text-white absolute px-3 py-2 rounded-lg text-xl"><lord-icon
-    src="https://cdn.lordicon.com/ifsxxxte.json"
-    trigger="hover"
-    style={{ width: "130px", height: "130px" }}>
-</lord-icon></button>
+    
       <div className="bg-slate-300" ref={ref}>
         <h1 className="text-5xl text-center font-extrabold pb-20 pt-24">
           Your Posts

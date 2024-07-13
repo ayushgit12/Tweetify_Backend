@@ -8,7 +8,7 @@ const socket = io("http://localhost:3001");
 
 const worldChat = () => {
 
-
+  const world = "world";
   const [messageList, setMessageList] = useState([])
   const keepDown = useRef(0)
 
@@ -21,6 +21,17 @@ const worldChat = () => {
   useEffect(() => {
     keepDown.current.scrollIntoView({ behavior: "smooth" });
   }, [messageList])
+
+
+  useEffect(() => {
+    if(localStorage.getItem("messages"+world)){
+      setMessageList(JSON.parse(localStorage.getItem("messages"+world)));
+    }
+    else{
+      setMessageList([]);
+    }
+  }, [])
+  
   
 
 
@@ -30,6 +41,15 @@ const worldChat = () => {
     console.log(user.fullName);
     const fullName = user.fullName;
     setMessageList([...messageList, { author: "System", message: `${user.fullName} joined the world`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
+
+
+    if(localStorage.getItem("messages"+world) === null){
+      localStorage.setItem("messages"+world, JSON.stringify([]));
+    }
+    else{
+      setMessageList(JSON.parse(localStorage.getItem("messages"+world)));
+    }
+
 
     socket.emit("join_room", fullName, "world");
     socket.on("message", (message) => {
@@ -44,6 +64,7 @@ const worldChat = () => {
   useEffect(() => {
     
     socket.on("receive_message", (data) => {
+      localStorage.setItem("messages"+world, JSON.stringify([...JSON.parse(localStorage.getItem("messages"+world)), data]));
       setMessageList((list) => [...list, data]);
     })
   }, [socket])
@@ -64,6 +85,14 @@ const worldChat = () => {
         time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()
       };
       setMessageList((list) => [...list, messageData]);
+
+      if(localStorage.getItem("messages"+world)){
+        localStorage.setItem("messages"+world, JSON.stringify([...JSON.parse(localStorage.getItem("messages"+world)), messageData]));
+      }
+      else{
+        localStorage.setItem("messages"+world, JSON.stringify([messageData]));
+      }
+
 
       await socket.emit("send_message", messageData);
 

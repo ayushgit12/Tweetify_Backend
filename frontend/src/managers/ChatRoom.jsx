@@ -16,13 +16,21 @@ const ChatRoom = () => {
 
   const handleLeftTheChat = () => {
     setMessageList([...messageList, { author: "System", message: `${user.fullName} left ${world}`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
-
-    
+    socket.emit("leave_room", user.fullName, world)
   }
 
   useEffect(() => {
     keepDown.current.scrollIntoView({ behavior: "smooth" });
   }, [messageList])
+
+  useEffect(() => {
+    if(localStorage.getItem("messages"+world)){
+      setMessageList(JSON.parse(localStorage.getItem("messages"+world)));
+    }
+    else{
+      setMessageList([]);
+    }
+  }, [])
   
 
 
@@ -30,8 +38,16 @@ const ChatRoom = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     console.log(user.fullName);
+    
     const fullName = user.fullName;
     setMessageList([...messageList, { author: "System", message: `${user.fullName} joined ${world}`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
+
+    if(localStorage.getItem("messages"+world) === null){
+      localStorage.setItem("messages"+world, JSON.stringify([]));
+    }
+    else{
+      setMessageList(JSON.parse(localStorage.getItem("messages"+world)));
+    }
 
     socket.emit("join_room", fullName, world);
     socket.on("message", (message) => {
@@ -46,7 +62,9 @@ const ChatRoom = () => {
   useEffect(() => {
     
     socket.on("receive_message", (data) => {
+      localStorage.setItem("messages"+world, JSON.stringify([...JSON.parse(localStorage.getItem("messages"+world)), data]));
       setMessageList((list) => [...list, data]);
+      
     })
   }, [socket])
   
@@ -66,6 +84,12 @@ const ChatRoom = () => {
         time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()
       };
       setMessageList((list) => [...list, messageData]);
+      if(localStorage.getItem("messages"+world)){
+        localStorage.setItem("messages"+world, JSON.stringify([...JSON.parse(localStorage.getItem("messages"+world)), messageData]));
+      }
+      else{
+        localStorage.setItem("messages"+world, JSON.stringify([messageData]));
+      }
 
       await socket.emit("send_message", messageData);
 

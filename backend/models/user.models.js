@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
                type: String
           }]
      
+     },
+     following:{
+          users:[{
+               type: String
+          }]
      }
 
 },

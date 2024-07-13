@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import './suggestions.css'
-
+import "./suggestions.css";
+import profile from "../assets/profile.png";
 import TweetCard from "./TweetCard";
 import { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
@@ -17,37 +17,40 @@ const Homepage = () => {
   const [email, setEmail] = useState("");
   // const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const possibleValues = [];
-
-
+  const [possibleValues, setPossibleValues] = useState([]);
 
   // console.log(response)
 
-  const user = JSON.parse(localStorage.getItem("user"));
-
+  
   if (
     localStorage.getItem("token") === null ||
     localStorage.getItem("user") === null
   ) {
     window.location.href = "/login";
   }
+  const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const [tweets, setTweets] = useState([]);
 
-
   const handleInputChange = (e) => {
     setEmail(e.target.value);
-    console.log(possibleValues)
     if (e.target.value.length > 0) {
-      const filteredSuggestions = possibleValues.filter(suggestion =>
+
+      const filteredSuggestions = possibleValues.filter((suggestion) =>
         suggestion[0].toLowerCase().includes(e.target.value.toLowerCase())
       );
       console.log(filteredSuggestions);
-      setSuggestions(filteredSuggestions.length > 0 ? filteredSuggestions : ['No matches found']);
+      if (filteredSuggestions.length > 0) {
+        for (let i = 0; i < filteredSuggestions.length; i++) {
+          if (suggestions.includes(filteredSuggestions[i][0])) continue;
+          if (suggestions.includes("No matches found")) suggestions.pop();
+          setSuggestions((prev) => [...prev, filteredSuggestions[i][0]]);
+        }
+      } else setSuggestions(["No matches found"]);
     } else {
       setSuggestions([]);
     }
-  }
+  };
 
   //  console.log(user)
 
@@ -93,8 +96,8 @@ const Homepage = () => {
       alert("Please login first");
       return;
     }
-    toast('Logging Out!', {
-      icon: '⏳',
+    toast("Logging Out!", {
+      icon: "⏳",
     });
     await axios
       .post(
@@ -105,12 +108,11 @@ const Homepage = () => {
         }
       )
       .then((response) => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        localStorage.clear();
+
         // console.log("Success:", response.data);
 
         setTimeout(() => {
-          
           navigate("/login");
         }, 3500);
       })
@@ -123,7 +125,10 @@ const Homepage = () => {
   const getTweets = async () => {
     const token = JSON.parse(localStorage.getItem("token"));
     // console.log(token);
-    
+
+    if(localStorage.getItem("tweets") !== null){
+      setTweets(JSON.parse(localStorage.getItem("tweets")));
+    }
 
     await axios
       .post(
@@ -135,14 +140,17 @@ const Homepage = () => {
       )
       .then((response) => {
         // console.log("Success:", response.data.data);
-        setTweets(response.data.data.reverse());
+        if(response.data.data !== JSON.parse(localStorage.getItem("tweets")).length){
+          setTweets(response.data.data.reverse());
+          localStorage.setItem("tweets", JSON.stringify(response.data.data));
+          localStorage.setItem(
+            "noOfUsers",
+            JSON.stringify(response.data.data.length)
+          );
+        }
         // console.log(response.data.data);
         // const noOfActiveUsers = response.data.data.length;
 
-        localStorage.setItem(
-          "noOfUsers",
-          JSON.stringify(response.data.data.length)
-        );
         // alert("Tweets fetched successfully");
       })
       .catch((error) => {
@@ -151,15 +159,11 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-    toast.promise(
-      getTweets(),
-       {
-         loading: 'Fetching tweets...',
-         success: <b>Tweets Fetched Successfully!</b>,
-         error: <b>Could not save.</b>,
-       }
-     );
-    
+    toast.promise(getTweets(), {
+      loading: "Fetching tweets...",
+      success: <b>Tweets Fetched Successfully!</b>,
+      error: <b>Could not fetch tweets.</b>,
+    });
 
     const getAllUsers = async () => {
       const token = JSON.parse(localStorage.getItem("token"));
@@ -172,21 +176,20 @@ const Homepage = () => {
           }
         )
         .then((response) => {
-          // console.log("Success:", response.data.data);
+          console.log("Success:", response.data.data);
           response.data.data.map((user) => {
-            possibleValues.push([user.email, user._id]);
+            if (!possibleValues.includes([user.email, user._id])) {
+              setPossibleValues((prev) => [...prev, [user.email, user._id]]);
+            }
           });
           // console.log(possibleValues);
         })
         .catch((error) => {
           console.error("Error:", error);
         });
-    }
+    };
     getAllUsers();
   }, []);
-
-
-  
 
   return (
     <div>
@@ -243,7 +246,11 @@ const Homepage = () => {
         </div>
 
         <div className="flex items-center justify-center md:justify-between flex-wrap">
-          <img src={logo2} className="w-16 h-16 ml-4 md:static absolute top-20" alt="" />
+          <img
+            src={logo2}
+            className="w-16 h-16 ml-4 md:static absolute top-20"
+            alt=""
+          />
           <Zoom triggerOnce={true} delay={200}>
             <h1 className="text-5xl p-5 font-bold text-center">
               Welcome {user.fullName}!
@@ -253,31 +260,42 @@ const Homepage = () => {
           <div className="flex flex-col mx-auto md:mx-0 gap-10">
             <div className="flex justify-center">
               <div className="flex w-96 relative md:mr-5">
-              <div className="autocomplete-wrapper w-full ml-4 md:ml-0">
-                <input
-                  type="text"
-                  placeholder="Enter Email Address to search for user"
-                  value={email}
-                  onChange={handleInputChange}
-                  className="rounded-full w-96 h-16 pl-6"
-                  aria-autocomplete="list"
-        aria-controls="autocomplete-list"
-                />
-                {/* {console.log(suggestions)} */}
-                 {suggestions.length > 0 && (
-        <ul id="autocomplete-list" className="suggestions-list" role="listbox">
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              onClick={() => navigate('/accountProfile/'+suggestion[1])}
-              role="option"
-              // Additional props
-            >
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
+                <div className="autocomplete-wrapper w-full ml-4 md:ml-0">
+                  <input
+                    type="text"
+                    placeholder="Enter Email Address to search for user"
+                    value={email}
+                    onChange={handleInputChange}
+                    className="rounded-full w-96 h-16 pl-6"
+                    aria-autocomplete="list"
+                    aria-controls="autocomplete-list"
+                  />
+                  {console.log(suggestions)}
+                  {suggestions.length > 0 && (
+                    <ul
+                      id="autocomplete-list"
+                      className={`suggestions-list z-30 ${suggestions.includes('No matches found')?"h-fit" : "h-64"} overflow-scroll`}
+                      role="listbox"
+                    >
+                      {console.log(suggestions)}
+                      {suggestions.map((suggestion, index) => (
+                        <li
+                          key={index}
+                          onClick={() =>
+                            navigate("/accountProfile/" + suggestion)
+                          }
+                          role="option"
+                          className="flex items-center gap-1"
+                          // Additional props
+                        >
+                          
+                          {suggestion.includes("No matches found") ? "" : ( <img src={profile} className="h-10" alt="" />)}
+                          <p className="pb-1">{suggestion}</p>
+
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <button
                   className="absolute right-4 top-4"
