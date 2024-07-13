@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, logoutUser, registerUser, showTweet } from "../controllers/user.controllers.js";
+import { getFollowings, loginUser, logoutUser, registerUser, showTweet } from "../controllers/user.controllers.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { postTweet } from "../controllers/user.controllers.js";
 import { deleteTweet } from "../controllers/user.controllers.js";
@@ -13,6 +13,8 @@ import { getComments } from "../controllers/user.controllers.js";
 import { forgotPassword } from "../controllers/user.controllers.js";
 import { emailToUserID } from "../controllers/user.controllers.js";
 import { getAllUsers } from "../controllers/user.controllers.js";
+import { followUser } from "../controllers/user.controllers.js";
+
 
 
 const router = Router();
@@ -33,6 +35,8 @@ router.route('/getComments').post(getComments);
 router.route('/forgotPassword').post(forgotPassword);
 router.route('/emailToUserID').post(emailToUserID);
 router.route('/getAllUsers').get(getAllUsers);
+router.route('/followUser').post(verifyJWT, followUser);
+router.route('/getFollowings').post(verifyJWT, getFollowings);
 
 
 

@@ -1,6 +1,6 @@
 import { User } from "../models/user.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/Apierror.js";
+import { ApiError } from "../utils/ApiError.js";
 import { APIresponse } from "../utils/APIresponse.js";
 import { Tweet } from "../models/tweets.models.js";
 import jwt from "jsonwebtoken";
@@ -231,10 +231,7 @@ const showLikeTweet = asyncHandler(async (req, res) => {
   }
 
   let isLiked;
-  // console.log("hello")
-  // console.log(tweet.likes)
-  // console.log(User.findById(user))
-  // console.log(tweet.tweet + " returns " + tweet.likes.users.includes(user));
+
   if (tweet.likes.users.includes(user)) {
     // console.log("yes");
     isLiked = true;
@@ -397,6 +394,67 @@ const getAllUsers = asyncHandler(async (req, res) => {
     .json(new APIresponse(200, users, "Users fetched successfully"));
 })
 
+
+const followUser = asyncHandler(async (req, res) => {
+  const { userID, followerID } = req.body;
+
+  const user = await User.findById (userID);
+
+  if(!user){
+    
+    throw new ApiError(404, "User not found")
+  }
+
+  const follower = await User.findById(followerID);
+
+  if(!follower){
+    throw new ApiError(404, "User not found")
+  }
+  
+
+  let isFollowed;
+
+
+  if(user.followers.users.includes(follower._id)){
+    user.followers.users.pull(follower._id);
+    follower.following.users.pull(user._id);
+    isFollowed = false;
+
+  }
+  else{
+    user.followers.users.push(follower._id);
+    follower.following.users.push(user._id);
+    isFollowed = true;
+}
+  await user.save();
+  await follower.save();
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, {isFollowed}, "User follow process worked successfully"))
+
+})
+
+const getFollowings = asyncHandler(async (req, res) => { 
+  const { userID } = req.body;
+
+  const user = await User.findById (userID);
+
+  if(!user){
+    throw new ApiError(404, "User not found")
+  }
+
+  const followings = user.following.users;
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, {followings}, "Followers fetched successfully"))
+  
+
+
+})
+
+
 export {
   registerUser,
   loginUser,
@@ -412,5 +470,7 @@ export {
   getComments,
   forgotPassword,
   emailToUserID,
-  getAllUsers
+  getAllUsers,
+  followUser,
+  getFollowings
 };
