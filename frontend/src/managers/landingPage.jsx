@@ -35,36 +35,7 @@ function landingPage() {
         </button>
       </div>
 
-      <div className="absolute right-5 top-36">
-        <Stage width={250} height={window.innerHeight}>
-          <Layer>
-            <Shape
-              width={260}
-              height={170}
-              sceneFunc={function (context, shape) {
-                const width = shape.width();
-                const height = shape.height();
-                context.beginPath();
-                context.moveTo(0, 0);
-                context.lineTo(width - 40, height - 90);
-                context.quadraticCurveTo(
-                  width - 110,
-                  height - 70,
-                  width,
-                  height
-                );
-                context.closePath();
-
-                // (!) Konva specific method, it is very important
-                context.fillStrokeShape(shape);
-              }}
-              fill="#00D2FF"
-              stroke="black"
-              strokeWidth={4}
-            />
-          </Layer>
-        </Stage>
-      </div>
+      
       <div className="h-screen flex items-center justify-center flex-col">
         <div className="absolute inset-0 -z-10 h-screen w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]"></div>
         <div className="flex items-center flex-wrap">
@@ -75,8 +46,8 @@ function landingPage() {
             <h1 className="text-center text-6xl md:text-8xl font-serif font-extrabold">
               Tweetify
             </h1>
-            <Bounce delay={1500}>
-              <h2 className="text-end text-xl text-cyan-600 ml-10 md:ml-0">
+            <Bounce triggerOnce={true} delay={1500}>
+              <h2 className="text-center mt-4 text-xl text-cyan-600 ml-10 md:ml-0">
                 Tweet your heart out, connect with the world
               </h2>
             </Bounce>
@@ -125,9 +96,11 @@ function landingPage() {
           <p className="text-center">and all other Platforms...</p>
         </div>
       </div>
+      <div className="bg-slate-800"><p className="text-white text-center font-semibold text-5xl pt-8">OUR FEATURES :</p></div>
       <div className="bg-slate-800 h-screen md:h-96">
+        
         {/* <p>5 main pillars : </p> */}
-        <div className="flex md:gap-0 gap-5 justify-around pt-48 md:pt-16 pb-64 h-screen md:h-96 flex-wrap">
+        <div className="flex md:gap-0 gap-5 justify-around pt-48 md:pt-16 h-screen md:h-96 flex-wrap">
           <CardForLandingPage
             title="Spark"
             desc="Ignite conversations. Spark the next big thing."

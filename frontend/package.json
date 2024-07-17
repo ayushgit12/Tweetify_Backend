@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.16.4",
+    "@mui/styled-engine": "^5.16.4",
     "aws-sdk": "^2.1628.0",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
@@ -19,6 +23,7 @@
     "html-loader": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
     "mock-aws-s3": "^4.0.2",
+    "mui": "^0.0.1",
     "nock": "^13.5.4",
     "react": "^18.2.0",
     "react-animated-cursor": "^2.11.2",

@@ -3,18 +3,19 @@ import { NavLink } from 'react-router-dom'
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import { TiMessages } from "react-icons/ti";
-import { FiShoppingBag } from "react-icons/fi";
-import { TbFileAnalytics } from "react-icons/tb";
-import { LuTag } from "react-icons/lu";
-import { SlBadge } from "react-icons/sl";
-import { GoGift } from "react-icons/go";
-import { GoPersonAdd } from "react-icons/go";
 import { MdOutlineSettings } from "react-icons/md";
-import { AiOutlineUserSwitch } from "react-icons/ai";
 import { MdLogout } from "react-icons/md";
 import { useState } from "react";
 import { BiMenuAltLeft } from "react-icons/bi";
 import { useNavigate } from 'react-router-dom';
+import { Modal, Box, Typography } from '@mui/material';
+import axios from 'axios';
+import { BASE_URL } from '../managers/helper.js';
+import { toast, Toaster } from 'react-hot-toast';
+import { IoIosCloseCircleOutline } from 'react-icons/io';
+import { MdClose } from 'react-icons/md';
+
+
 
 
 const Navbar = () => {
@@ -35,32 +36,31 @@ const Navbar = () => {
     toast("Logging Out!", {
       icon: "⏳",
     });
-    await axios
-      .post(
-        `${BASE_URL}/api/v1/users/logout`,
-        {}, // Send empty body (optional)
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .then((response) => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        // console.log("Success:", response.data);
-
-        setTimeout(() => {
-          navigate("/login");
-        }, 3500);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        toast.error("Some error occured while logging out");
-      });
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+  
 
   return (
     <div className='absolute w-full top-0 z-50'>
+      <Toaster />
 
 <div
         className={`h-screen w-80 fixed z-50 bg-slate-700 ${
@@ -86,48 +86,69 @@ const Navbar = () => {
             <FaUserCircle size={20} />
             Account
           </li>
-          <li className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
+          <li onClick={()=>navigate("/chat")} className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
             <TiMessages size={20} />
-            Inbox
-          </li>
-          <li className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
-            <FiShoppingBag size={20} />
-            Orders
-          </li>
-          <li className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
-            <TbFileAnalytics size={20} />
-            Analytics
-          </li>
-          <li className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
-            <LuTag size={20} />
-            Offers
-          </li>
-          <li className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
-            <SlBadge size={20} />
-            Rewards
-          </li>
-          <li className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
-            <GoGift size={20} />
-            Gift Cards
-          </li>
-          <li className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
-            <GoPersonAdd size={20} />
-            Refer & Earn
+            Chat
           </li>
           <li onClick={()=>navigate("/accountSettings")} className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
             <MdOutlineSettings size={20} />
             System Settings
           </li>
-          <li className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
-            <AiOutlineUserSwitch size={20} />
-            Switch Account
-          </li>
-          <li onClick={()=>handleLogout} className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
+          
+          <li onClick={handleOpen} className="flex hover:bg-white rounded-xl cursor-pointer hover:text-slate-600 h-full w-full p-3 items-center gap-4">
             <MdLogout size={20} />
             Logout
           </li>
         </ul>
       </div>
+
+      <Modal
+            open={open}
+            onClose={()=>{
+              setOpen(false);
+            }}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <p className="flex items-center justify-end">
+                
+                <IoIosCloseCircleOutline
+                  className="cursor-pointer"
+                  size={30}
+                  onClick={()=>{
+                    setOpen(false);
+
+                  }
+                  }
+                />
+              </p>
+
+              <p className="text-[#6D38C3] mt-4 text-xl font-semibold text-center">
+                Are you sure you want to logout ?
+              </p>
+
+              <div className="w-full flex justify-between mt-6">
+                <button
+                  onClick={handleLogout
+                  }
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg border"
+                >
+                  Logout
+                </button>
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                  className="bg-white border text-black px-4 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+             
+            </Box>
+          </Modal>
+
 
 
 
