@@ -4,38 +4,56 @@ It helps the users to discuss real life common problems, political issues, criti
 engage in real time debates.
 
 ## Features:
-• Real-time Chatting: Socket.io facilitates real-time communication between users, enabling instant messaging and group chats.
+• Real-time Chatting: Socket.io facilitates real-time communication between users, enabling instant messaging and group chats. 
+
 • Login & Signup Authentication: Secure user accounts are managed through login and signup functionalities.
+
 • Email Notifications: Nodemailer is used to send email notifications for various actions, such as login, signup, reset password, reporting of tweets, etc.
+
 • OT (Operational Transformation): This technology ensures seamless collaboration on data, particularly when multiple users are editing the same content simultaneously.
 
 ## Tech Stack
 • Frontend: React.js + Vite
+
 • Backend: Node.js, Express.js
+
 • Database: MongoDB
+
 • Real-time Messaging: Socket.io
+
 • Email Notifications: Nodemailer
 
 
 ## Installation
 ### Clone this repository:
-Bash
-git clone https://github.com/<your-username>/Tweetify.git
+```bash
+git clone https://github.com/ayushgit12/Tweetify.git
+```
 
 ### Install dependencies:
-Bash
-cd Tweetify
+#### For frontend
+```bash
+cd frontend
 npm install
+```
 
-### Create a .env file in the root directory and configure your database connection string and any other environment variables.
+#### For backend
+```bash
+cd backend
+npm install
+```
+
+#### Create a .env file in the root directory and configure your database connection string and any other environment variables.
 ### Running the Application
 ### Start the backend server:
-Bash
+```bash
 npm start
+```
 
 ### Run the frontend development server:
-Bash
-npm run client-start
+```bash
+npm run dev
+```
 
 This will start both the backend server and the frontend development server. You can access the application at http://localhost:5173 in your web browser.
 
