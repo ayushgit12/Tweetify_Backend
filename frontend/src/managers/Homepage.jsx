@@ -158,7 +158,11 @@ const Homepage = () => {
   useEffect(() => {
     toast.promise(getTweets(), {
       loading: "Fetching tweets...",
-    });
+    },
+    {
+      position: "top-right",
+    }
+  );
 
     const getAllUsers = async () => {
       const token = JSON.parse(localStorage.getItem("token"));
@@ -251,17 +255,19 @@ const Homepage = () => {
             </div>
 
             
-        <div className="flex items-center justify-center md:justify-between flex-wrap">
+        <div className="flex mt-2 items-center justify-center md:justify-between flex-wrap">
           <img
             src={logo2}
             className="w-16 h-16 ml-4 md:static absolute top-20"
             alt=""
           />
+          <div className="md:absolute w-screen">
           <Zoom triggerOnce={true} delay={200}>
             <h1 className="text-5xl p-5 font-bold text-center">
               Welcome {user.fullName}!
             </h1>
           </Zoom>
+          </div>
 
           <div className="flex flex-col mx-auto md:mx-0 gap-10">
             <div className="flex justify-center">
@@ -326,50 +332,7 @@ const Homepage = () => {
         })}
       </div>
 
-      <div className="flex justify-center">
-        <Popup
-          trigger={
-            <button className="button bg-red-600 p-2 rounded-lg text-white hover:bg-red-800">
-              {" "}
-              Logout Now{" "}
-            </button>
-          }
-          modal
-          nested
-        >
-          {(close) => (
-            <div className="modal border border-slate-800 w-96 h-48 bg-white">
-              <div className="flex bg-slate-800 text-white py-1 items-center">
-                <button className="close text-2xl ml-3" onClick={close}>
-                  &times;
-                </button>
-                <div className="header ml-28"> Logout Window </div>
-              </div>
-              <div className="content mt-5 p-2">
-                {" "}
-                Are you sure you want to logout?{" "}
-              </div>
-              <div className="actions flex gap-3 mt-10 ml-3">
-                <button
-                  className="bg-red-500 px-2 py-1 rounded-lg hover:bg-red-700 hover:text-white"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-                <button
-                  className="button bg-slate-400 px-2 py-1 rounded-lg hover:bg-slate-600 hover:text-white"
-                  onClick={() => {
-                    // console.log("modal closed ");
-                    close();
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-        </Popup>
-      </div>
+      
       
     </div>
   );

@@ -13,6 +13,7 @@ const Comment = () => {
  const date = new Date();
 
 
+
   // console.log(date);
   const [commentAdded, setCommentAdded] = useState("");
   const [userFullNameId, setUserFullNameId] = useState([]);
@@ -22,6 +23,8 @@ const Comment = () => {
 
     const token = JSON.parse(localStorage.getItem("token"));
     // console.log(token);
+
+
 
 
 
@@ -187,19 +190,22 @@ function convertTime(time) {
                       className="h-10 absolute top-3 left-1"
                       alt=""
                     />
+                    
                     <input
                       value={commentAdded}
                       onChange={(e) => setCommentAdded(e.target.value)}
                       type="text"
-                      className="mt-2 w-full rounded-full pl-12"
+                      className="focus:outline-none mt-2 w-full rounded-full pl-12"
                       placeholder="Post your reply"
                     />
+                    
                     <button
                       onClick={handleCommentAdded}
                       className="absolute top-4 right-3"
                     >
                       <IoSend className="h-6 w-6" />
                     </button>
+
                   </div>
                 </div>
 

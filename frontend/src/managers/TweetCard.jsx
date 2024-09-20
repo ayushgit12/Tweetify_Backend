@@ -17,7 +17,7 @@ function TweetCard({ tweet }) {
   const reportRef = useRef(0);
   const reportButtonRef = useRef(0);
   const imgHover = useRef(0);
-
+  const [others, setOthers] = useState(false);
   // console.log(tweet.user.fullName);
   const [isLiked, setIsLiked] = useState(false);
   const tweetRef = useRef(0);
@@ -484,18 +484,20 @@ function TweetCard({ tweet }) {
                 nested
               >
                 {(close) => (
-                  <div className="modal border border-slate-800 w-full pb-8  bg-white">
-                    <div className="flex bg-slate-800 text-white py-1 items-center">
+                  <div className="modal rounded-xl shadow-xl border border-slate-800 w-full pb-8  bg-slate-600 text-white">
+                    <div className="flex rounded-t-xl bg-slate-800 text-white py-1 items-center">
                       <button className="close text-2xl ml-3" onClick={close}>
                         &times;
                       </button>
                       <div className="header ml-28"> Report this Tweet? </div>
                     </div>
-                    <div className="content mt-5 p-2">
+
+                    <h1 className="text-red-600 font-bold text-center mt-4 text-2xl flex items-center justify-center gap-2"><img className="h-12" src={profile} alt="" />{tweet.user.fullName}</h1>
+                    <div className="content mt-5 p-2 px-6">
                       {" "}
                       What best describes your concern regarding this tweet?{" "}
                     </div>
-                    <div className="ml-3">
+                    <div className="ml-3 px-6">
                       <div className="flex items-center gap-2">
                         <input type="checkbox" name="" id="" /> Sexual
                         Harassment{" "}
@@ -518,17 +520,17 @@ function TweetCard({ tweet }) {
                         Information{" "}
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div onClick={()=>setOthers(!others)} className="flex items-center gap-2">
                         <input type="checkbox" name="" id="" /> Others{" "}
                       </div>
                       <input
                         type="text"
                         placeholder="Please specify"
-                        className="h-6 ml-6"
+                        className={`h-6 transition-all text-black ml-6 ${others?"": "hidden"}`}
                       />
                     </div>
 
-                    <div className="actions flex gap-3 mt-10 ml-3">
+                    <div className="actions flex gap-3 mt-6 ml-3 px-6">
                       <button
                         className="bg-red-500 px-2 py-1 rounded-lg hover:bg-red-700 hover:text-white"
                         onClick={handleReport}
@@ -536,7 +538,7 @@ function TweetCard({ tweet }) {
                         Report
                       </button>
                       <button
-                        className="button bg-slate-400 px-2 py-1 rounded-lg hover:bg-slate-600 hover:text-white"
+                        className="button bg-slate-400 px-2 py-1 rounded-lg hover:bg-slate-700 hover:text-white"
                         onClick={() => {
                           console.log("modal closed ");
                           close();

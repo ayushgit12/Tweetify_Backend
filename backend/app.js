@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
     socket.leave(room);
   })
 })
-server.listen(3001, () => {
+server.listen(process.env.PORT || 3001, () => {
   console.log('listening on *:8000');
 })
 

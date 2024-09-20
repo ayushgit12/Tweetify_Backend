@@ -1,198 +1,157 @@
-import React from "react";
-import { useState } from "react";
+import React, { useRef } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
-
-import { useEffect } from "react";
-import { Toaster, toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import { BASE_URL } from "./helper";
-
+import { Spinner } from "../components/loader";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Register = () => {
-
-
-  const [fullName, setfullName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [registeringState, setRegisteringState] = useState(false);
   const navigate = useNavigate();
+  const passRef = useRef(null);
+  const passEyeRef = useRef(null);
+
+  const handleFullNameChange = (e) => {
+    setFullName(e.target.value);
+  };
 
   const handleRegisterEmailChange = (e) => {
     setRegisterEmail(e.target.value);
   };
+
   const handleRegisterPasswordChange = (e) => {
     setRegisterPassword(e.target.value);
   };
 
-  const handleFullNameChange = (e) => {
-    setfullName(e.target.value);
-  };
-
-
-
   useEffect(() => {
-    if(localStorage.getItem("token")){
-     setTimeout(() => {
-       
-       toast.success("Already Logged In. Redirecting to Homepage...");
-     }, 1000);
-     setTimeout(() => {
-      window.location.href = '/homepage'
-     }, 3500);
+    if (localStorage.getItem("token")) {
+      toast.success("Already Logged In. Redirecting to Homepage...");
+      setTimeout(() => {
+        window.location.href = "/homepage";
+      }, 1500);
     }
-  
-    
-  }, )
+  }, []);
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    console.log(fullName, registerEmail, registerPassword);
+    if (!fullName) {
+      toast.error("Full Name cannot be empty");
+      return;
+    }
 
-    await axios
-      .post(`${BASE_URL}/api/v1/users/register`, {
+    if (!registerEmail) {
+      toast.error("Email cannot be empty");
+      return;
+    }
+
+    if (!registerPassword) {
+      toast.error("Please enter a password");
+      return;
+    }
+
+    setRegisteringState(true);
+
+    try {
+      await axios.post(`${BASE_URL}/api/v1/users/register`, {
         fullName: fullName,
         email: registerEmail,
         password: registerPassword,
-      })
-      .then((response) => {
-        console.log("Success:", response.data);
-        toast.success("Registration Successful!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          toastId: "registerSuccess", // Optional unique ID for the toast
-        });
-
-        const sendEmail = async () => {
-          let dataSend = {
-            email: registerEmail,
-            subject: "Welcome to Tweetify!",
-            message: `Hi ${fullName},\n\nThanks for signing up for Tweetify, your one-stop platform for tweeting, messaging, and posting! We're thrilled to have you on board and can't wait for you to connect with the world.\n\nGetting Started with Tweetify\n\nOnce you've logged in to your account, you can:\n\nCraft compelling tweets: Share your thoughts, experiences, and updates with the world in 280 characters or less.\nDirect message your friends: Have private conversations with your followers through direct messages.\nEngage in discussions: Reply to tweets, retweet interesting content, and join conversations happening around the world.\nPost multimedia content: Spruce up your tweets with images, videos, and GIFs.\nDiscover new voices: Follow friends, family, influencers, and thought leaders to stay updated on what interests you.\nExplore Tweetify's Features\n\nWe offer a variety of features to make your tweeting experience enjoyable and engaging. Explore your profile, personalize your settings, and discover new communities through hashtags and trending topics.\n\nStay Connected\n\nWe're here to help you get the most out of Tweetify.\n\nHappy tweeting!\n\nThe Tweetify Team`,
-          };
-
-          const res = await axios
-            .post(`${BASE_URL}/api/v1/users/sendEmail`, {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              data: JSON.stringify(dataSend),
-            })
-            .then((res) => {
-              console.log("Email sent successfully");
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-            });
-        };
-
-        sendEmail();
-        setTimeout(() => {
-          navigate("/login");
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        toast.error("Registration Failed!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          toastId: "registerError", // Optional unique ID for the toast
-        });
       });
+
+      toast.success("Registration Successful! Redirecting to login...");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      toast.error("Email already in use!");
+    } finally {
+      setRegisteringState(false);
+    }
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative">
+    <div className="relative min-h-screen bg-gradient-to-r from-cyan-200 to-blue-200 flex flex-col items-center justify-center">
       <Toaster />
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Create your account
-        </h2>
+      {registeringState && <Spinner />}
+
+      {/* Navbar */}
+      <div className="flex justify-between w-full p-4 bg-gradient-to-r from-cyan-500 to-cyan-800 backdrop-blur-lg fixed top-0 z-50">
+        <NavLink to="/" className="text-2xl font-bold text-white">Tweetify</NavLink>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST">
+      {/* Register Form */}
+      <div className="mt-20 w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <h2 className="text-center text-3xl font-bold text-gray-900">Create Your Account</h2>
+
+        <form className="space-y-6 mt-6" onSubmit={handleRegister}>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Full Name
-            </label>
-            <div className="mt-2">
-              <input
-                value={fullName}
-                onChange={handleFullNameChange}
-                id="fullname"
-                name="email"
-                type="text"
-                required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Email address
-            </label>
-            <div className="mt-2">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={registerEmail}
-                onChange={handleRegisterEmailChange}
-                required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-900">Full Name</label>
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              value={fullName}
+              onChange={handleFullNameChange}
+              required
+              className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-cyan-500"
+            />
           </div>
 
           <div>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Password
-              </label>
-              
+            <label htmlFor="email" className="block text-sm font-medium text-gray-900">Email Address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={registerEmail}
+              onChange={handleRegisterEmailChange}
+              required
+              className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-900">Password</label>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 relative">
               <input
                 id="password"
                 name="password"
+                ref={passRef}
                 type="password"
                 value={registerPassword}
                 onChange={handleRegisterPasswordChange}
                 required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-cyan-500"
               />
+              <div ref={passEyeRef} className="absolute right-3 top-2 cursor-pointer" onClick={() => {
+                setShowPassword(!showPassword);
+                passRef.current.type = showPassword ? "text" : "password";
+              }}>
+                {showPassword ? <AiOutlineEye size={20} /> : <AiOutlineEyeInvisible size={20} />}
+              </div>
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={handleRegister}
-            >
-              Register
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-[90%] mx-auto py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 block"
+          >
+            Register Now!
+          </button>
         </form>
 
-        <p className="mt-10 text-center text-sm text-gray-500">
+        <p className="mt-6 text-center text-sm text-gray-500">
           Already a user?{" "}
-          <NavLink
-            to="/login"
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-          >
+          <NavLink to="/login" className="font-semibold text-cyan-600 hover:text-cyan-500">
             Login Now!
           </NavLink>
         </p>

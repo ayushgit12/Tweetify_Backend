@@ -4,11 +4,11 @@ import './cardForLandingPageCss.css'
 const cardForLandingPage = ({title, desc}) => {
   return (
     <div>
-      <div class="card">
-    <div class="align">
-        <span class="red"></span>
-        <span class="yellow"></span>
-        <span class="green"></span>
+      <div className="card">
+    <div className="align">
+        <span className="red"></span>
+        <span className="yellow"></span>
+        <span className="green"></span>
     </div>
 
     <h1>{title}</h1>

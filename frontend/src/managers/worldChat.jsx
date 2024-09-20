@@ -1,109 +1,126 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3001");
+const socket = io();
 
-
-const worldChat = () => {
-
+const WorldChat = () => {
   const world = "world";
-  const [messageList, setMessageList] = useState([])
-  const keepDown = useRef(0)
-
-  const handleLeftTheChat = () => {
-    setMessageList([...messageList, { author: "System", message: `${user.fullName} left the world`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
-
-    
-  }
-
-  useEffect(() => {
-    keepDown.current.scrollIntoView({ behavior: "smooth" });
-  }, [messageList])
-
-
-  useEffect(() => {
-    if(localStorage.getItem("messages"+world)){
-      setMessageList(JSON.parse(localStorage.getItem("messages"+world)));
-    }
-    else{
-      setMessageList([]);
-    }
-  }, [])
-  
-  
-
-
+  const [messageList, setMessageList] = useState([]);
+  const [message, setMessage] = useState("");
+  const keepDown = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
+  const joinMessageKey = `joinMessage_${world}_${user?.fullName}`;
+
+  // Handle the event when a user leaves the chat
+  const handleLeftTheChat = () => {
+    const leaveMessage = {
+      author: "System",
+      message: `${user.fullName} left the world`,
+      time: new Date().toLocaleTimeString(),
+    };
+    setMessageList((prev) => [...prev, leaveMessage]);
+    localStorage.removeItem(joinMessageKey); // Remove the join message flag
+    socket.emit("leave_room", { fullName: user.fullName, room: world });
+  };
+
+  // Scroll to bottom on new message
   useEffect(() => {
-    console.log(user.fullName);
-    const fullName = user.fullName;
-    setMessageList([...messageList, { author: "System", message: `${user.fullName} joined the world`, time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()}])
-
-
-    if(localStorage.getItem("messages"+world) === null){
-      localStorage.setItem("messages"+world, JSON.stringify([]));
+    if (keepDown.current) {
+      keepDown.current.scrollIntoView({ behavior: "smooth" });
     }
-    else{
-      setMessageList(JSON.parse(localStorage.getItem("messages"+world)));
+  }, [messageList]);
+
+  // Load messages from localStorage on component mount
+  useEffect(() => {
+    const savedMessages = localStorage.getItem(`messages${world}`);
+    if (savedMessages) {
+      setMessageList(JSON.parse(savedMessages));
     }
-
-
-    socket.emit("join_room", fullName, "world");
-    socket.on("message", (message) => {
-      console.log(message);
-    });
-
-
-
   }, []);
 
-
+  // Handle user joining and socket events
   useEffect(() => {
-    
-    socket.on("receive_message", (data) => {
-      localStorage.setItem("messages"+world, JSON.stringify([...JSON.parse(localStorage.getItem("messages"+world)), data]));
-      setMessageList((list) => [...list, data]);
-    })
-  }, [socket])
-  
+    if (!user) return;
 
+    const fullName = user.fullName;
 
-  const [message, setMessage] = useState("");
+    // Check if the join message has already been sent
+    const joinMessageExists = localStorage.getItem(joinMessageKey);
+
+    if (!joinMessageExists) {
+      const joinMessage = {
+        author: "System",
+        message: `${fullName} joined the world`,
+        time: new Date().toLocaleTimeString(),
+      };
+
+      setMessageList((prev) => [...prev, joinMessage]);
+      localStorage.setItem(`messages${world}`, JSON.stringify([...messageList, joinMessage]));
+      localStorage.setItem(joinMessageKey, true); // Set the join message flag
+
+      socket.emit("join_room", { fullName, room: world });
+
+      socket.on("receive_message", (data) => {
+        setMessageList((prev) => {
+          const updatedMessages = [...prev, data];
+          localStorage.setItem(`messages${world}`, JSON.stringify(updatedMessages));
+          return updatedMessages;
+        });
+      });
+
+      socket.on("user_joined", ({ user: newUser }) => {
+        const joinNotification = {
+          author: "System",
+          message: `${newUser} joined the world`,
+          time: new Date().toLocaleTimeString(),
+        };
+        setMessageList((prev) => {
+          const updatedMessages = [...prev, joinNotification];
+          localStorage.setItem(`messages${world}`, JSON.stringify(updatedMessages));
+          return updatedMessages;
+        });
+      });
+    }
+
+    return () => {
+      socket.emit("leave_room", { fullName, room: world });
+      socket.off("receive_message");
+      socket.off("user_joined");
+    };
+  }, [user, messageList, joinMessageKey]);
+
+  // Handle message input change
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
   };
 
-  const sendMessage = async() => {
-    if (message !== "") {
-      const messageData = {
-        author: user.fullName,
-        message: message,
-        room: "world",
-        time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes()
-      };
-      setMessageList((list) => [...list, messageData]);
+  // Send a message
+  const sendMessage = async () => {
+    if (message.trim() === "") return;
 
-      if(localStorage.getItem("messages"+world)){
-        localStorage.setItem("messages"+world, JSON.stringify([...JSON.parse(localStorage.getItem("messages"+world)), messageData]));
-      }
-      else{
-        localStorage.setItem("messages"+world, JSON.stringify([messageData]));
-      }
+    const messageData = {
+      author: user.fullName,
+      message,
+      room: world,
+      time: new Date().toLocaleTimeString(),
+    };
 
+    setMessageList((prev) => {
+      const updatedMessages = [...prev, messageData];
+      localStorage.setItem(`messages${world}`, JSON.stringify(updatedMessages));
+      return updatedMessages;
+    });
 
-      await socket.emit("send_message", messageData);
-
-      setMessage("");
-    }
+    await socket.emit("send_message", messageData);
+    setMessage("");
   };
 
   return (
-    <div className="w-screen ">
+    <div className="w-screen">
       <div className="flex flex-1 flex-col justify-center">
-        <nav className="bg-slate-900 ">
+        <nav className="bg-slate-900">
           <ul className="flex justify-around">
             <div className="w-1/3 text-center py-4 text-white">
               <NavLink onClick={handleLeftTheChat} to="/chat">
@@ -118,22 +135,18 @@ const worldChat = () => {
           </ul>
         </nav>
 
-
         <div className="messages min-h-[calc(100vh-80px)]">
-          {messageList.map((message, index) => {
-            return (
-              <div key={index} className={`flex my-4 ${message.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
-              <div key={index} className={`message p-3 mx-1 rounded-e-xl max-w-2/3 break-words ${message.author === user.fullName ? 'bg-green-500 ' : 'bg-pink-400'}`}>
-              <p className="text-xl text-wrap w-96 py-2 break-words">{message.message}</p>
-              <p className="text-sm font-bold">{message.author}</p>
-              <p className="text-sm">{message.time}</p>
+          {messageList.map((msg, index) => (
+            <div key={index} className={`flex my-4 ${msg.author === user.fullName ? 'justify-end' : 'justify-start'}`}>
+              <div className={`message p-3 mx-1 rounded-e-xl max-w-2/3 break-words ${msg.author === user.fullName ? 'bg-green-500' : 'bg-pink-400'}`}>
+                <p className="text-xl text-wrap w-96 py-2 break-words">{msg.message}</p>
+                <p className="text-sm font-bold">{msg.author}</p>
+                <p className="text-sm">{msg.time}</p>
+              </div>
             </div>
-            </div>
-            
-            );
-          })}
+          ))}
+          <div ref={keepDown} />
         </div>
-
 
         <div className="sendMessage flex gap-2 bottom-8 fixed left-1/3 w-screen">
           <input
@@ -153,9 +166,8 @@ const worldChat = () => {
         </div>
       </div>
       <div ref={keepDown} className="bg-slate-800 text-white text-center">Copyright</div>
-
     </div>
   );
 };
 
-export default worldChat;
+export default WorldChat;
