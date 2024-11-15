@@ -34,6 +34,7 @@ app.use(cors({
   credentials: true
 }));
 
+//hi
 
 io.on('connection', (socket) => {
   // console.log('a user connected ' + socket.id);
