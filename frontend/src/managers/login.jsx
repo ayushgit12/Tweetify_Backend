@@ -4,12 +4,13 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 import { BASE_URL } from "./helper";
-import { Spinner } from "../components/loader";
+import ClipLoader from "react-spinners/ClipLoader"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false); // Loader state for login button
   const [loggedInState, setLoggedInState] = useState(false);
   const passRef = useRef(null);
   const passEyeRef = useRef(null);
@@ -36,6 +37,7 @@ const Login = () => {
       return;
     }
 
+    setLoading(true); // Start loader
     setLoggedInState(true);
 
     try {
@@ -65,10 +67,12 @@ const Login = () => {
 
       sendEmail();
       setTimeout(() => {
+        setLoading(false); // Stop loader
         window.location.href = "/homepage";
       }, 2000);
     } catch (error) {
-      toast.error("Invalid Credentials", { id: 'invalid' });
+      setLoading(false); // Stop loader in case of error
+      toast.error("Invalid Credentials", { id: "invalid" });
     }
   };
 
@@ -84,12 +88,12 @@ const Login = () => {
   return (
     <div className="relative min-h-screen bg-gradient-to-r from-cyan-200 to-blue-200 flex flex-col items-center justify-center">
       <Toaster />
-      {loggedInState && <Spinner />}
+      {loggedInState && <ClipLoader color="#2563EB" loading={loading} size={35} />}
 
       {/* Navbar */}
       <div className="flex justify-between w-full p-4 bg-gradient-to-r from-cyan-500 to-cyan-800 backdrop-blur-lg fixed top-0 z-50">
-  <NavLink to="/" className="text-2xl font-bold text-white">Tweetify</NavLink>
-</div>
+        <NavLink to="/" className="text-2xl font-bold text-white">Tweetify</NavLink>
+      </div>
 
       {/* Login Form */}
       <div className="mt-20 w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
@@ -136,9 +140,21 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-[90%] mx-auto py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 block"
+            disabled={loading} // Disable button while loading
+            className={`w-[90%] mx-auto py-2 ${
+              loading ? "bg-gray-500 cursor-not-allowed" : "bg-cyan-500 hover:bg-cyan-600"
+            } text-white font-semibold rounded-lg block`}
           >
-            Login Now!
+            {loading ? (
+              <ClipLoader 
+                color="#ffffff"
+                loading={loading}
+                size={20}
+              />
+                // Assuming a small loader is available
+            ) : (
+              "Login Now!"
+            )}
           </button>
         </form>
 

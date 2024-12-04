@@ -35,9 +35,37 @@ function TweetCard({ tweet }) {
 
   const date = new Date(tweet.createdAt);
 
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupImage, setPopupImage] = useState("");
+
+  const openImagePopup = (imageSrc) => {
+    setPopupImage(imageSrc);
+    setIsPopupOpen(true);
+  };
+
+  const closeImagePopup = () => {
+    setIsPopupOpen(false);
+    setPopupImage("");
+  };
+
+
   // useEffect(() => {
   //   window.location.reload();
   // });
+
+  useEffect(() => {
+    // Disable scrolling on the background when popup is open
+    if (isPopupOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      // Cleanup in case the component is unmounted
+      document.body.style.overflow = "auto";
+    };
+  }, [isPopupOpen]);
 
   const handleCommentRedirect = () => {
     // const location = useLocation();
@@ -49,6 +77,7 @@ function TweetCard({ tweet }) {
 
     const user = JSON.parse(localStorage.getItem("user"));
 
+ 
     if (!token) {
       toast.error("User token expired, please login again");
       return; // No need to fetch like status if not logged in
@@ -79,12 +108,18 @@ function TweetCard({ tweet }) {
         console.error("Error:", error);
       });
 
-      axios.post(`${BASE_URL}/api/v1/users/getFollowings`, {
-        userID: user._id,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then((response) => {
-        console.log("Success:", response.data.data);
+    axios
+      .post(
+        `${BASE_URL}/api/v1/users/getFollowings`,
+        {
+          userID: user._id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((response) => {
+        // console.log("Success:", response.data.data);
         if (response.data.data.followings.includes(tweet.user._id)) {
           followRef.current.innerHTML = "Following";
           followRef.current.style.backgroundColor = "blue";
@@ -95,12 +130,10 @@ function TweetCard({ tweet }) {
           followRef.current.style.color = "blue";
           followRef.current.style.border = "1px solid blue";
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Error:", error);
       });
-      
-      
-    
   }, []);
 
   // console.log(tweet);
@@ -221,8 +254,6 @@ function TweetCard({ tweet }) {
       });
   };
 
-  
-
   const handleReadMore = () => {
     if (tweetRef.current.style.height === "auto") {
       tweetRef.current.style.height = "80px";
@@ -310,7 +341,7 @@ function TweetCard({ tweet }) {
         <img
           src={logo2}
           alt=""
-          className="h-60 opacity-10 absolute bottom-16 -scale-x-100 left-1/2"
+          className="h-60 opacity-10 absolute top-1/2 -translate-y-1/2 -scale-x-100 left-1/2"
           ref={imgHover}
         />
         <div className="text-gray-900 text-start pr-10 flex gap-1 items-center">
@@ -323,32 +354,57 @@ function TweetCard({ tweet }) {
           </p>
 
           <button
-            className={`text-blue-700 border border-blue-700 rounded-md px-1 mb-1 ml-2 hover:bg-blue-700 hover:text-white ${JSON.parse(localStorage.getItem("user"))._id === tweet.user._id ? "hidden" : ""}`}
+            className={`text-blue-700 border border-blue-700 rounded-md px-1 mb-1 ml-2 hover:bg-blue-700 hover:text-white ${
+              JSON.parse(localStorage.getItem("user"))._id === tweet.user._id
+                ? "hidden"
+                : ""
+            }`}
             ref={followRef}
             onClick={handleFollow}
-
           >
             Follow
           </button>
         </div>
-        <div
-          ref={tweetRef}
-          className="text-gray-900 h-20 overflow-hidden text-xl mb-2 pl-1"
-        >
-          {tweet.tweet}
+        <div className="flex justify-between flex-col-reverse md:flex-row">
+          <div>
+            <div
+              ref={tweetRef}
+              className="text-gray-900 h-20 overflow-hidden text-xl mb-2 pl-1"
+            >
+              {tweet.tweet}
+            </div>
+            {/* {console.log(tweet.tweet.length)} */}
+            <p
+              ref={readMoreRef}
+              className={`${
+                tweet.tweet.length > 500
+                  ? "opacity-100 text-blue-700 cursor-pointer pl-1"
+                  : "opacity-0 cursor-default"
+              }`}
+              onClick={handleReadMore}
+            >
+              Read More...
+            </p>
+          </div>
+          {tweet.image? <img className="w-48 mb-6 cursor-pointer"  src={tweet.image} alt="" onClick={() => openImagePopup(tweet.image)} />: ""}
+
+           {/* Popup */}
+      {isPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <img
+            className="max-w-full max-h-full"
+            src={popupImage}
+            alt="Popup"
+          />
+          <button
+            className="absolute top-8 right-8 text-white scale-150 text-xl"
+            onClick={closeImagePopup}
+          >
+            &times;
+          </button>
         </div>
-        {/* {console.log(tweet.tweet.length)} */}
-        <p
-          ref={readMoreRef}
-          className={`${
-            tweet.tweet.length > 500
-              ? "opacity-100 text-blue-700 cursor-pointer pl-1"
-              : "opacity-0 cursor-default"
-          }`}
-          onClick={handleReadMore}
-        >
-          Read More...
-        </p>
+      )}
+        </div>
         <br />
         <div className="relative w-32 mt-5 flex items-center gap-3">
           {isLiked ? (
@@ -492,7 +548,10 @@ function TweetCard({ tweet }) {
                       <div className="header ml-28"> Report this Tweet? </div>
                     </div>
 
-                    <h1 className="text-red-600 font-bold text-center mt-4 text-2xl flex items-center justify-center gap-2"><img className="h-12" src={profile} alt="" />{tweet.user.fullName}</h1>
+                    <h1 className="text-red-600 font-bold text-center mt-4 text-2xl flex items-center justify-center gap-2">
+                      <img className="h-12" src={profile} alt="" />
+                      {tweet.user.fullName}
+                    </h1>
                     <div className="content mt-5 p-2 px-6">
                       {" "}
                       What best describes your concern regarding this tweet?{" "}
@@ -520,13 +579,18 @@ function TweetCard({ tweet }) {
                         Information{" "}
                       </div>
 
-                      <div onClick={()=>setOthers(!others)} className="flex items-center gap-2">
+                      <div
+                        onClick={() => setOthers(!others)}
+                        className="flex items-center gap-2"
+                      >
                         <input type="checkbox" name="" id="" /> Others{" "}
                       </div>
                       <input
                         type="text"
                         placeholder="Please specify"
-                        className={`h-6 transition-all text-black ml-6 ${others?"": "hidden"}`}
+                        className={`h-6 transition-all text-black ml-6 ${
+                          others ? "" : "hidden"
+                        }`}
                       />
                     </div>
 

@@ -107,24 +107,29 @@ function TweetCardForMe({ tweet }) {
       <img src={profile} className="h-10" alt="" />
       <p className="pb-1">{tweet.user.fullName}</p>
     </div>
-    <div
-      ref={tweetRef}
-      className="text-gray-900 h-20 overflow-hidden text-xl mb-2 pl-1"
-    >
-      {tweet.tweet}
-    </div>
-    {console.log(tweet.tweet.length)}
-    <p
-      ref={readMoreRef}
-      className={`${
-        tweet.tweet.length > 500
-          ? "opacity-100 text-blue-700 cursor-pointer pl-1"
-          : "opacity-0 cursor-default"
-      }`}
-      onClick={handleReadMore}
-    >
-      Read More...
-    </p>
+    <div className="flex justify-between flex-col-reverse md:flex-row">
+          <div>
+            <div
+              ref={tweetRef}
+              className="text-gray-900 h-20 overflow-hidden text-xl mb-2 pl-1"
+            >
+              {tweet.tweet}
+            </div>
+            {/* {console.log(tweet.tweet.length)} */}
+            <p
+              ref={readMoreRef}
+              className={`${
+                tweet.tweet.length > 500
+                  ? "opacity-100 text-blue-700 cursor-pointer pl-1"
+                  : "opacity-0 cursor-default"
+              }`}
+              onClick={handleReadMore}
+            >
+              Read More...
+            </p>
+          </div>
+          {tweet.image? <img className="w-48 mb-6" src={tweet.image} alt="" />: ""}
+        </div>
       <br />
 
         <Popup

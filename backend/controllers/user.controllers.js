@@ -173,13 +173,13 @@ const getUserDetails = asyncHandler(async (req, res) => {
 });
 
 const postTweet = asyncHandler(async (req, res) => {
-  // console.log(req.user)
-  // console.log(req.body)
-  const { tweet } = req.body;
+
+  const { tweet, image } = req.body;
 
   const newTweet = await Tweet.create({
     tweet,
     user: req.user._id,
+    image: image
   });
 
   if (!newTweet) {

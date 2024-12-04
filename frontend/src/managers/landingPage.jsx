@@ -12,12 +12,14 @@ import { FaApple } from "react-icons/fa";
 import { MdLaptop } from "react-icons/md";
 import { RiMacbookLine } from "react-icons/ri";
 import "./buttonCss.css";
+import devices from "../assets/devices.gif";
+import look from "../assets/look.gif";
 
 function landingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative">
+    <div className="relative bg-gradient-to-b from-blue-100 to-cyan-100 min-h-screen">
       {/* Header with Buttons */}
       <div className="flex gap-10 pt-8 pl-8 fixed z-50 w-screen backdrop-blur-lg top-0">
         <button
@@ -36,11 +38,13 @@ function landingPage() {
 
       {/* Hero Section */}
       <div className="h-screen flex items-center justify-center flex-col">
-      
-      <div className="absolute inset-0 -z-10 h-screen bg-gradient-to-b from-blue-100 to-cyan-100 w-full "></div>
         <div className="flex items-center flex-wrap">
           <Slide delay={500}>
-            <img src={img} className="h-56 drop-shadow-lg" alt="Tweetify Logo" />
+            <img
+              src={img}
+              className="h-56 drop-shadow-lg"
+              alt="Tweetify Logo"
+            />
           </Slide>
           <div>
             <h1 className="text-center text-6xl md:text-8xl font-serif font-extrabold text-blue-700">
@@ -56,90 +60,70 @@ function landingPage() {
       </div>
 
       {/* Features Section */}
-      <div className="flex justify-around bg-gradient-to-r from-cyan-200 to-blue-200 relative h-screen">
-        <div className="absolute flex justify-center items-center flex-wrap-reverse pt-36">
-          <div className="bg-transparent">
-            <p className="font-bold text-5xl md:text-6xl pt-36 text-blue-800">
-              Tweet your{" "}
-              <span className="text-cyan-500 text-7xl md:text-8xl">truth</span>,
-            </p>
-            <p className="font-bold text-4xl text-blue-700"> no matter the tech.</p>
-          </div>
-          <div>
-            <Devices />
-          </div>
-        </div>
-        <div className="absolute bottom-36 text-xl">
-          <p className="text-center">Available On:</p>
-          <div className="flex gap-24 flex-wrap justify-center">
-            <p className="flex items-center">
-              <FcAndroidOs className="h-8 w-8" />
-              Android
-            </p>
-            <p className="flex items-center">
-              <FaApple className="h-8 w-8 pb-1" />
-              iOS
-            </p>
-            <p className="flex items-center">
-              <MdLaptop className="h-8 w-8 pb-1" />
-              Windows
-            </p>
-            <p className="flex items-center">
-              <RiMacbookLine className="h-8 w-8 pb-1" />
-              Macbook
-            </p>
-          </div>
-          <p className="text-center text-gray-700 mt-2">and all other Platforms...</p>
-        </div>
-      </div>
 
-      {/* Features List */}
-      <div className="bg-gradient-to-b from-gray-800 to-black">
-        <p className="text-white text-center font-semibold text-5xl pt-8">
-          OUR FEATURES :
-        </p>
+      <div className=" pb-16">
+      <div className="mx-auto w-fit">
+        <img src={devices} alt="" />
       </div>
-      <div className="bg-black h-screen md:h-96">
-        <div className="flex md:gap-0 gap-5 justify-around pt-48 md:pt-16 h-screen md:h-96 flex-wrap">
-          <CardForLandingPage
-            title="Spark"
-            desc="Ignite conversations. Spark the next big thing."
-          />
-          <CardForLandingPage
-            title="Chirp"
-            desc="Chirp your thoughts. Flock together."
-          />
-          <CardForLandingPage
-            title="Pulse"
-            desc="Get the pulse. Stay connected."
-          />
-          <CardForLandingPage
-            title="Huddle"
-            desc="Huddle up. Share the buzz."
-          />
-          <CardForLandingPage
-            title="Hivemind"
-            desc="Hivemind. Think together. Fly further."
-          />
+          <div className="w-fit mx-auto">
+          <p className="font-bold text-5xl md:text-6xl text-blue-800">
+            Tweet your{" "}
+            <span className="text-cyan-500 text-7xl md:text-8xl">truth</span>,
+          </p>
+          <p className="font-bold text-4xl text-blue-700">
+            {" "}
+            no matter the tech.
+          </p>
+          </div>
         </div>
+    <div className="bg-blue-800 h-[1px] my-20 opacity-45"></div>
 
-        {/* Final CTA */}
-        <div className="h-72 bg-slate-800 pt-16">
-          <p className="text-3xl text-center font-semibold text-white">
-            From laughter to learning,{" "}
-            <span className="text-cyan-400 text-4xl">Tweetify</span> has it all.
+
+    <div className="flex items-center flex-wrap justify-center gap-32 mt-16 pb-16">
+    <img src={look} alt="" />
+      <div>
+    <p className="font-bold text-5xl md:text-6xl text-blue-800">
+            Have News to share? 
+
           </p>
-          <p className="text-center text-4xl mt-16">
-            <button
-              onClick={() => navigate("/register")}
-              id="button1"
-              className=" text-2xl bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full text-white font-semibold hover:bg-blue-600 transition-all duration-300 ease-in-out"
-            >
-              Join Now!
-            </button>
+          <p className="font-bold text-5xl md:text-6xl text-blue-800">
+           We are Here to Listen
+
           </p>
-        </div>
-      </div>
+          <p className="text-4xl text-end mt-4 font-bold">24/7</p>
+          </div>
+
+     
+    </div>
+
+    <div className="mt-32 bg-slate-800 text-white py-16 text-xl">
+<p className="text-center mb-8 text-2xl">
+    No compatibility issues here—unlike your ex.
+    </p>
+  <p className="text-center pb-7">Available On:</p>
+  <div className="flex gap-24 flex-wrap justify-center">
+    <p className="flex items-center">
+      <FcAndroidOs className="h-8 w-8" />
+      Android
+    </p>
+    <p className="flex items-center">
+      <FaApple className="h-8 w-8 pb-1" />
+      iOS
+    </p>
+    <p className="flex items-center">
+      <MdLaptop className="h-8 w-8 pb-1" />
+      Windows
+    </p>
+    <p className="flex items-center">
+      <RiMacbookLine className="h-8 w-8 pb-1" />
+      Macbook
+    </p>
+  </div>
+  <p className="text-center text-gray-400 mt-7">
+    And everything else with a screen (probably even your toaster)...
+  </p>
+</div>
+
     </div>
   );
 }

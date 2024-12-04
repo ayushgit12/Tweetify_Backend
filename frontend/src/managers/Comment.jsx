@@ -9,6 +9,39 @@ import axios from "axios";
 import { BASE_URL } from "./helper.js";
 
 const Comment = () => {
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupImage, setPopupImage] = useState("");
+
+  const openImagePopup = (imageSrc) => {
+    setPopupImage(imageSrc);
+    setIsPopupOpen(true);
+  };
+
+  const closeImagePopup = () => {
+    setIsPopupOpen(false);
+    setPopupImage("");
+  };
+
+
+  // useEffect(() => {
+  //   window.location.reload();
+  // });
+
+  useEffect(() => {
+    // Disable scrolling on the background when popup is open
+    if (isPopupOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      // Cleanup in case the component is unmounted
+      document.body.style.overflow = "auto";
+    };
+  }, [isPopupOpen]);
+
   const tweet = useLocation().state;
  const date = new Date();
 
@@ -168,9 +201,34 @@ function convertTime(time) {
                     {tweet.user.fullName}
                   </h1>
                 </div>
-                <div>
-                  <h1 className="text-lg">{tweet.tweet}</h1>
-                </div>
+                <div className="flex justify-between flex-col-reverse md:flex-row">
+          <div>
+            <div
+              className="text-gray-900 text-xl mb-2 pl-1"
+            >
+              {tweet.tweet}
+            </div>
+           
+          </div>
+          {tweet.image? <img className="w-48 mb-6 cursor-pointer"  src={tweet.image} alt="" onClick={() => openImagePopup(tweet.image)} />: ""}
+
+           {/* Popup */}
+      {isPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <img
+            className="max-w-full max-h-full"
+            src={popupImage}
+            alt="Popup"
+          />
+          <button
+            className="absolute top-8 right-8 text-white scale-150 text-xl"
+            onClick={closeImagePopup}
+          >
+            &times;
+          </button>
+        </div>
+      )}
+        </div>
                 <div>
                   <h1 className="text-sm mt-2">
                     {date.getHours() > 12
@@ -183,11 +241,11 @@ function convertTime(time) {
                   <h1 className="text-sm pt-4">
                     Likes : {tweet.likes.users.length}
                   </h1>
-                  <hr className="mt-4" />
-                  <div className="relative">
+                  <hr className="my-4" />
+                  <div className=" flex items-center border rounded-full p-1">
                     <img
                       src={profile}
-                      className="h-10 absolute top-3 left-1"
+                      className="h-10"
                       alt=""
                     />
                     
@@ -195,15 +253,15 @@ function convertTime(time) {
                       value={commentAdded}
                       onChange={(e) => setCommentAdded(e.target.value)}
                       type="text"
-                      className="focus:outline-none mt-2 w-full rounded-full pl-12"
+                      className="focus:outline-none w-full rounded-full pl-2"
                       placeholder="Post your reply"
                     />
                     
                     <button
                       onClick={handleCommentAdded}
-                      className="absolute top-4 right-3"
+                      
                     >
-                      <IoSend className="h-6 w-6" />
+                      <IoSend className="h-6 w-6 mr-2" />
                     </button>
 
                   </div>
