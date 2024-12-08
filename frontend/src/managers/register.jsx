@@ -4,8 +4,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 import { BASE_URL } from "./helper";
-import { Spinner } from "../components/loader";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
@@ -15,7 +15,6 @@ const Register = () => {
   const [registeringState, setRegisteringState] = useState(false);
   const navigate = useNavigate();
   const passRef = useRef(null);
-  const passEyeRef = useRef(null);
 
   const handleFullNameChange = (e) => {
     setFullName(e.target.value);
@@ -40,27 +39,11 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
-    if (!fullName) {
-      toast.error("Full Name cannot be empty");
-      return;
-    }
-
-    if (!registerEmail) {
-      toast.error("Email cannot be empty");
-      return;
-    }
-
-    if (!registerPassword) {
-      toast.error("Please enter a password");
-      return;
-    }
-
     setRegisteringState(true);
 
     try {
       await axios.post(`${BASE_URL}/api/v1/users/register`, {
-        fullName: fullName,
+        fullName,
         email: registerEmail,
         password: registerPassword,
       });
@@ -79,20 +62,24 @@ const Register = () => {
   return (
     <div className="relative min-h-screen bg-gradient-to-r from-cyan-200 to-blue-200 flex flex-col items-center justify-center">
       <Toaster />
-      {registeringState && <Spinner />}
-
       {/* Navbar */}
       <div className="flex justify-between w-full p-4 bg-gradient-to-r from-cyan-500 to-cyan-800 backdrop-blur-lg fixed top-0 z-50">
-        <NavLink to="/" className="text-2xl font-bold text-white">Tweetify</NavLink>
+        <NavLink to="/" className="text-2xl font-bold text-white">
+          Tweetify
+        </NavLink>
       </div>
 
       {/* Register Form */}
       <div className="mt-20 w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-        <h2 className="text-center text-3xl font-bold text-gray-900">Create Your Account</h2>
+        <h2 className="text-center text-3xl font-bold text-gray-900">
+          Create Your Account
+        </h2>
 
         <form className="space-y-6 mt-6" onSubmit={handleRegister}>
           <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-900">Full Name</label>
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-900">
+              Full Name
+            </label>
             <input
               id="fullName"
               name="fullName"
@@ -105,7 +92,9 @@ const Register = () => {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-900">Email Address</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+              Email Address
+            </label>
             <input
               id="email"
               name="email"
@@ -119,23 +108,25 @@ const Register = () => {
 
           <div>
             <div className="flex justify-between">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-900">Password</label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+                Password
+              </label>
             </div>
             <div className="mt-2 relative">
               <input
                 id="password"
                 name="password"
                 ref={passRef}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={registerPassword}
                 onChange={handleRegisterPasswordChange}
                 required
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-cyan-500"
               />
-              <div ref={passEyeRef} className="absolute right-3 top-2 cursor-pointer" onClick={() => {
-                setShowPassword(!showPassword);
-                passRef.current.type = showPassword ? "text" : "password";
-              }}>
+              <div
+                className="absolute right-3 top-2 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
                 {showPassword ? <AiOutlineEye size={20} /> : <AiOutlineEyeInvisible size={20} />}
               </div>
             </div>
@@ -143,9 +134,14 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-[90%] mx-auto py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 block"
+            className="w-[90%] mx-auto py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 flex items-center justify-center"
+            disabled={registeringState}
           >
-            Register Now!
+            {registeringState ? (
+              <ClipLoader color="#ffffff" loading={registeringState} size={20} />
+            ) : (
+              "Register Now!"
+            )}
           </button>
         </form>
 

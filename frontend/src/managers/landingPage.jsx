@@ -14,6 +14,7 @@ import { RiMacbookLine } from "react-icons/ri";
 import "./buttonCss.css";
 import devices from "../assets/devices.gif";
 import look from "../assets/look.gif";
+import { FaHashtag } from "react-icons/fa6";
 
 function landingPage() {
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ function landingPage() {
           Join us Now
         </button>
       </div>
+      <FaHashtag className="text-8xl md:text-9xl text-blue-700 absolute top-32 right-0 mr-10 mt-10" />
+
+      <FaHashtag className="text-8xl text-red-600 absolute top-[700px] left-12 mr-10 mt-10" />
 
       {/* Hero Section */}
       <div className="h-screen flex items-center justify-center flex-col">
@@ -76,7 +80,7 @@ function landingPage() {
           </p>
           </div>
         </div>
-    <div className="bg-blue-800 h-[1px] my-20 opacity-45"></div>
+    <div className="bg-blue-800 h-[1px] my-20 w-3/4 md:w-1/2 mx-auto opacity-45"></div>
 
 
     <div className="flex items-center flex-wrap justify-center gap-32 mt-16 pb-16">
