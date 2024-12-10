@@ -47,6 +47,7 @@ const io = new Server(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
+    credentials: true
   },
 });
 
@@ -120,7 +121,7 @@ io.on('connection', (socket) => {
 });
 
 // Database connection and server startup
-const PORT = process.env.PORT || 8000;
+const PORT = 8000;
 connectDB()
   .then(() => {
     console.log('DB connected successfully');
