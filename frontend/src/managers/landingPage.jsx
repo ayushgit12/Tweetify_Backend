@@ -1,12 +1,7 @@
 import React from "react";
-import Fade, { Hinge } from "react-awesome-reveal";
-import Zoom from "react-awesome-reveal";
 import img from "../assets/logo2.png";
 import { Slide, Bounce } from "react-awesome-reveal";
-import { Stage, Layer, Shape } from "react-konva";
 import { useNavigate } from "react-router-dom";
-import Devices from "./devices";
-import CardForLandingPage from "./cardForLandingPage";
 import { FcAndroidOs } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import { MdLaptop } from "react-icons/md";
@@ -15,6 +10,7 @@ import "./buttonCss.css";
 import devices from "../assets/devices.gif";
 import look from "../assets/look.gif";
 import { FaHashtag } from "react-icons/fa6";
+import {Fade} from "react-awesome-reveal";
 
 function landingPage() {
   const navigate = useNavigate();
@@ -36,9 +32,12 @@ function landingPage() {
           Join us Now
         </button>
       </div>
+      <Fade delay={500}>
       <FaHashtag className="text-8xl md:text-9xl text-blue-700 absolute top-32 right-0 mr-10 mt-10" />
-
+      </Fade>
+<Fade delay={1000}>
       <FaHashtag className="text-8xl text-red-600 absolute top-[700px] left-12 mr-10 mt-10" />
+      </Fade>
 
       {/* Hero Section */}
       <div className="h-screen flex items-center justify-center flex-col">

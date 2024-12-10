@@ -1,7 +1,38 @@
 import { io } from 'socket.io-client';
-import { BASE_URL } from './helper.js';
+import { SOCKET_URL as BASE_URL } from './helper.js';
 
-// "undefined" means the URL will be computed from the `window.location` object
 const URL = `${BASE_URL}`;
 
-export const socket = io(URL);
+const socket = io(URL);
+
+// Join a chat
+export const joinChat = (roomId, username) => {
+     socket.emit('joinRoom', { roomId, username });
+     console.log(`Joined room: ${roomId} as ${username}`);
+ };
+ 
+ // Leave a chat
+ export const leaveChat = (roomId, username) => {
+     socket.emit('leaveRoom', { roomId, username });
+     console.log(`Left room: ${roomId}`);
+ };
+ 
+ // Send a message
+ export const sendMessage = (roomId, message, username) => {
+     const payload = {
+         roomId,
+         message,
+         username,
+         timestamp: new Date().toISOString(),
+     };
+     socket.emit('sendMessage', payload);
+     console.log(`Message sent to room ${roomId}: "${message}"`);
+ };
+ 
+ export const listenForMessages = (callback) => {
+     socket.off('receiveMessage'); // Remove existing listener
+     socket.on('receiveMessage', (messageData) => {
+       callback(messageData);
+     });
+   };
+   

@@ -52,9 +52,10 @@ const Navbar = () => {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    borderRadius: 3,
+    
   };
   
 
@@ -124,7 +125,7 @@ const Navbar = () => {
                 />
               </p>
 
-              <p className="text-[#6D38C3] mt-4 text-xl font-semibold text-center">
+              <p className="text-slate-700 mt-4 text-xl font-semibold text-center">
                 Are you sure you want to logout ?
               </p>
 
