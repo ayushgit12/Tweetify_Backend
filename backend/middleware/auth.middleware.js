@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken"
 import { User } from "../models/user.models.js";
 import axios from "axios";
+import { logoutUser } from "../controllers/user.controllers.js";
 
 
 
@@ -29,7 +30,8 @@ export const verifyJWT = asyncHandler(async(req, _, next) => {
         req.user = user;
         next();
     } catch (error) {
-        await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true })
+        logoutUser(req, null);
+        
         throw new ApiError(401, error?.message || "Invalid access token")
         
     }

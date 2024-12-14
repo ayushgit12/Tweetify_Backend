@@ -1,0 +1,33 @@
+.rainbow-button {
+     display: inline-block;
+     padding: 10px 20px;
+     font-size: 18px;
+     font-weight: bold;
+     text-align: center;
+     color: white;
+     background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+     background-size: 400% 400%;
+     animation: rainbow 3s linear infinite;
+     border: none;
+     border-radius: 8px;
+     cursor: pointer;
+     text-transform: uppercase;
+   }
+
+   /* Animation for rainbow effect */
+   @keyframes rainbow {
+     0% {
+       background-position: 0% 50%;
+     }
+     50% {
+       background-position: 100% 50%;
+     }
+     100% {
+       background-position: 0% 50%;
+     }
+   }
+
+   /* Add hover effect for a glowing effect */
+   .rainbow-button:hover {
+     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+   }

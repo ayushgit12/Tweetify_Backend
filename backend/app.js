@@ -7,6 +7,7 @@ import http from 'http';
 import dotenv from 'dotenv';
 import connectDB from './db/index.js';
 import userRouter from './routes/user.routes.js';
+import tweetRouter from './routes/tweets.routes.js';
 
 // Initialize environment variables
 dotenv.config({
@@ -38,6 +39,8 @@ app.all('*', (req, res, next) => {
 
 // API routes
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/tweets', tweetRouter);
+
 
 // Create HTTP server
 const server = http.createServer(app);

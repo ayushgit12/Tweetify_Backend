@@ -1,6 +1,10 @@
-import { imageToCloudinary } from "../controllers/tweet.controllers";
+
 import { Router } from "express";
+import { generateTweet } from "../utils/generatetweet.js";
 
 const router = Router();
 
-router.route("/imageToCloudinary").post(imageToCloudinary);
+
+router.route("/generateTweetByAI").post(generateTweet);
+
+export default router;

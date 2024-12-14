@@ -5,8 +5,9 @@ import { Toaster, toast } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import { BASE_URL } from "./helper";
 import { FaPaperclip } from "react-icons/fa6";
-import { LuSend } from "react-icons/lu";
 import { ClipLoader } from "react-spinners"; // Import the spinner
+import "./rainbowbtn.css"
+import TweetGeneratorPopup from "./TweetGenerator";
 
 const Post = () => {
 
@@ -119,6 +120,8 @@ const Post = () => {
     setIsLoading(false); // Hide loader after completion
   }
 
+  const [showPopup, setShowPopup] = useState(false);
+
   return (
     <div>
       <Toaster position="top-center" reverseOrder={false} />
@@ -131,12 +134,20 @@ const Post = () => {
           <h1 className="text-5xl p-5 font-bold text-center">POST HERE!</h1>
 
           <div>
+            <div className="flex justify-between items-center">
             <label
               htmlFor="tweet"
-              className="block text-lg font-bold leading-6 text-gray-900"
+              className="block text-2xl font-bold leading-6 text-gray-900"
             >
               Tweet Here
             </label>
+            <button onClick={() => setShowPopup(true)} className="rainbow-button">Generate with AI</button>
+            </div>
+            {showPopup && (
+        <TweetGeneratorPopup
+          onClose={() => setShowPopup(false)}
+        />
+      )}
             <div className="mt-2">
             <textarea
         id="tweet"
@@ -144,7 +155,9 @@ const Post = () => {
         value={tweet}
         onChange={handleTweetChange}
         required
-        className="px-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 h-80 whitespace-pre-wrap"
+        className="px-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6 h-80 whitespace-pre-wrap
+        focus:outline-none"
+        
       ></textarea>
 
       
