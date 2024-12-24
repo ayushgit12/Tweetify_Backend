@@ -9,6 +9,7 @@ import { ClipLoader } from "react-spinners"; // Import the spinner
 import "./rainbowbtn.css"
 import TweetGeneratorPopup from "./TweetGenerator";
 
+
 const Post = () => {
 
   const [isLoading, setIsLoading] = useState(false);  
@@ -135,12 +136,15 @@ const Post = () => {
 
           <div>
             <div className="flex justify-between items-center">
+            <div>
             <label
               htmlFor="tweet"
               className="block text-2xl font-bold leading-6 text-gray-900"
             >
               Tweet Here
             </label>
+
+            </div>
             <button onClick={() => setShowPopup(true)} className="rainbow-button">Generate with AI</button>
             </div>
             {showPopup && (

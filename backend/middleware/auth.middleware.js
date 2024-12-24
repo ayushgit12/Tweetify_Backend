@@ -8,7 +8,7 @@ import { logoutUser } from "../controllers/user.controllers.js";
 
 
 
-export const verifyJWT = asyncHandler(async(req, _, next) => {
+export const verifyJWT = (async(req, _, next) => {
     try {
 
           const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")

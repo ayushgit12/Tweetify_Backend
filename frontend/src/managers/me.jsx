@@ -10,7 +10,6 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "./helper";
 
-
 const Me = () => {
   const ref = useRef(0);
   const navigate = useNavigate();
@@ -61,29 +60,18 @@ const Me = () => {
       });
   };
 
+  console.log(user.followers.users.length)
+  console.log(user)
+
   useEffect(() => {
     getTweets();
   }, []);
 
-
-
-
-
-
-
-
-
-
-
-
-
   return (
     <div>
-      
-
       <div className="relative min-h-screen w-full bg-white">
         <Navbar />
-        
+
         <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
 
         <p className="text-center pr-96 pt-36 text-6xl font-extrabold ">
@@ -147,9 +135,21 @@ const Me = () => {
           </button>
         </div>
       </div>
+      <div className="flex justify-between items-center mt-6 w-full md:w-1/2 mb-8 mx-auto rounded-lg border border-black p-16" ref={ref}>
+        <div className="flex flex-col items-center">
+          <span className="text-3xl font-semibold text-gray-900">Followers</span>
+          <span className="text-5xl font-bold text-blue-600">{user.followers.users.length}</span>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <span className="text-3xl font-semibold text-gray-900">Following</span>
+          <span className="text-5xl font-bold text-blue-600">{user.following.users.length}</span>
+        </div>
+      </div>
+
       <div className="h-24 bg-gradient-to-b from-white to-slate-300"></div>
-    
-      <div className="bg-slate-300" ref={ref}>
+
+      <div className="bg-slate-300" >
         <h1 className="text-5xl text-center font-extrabold pb-20 pt-24">
           Your Posts
         </h1>

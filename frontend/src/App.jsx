@@ -18,6 +18,7 @@ import Comment from "./managers/Comment.jsx";
 import ForgotPassword from "./managers/ForgotPassword.jsx";
 import ResetPassword from "./managers/resetPassword.jsx";
 import SearchFriends from "./managers/SearchFriends.jsx";
+import NotFoundPage from "./managers/NotFoundPage.jsx";
 
 function App() {
 
@@ -77,6 +78,8 @@ function App() {
         <Route path="/searchFriends"
           element={<SearchFriends />}>
         </Route>
+        {/* Catch-all route */}
+        <Route path="*" element={<NotFoundPage />} />
        
       </Routes>
     </>

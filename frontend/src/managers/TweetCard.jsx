@@ -367,12 +367,22 @@ function TweetCard({ tweet }) {
         </div>
         <div className="flex justify-between flex-col-reverse md:flex-row">
           <div>
-            <div
-              ref={tweetRef}
-              className="text-gray-900 h-20 overflow-hidden text-xl mb-2 pl-1"
-            >
-              {tweet.tweet}
-            </div>
+          <div
+  ref={tweetRef}
+  className="text-gray-900 h-20 overflow-hidden text-xl mb-2 pl-1"
+>
+  {tweet.tweet.split(" ").map((word, index) => {
+    if (word.startsWith("#")) {
+      return (
+        <span key={index} className="text-blue-600">
+          {word}{" "}
+        </span>
+      );
+    }
+    return word + " ";
+  })}
+</div>
+
             {/* {console.log(tweet.tweet.length)} */}
             <p
               ref={readMoreRef}

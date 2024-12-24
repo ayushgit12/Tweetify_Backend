@@ -1,106 +1,76 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import img from "../assets/user.png";
-import { useNavigate } from "react-router-dom";
-import TweetCard from "./TweetCard";
 import { BASE_URL } from "./helper";
+import TweetCard from "./TweetCard";
 
-const accountProfile = () => {
-     const navigate = useNavigate();
+const AccountProfile = () => {
   const { slug } = useParams();
-  
-  useEffect(() => {
-     //   window.location.reload();
-    window.scrollTo(0, 0);
-  }, [])
-  
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null); // User data
+  const [tweets, setTweets] = useState([]); // User's tweets
+  const [error, setError] = useState(false); // Error state
 
   useEffect(() => {
-    const getUser = async (userID) => {
+    const fetchUserData = async (userID) => {
       const token = JSON.parse(localStorage.getItem("token"));
-      // console.log(token);
-
-
-      await axios
-        .post(
+      try {
+        const response = await axios.post(
           `${BASE_URL}/api/v1/users/getUserDetails`,
-          {
-            userID: userID,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-        .then((response) => {
-          console.log("Success:", response.data.data);
-          console.log(response.data);
+          { userID },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (response.data.data) {
           setData(response.data.data);
-          //     setlikedUsers((likedUsers) => [...likedUsers, [response.data.data.fullName,response.data.data._id]]);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        } else {
+          setError(true);
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        setError(true);
+      }
     };
-    getUser(slug);
-  }, []);
 
+    const fetchTweets = async () => {
+      const token = JSON.parse(localStorage.getItem("token"));
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/api/v1/users/showTweets`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const userTweets = response.data.data.filter(
+          (tweet) => tweet.user._id === slug
+        );
+        setTweets(userTweets);
+      } catch (err) {
+        console.error("Error fetching tweets:", err);
+      }
+    };
 
+    fetchUserData(slug);
+    fetchTweets();
+  }, [slug]);
 
-
-  const [tweets, setTweets] = useState([]);
-
-  const getTweets = async () => {
-    const token = JSON.parse(localStorage.getItem("token"));
-    // // console.log(token);
-    // if (token === null) {
-    //   alert("Please login first");
-    //   navigate("/login")
-    // }
-
-    await axios
-      .post(
-        `${BASE_URL}/api/v1/users/showTweets`,
-        {}, // Send empty body (optional)
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .then((response) => {
-        console.log("Success:", response.data.data);
-        //     console.log(user._id);
-
-        for (let i = 0; i < response.data.data.length; i++) {
-          if (response.data.data[i].user._id === slug) {
-               // console.log("hi")
-          //   console.log(response.data.data[i].user._id, data._id);
-            if (tweets.reverse().includes(response.data.data[i]) === false)
-              setTweets((tweets) => [...tweets, response.data.data[i]]);
-          }
-        }
-        console.log(tweets);
-
-        // alert("Tweets fetched successfully");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
-  useEffect(() => {
-    getTweets();
-  }, []);
-
-
-
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-100">
+        <h1 className="text-5xl font-bold text-red-600 mb-4">Oops!</h1>
+        <p className="text-2xl text-gray-700">No such user exists.</p>
+        <NavLink to="/Homepage">
+          <button className="mt-6 px-6 py-2 bg-blue-600 text-white rounded">
+            Go Back to Homepage
+          </button>
+        </NavLink>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <nav className="bg-slate-900 ">
+      <nav className="bg-slate-900">
         <ul className="flex justify-around">
           <div className="w-1/3 text-center py-4 text-white">
             <NavLink to="/Homepage">
@@ -109,12 +79,11 @@ const accountProfile = () => {
           </div>
           <div className="w-full text-center py-4 text-white">
             <NavLink to={`/accountProfile/${slug}`}>
-              <li>{data.fullName}'s Profile</li>
+              <li>{data?.fullName}'s Profile</li>
             </NavLink>
           </div>
         </ul>
       </nav>
-      <div></div>
 
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-4xl font-bold text-slate-900 mt-6">
@@ -122,43 +91,42 @@ const accountProfile = () => {
         </h1>
         <div className="flex items-center justify-around flex-wrap">
           <div className="flex-col">
-            <img src={img} className="h-96" alt="" />
-            {/* <button onClick={handleImageChange}>change</button> */}
+            <img src={img} className="h-96" alt="User" />
           </div>
-
           <div>
             <form className="flex flex-col items-center justify-center">
               <label className="text-lg text-slate-900 mt-6">
                 User's Full Name:
               </label>
-              <p className="text-xl font-bold">{data.fullName}</p>
+              <p className="text-xl font-bold">{data?.fullName}</p>
               <label className="text-lg text-slate-900 mt-6">
                 User's Email ID:
               </label>
-              <p className="text-xl font-bold">{data.email}</p>
+              <p className="text-xl font-bold">{data?.email}</p>
             </form>
           </div>
         </div>
       </div>
-      <div className="h-20 bg-gradient-to-b from-white to-slate-300"></div>
 
+      <div className="h-20 bg-gradient-to-b from-white to-slate-300"></div>
 
       <div className="bg-slate-300">
         <h1 className="text-5xl text-center font-extrabold pb-20 pt-8">
           User's Posts
         </h1>
-
         <div>
-          {tweets.length>0 && tweets.map((tweet, index) => {
-               console.log(tweet)
-            return <TweetCard key={index} tweet={tweet} />;
-          })}
+          {tweets.length > 0 &&
+            tweets.map((tweet, index) => (
+              <TweetCard key={index} tweet={tweet} />
+            ))}
         </div>
 
-        {tweets.length === 0 && <div className="text-center text-2xl pt-1 pb-10">No Posts Yet!</div>}
-        </div>
+        {tweets.length === 0 && (
+          <div className="text-center text-2xl pt-1 pb-10">No Posts Yet!</div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default accountProfile;
+export default AccountProfile;

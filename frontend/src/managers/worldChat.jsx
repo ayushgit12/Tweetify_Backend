@@ -75,8 +75,40 @@ useEffect(() => {
     if (message.trim() === "") return;
 
     sendChatMessage(world, message, user.fullName);
+    // setMessageList((prev) => [
+    //   ...prev,
+    //   {
+    //     author: user.fullName,
+    //     message,
+    //     time: new Date().toLocaleTimeString(),
+    //   },
+    // ]);
+
     setMessage("");
   };
+
+  useEffect(() => {
+    console.log(messageList);
+  }, [messageList]);
+
+  useEffect(() => {
+    listenForMessages((messageData) => {
+      setMessageList((prev) => [
+        ...prev,
+        {
+          author: messageData.author,
+          message: messageData.message,
+          time: new Date(messageData.timestamp).toLocaleTimeString(),
+        },
+      ]);
+    }
+    );
+
+    return () => {
+      socket.off('receiveMessage');
+    }
+  }
+  , [socket]);
 
   return (
     <div className="w-screen bg-blue-50">

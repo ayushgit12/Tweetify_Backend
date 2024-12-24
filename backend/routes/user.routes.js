@@ -23,8 +23,8 @@ router.route('/register').post(registerUser);
 router.route('/login').post(loginUser);
 router.route('/logout').post(verifyJWT,logoutUser);
 router.route('/postTweet').post(verifyJWT,postTweet);
-router.route('/showTweets').post(showTweet)
-router.route('/deleteTweet').delete(deleteTweet);
+router.route('/showTweets').post(verifyJWT, showTweet)
+router.route('/deleteTweet').delete(verifyJWT, deleteTweet);
 router.route('/likeTweet').post(likeTweet);
 router.route('/showLikeTweet').post(showLikeTweet);
 router.route('/getUserDetails').post(verifyJWT, getUserDetails);

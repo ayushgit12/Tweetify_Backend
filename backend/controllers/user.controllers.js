@@ -373,12 +373,13 @@ const forgotPassword = asyncHandler(async (req, res) => {
 const emailToUserID = asyncHandler(async (req, res) => {
 
   const { email } = req.body;
+  console.log(email);
 
   const user = await User.findOne({email})
 
   if(!user){
     throw new ApiError(404, "User not found")
-  }
+  } 
 
   return res
     .status(200)

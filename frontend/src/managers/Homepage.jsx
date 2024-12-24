@@ -22,6 +22,8 @@ const Homepage = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [possibleValues, setPossibleValues] = useState([]);
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState("All");
+
 
   // console.log(response)
 
@@ -46,6 +48,8 @@ const Homepage = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const [tweets, setTweets] = useState([]);
+
+
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);
@@ -73,8 +77,9 @@ const Homepage = () => {
       toast.error("Please enter email address to search for user");
       return;
     }
+    let email3 = email;
     if(email2 !== undefined){
-      setEmail(email2)
+      email3 = email2;
     }
     const token = JSON.parse(localStorage.getItem("token"));
 
@@ -82,7 +87,7 @@ const Homepage = () => {
       .post(
         `${BASE_URL}/api/v1/users/emailToUserID`,
         {
-          email: email,
+          email: email3,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -150,6 +155,13 @@ const Homepage = () => {
         // alert("Tweets fetched successfully");
       })
       .catch((error) => {
+        toast.error("Session expired. Please login again");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        
+        setTimeout(() => {
+          navigate("/login");
+        }, 1000);
         console.error("Error:", error);
       });
   };
@@ -164,6 +176,7 @@ const Homepage = () => {
         position: "top-right",
       }
     );
+    
 
     const getAllUsers = async () => {
       const token = JSON.parse(localStorage.getItem("token"));
@@ -212,7 +225,7 @@ const Homepage = () => {
             />
           </p>
 
-          <p className="text-[#6D38C3] mt-4 text-xl font-semibold text-center">
+          <p className="text- mt-4 text-xl font-semibold text-center">
             Are you sure you want to logout ?
           </p>
 
@@ -330,14 +343,57 @@ const Homepage = () => {
           </div>
         </div>
         <p className="text-3xl font-bold p-5">Today's Feed</p>
+        
+      </div>
+<div className="w-fit mx-auto mb-2">
+      <div className="relative flex items-center w-64 h-12 bg-gray-300 rounded-full cursor-pointer">
+        {/* Slider Button */}
+        <div
+          className={`absolute w-1/2 h-full bg-blue-600 rounded-full transition-transform duration-300 ${
+            selected === "All" ? "translate-x-0" : "translate-x-full"
+          }`}
+        ></div>
+
+        {/* All Option */}
+        <div
+          className={`flex-1 text-center text-sm font-semibold z-10 ${
+            selected === "All" ? "text-white" : "text-gray-600"
+          }`}
+          onClick={() => setSelected("All")}
+        >
+          All
+        </div>
+
+        {/* Following Option */}
+        <div
+          className={`flex-1 text-center text-sm font-semibold z-10 ${
+            selected === "Following" ? "text-white" : "text-gray-600"
+          }`}
+          onClick={() => setSelected("Following")}
+        >
+          Following
+        </div>
+      </div>
       </div>
 
+      {selected == "Following" && user.following.users.length === 0 ? <p className="text-center text-2xl font-semibold text-red-500 mt-16">You are not following anyone yet</p> : ""}
+      
+{selected === "All" ?
       <div>
         {tweets.map((tweet, index) => {
           return <TweetCard key={index} tweet={tweet} />;
         })}
       </div>
+      : <div>
+        {tweets.map((tweet, index) => {
+          if(user.following.users.includes(tweet.user._id)){
+            return <TweetCard key={index} tweet={tweet} />;
+          }
+        })}
+      </div>
+}
     </div>
+    
   );
 };
 
