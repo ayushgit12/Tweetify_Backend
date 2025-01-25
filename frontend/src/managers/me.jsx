@@ -1,175 +1,329 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import TweetCardForMe from "./TweetCardForMe";
-import { useRef } from "react";
-import Fade from "react-awesome-reveal";
-import Zoom from "react-awesome-reveal";
+import { motion, AnimatePresence } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "./helper";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from "recharts";
+import {
+  ChevronDown,
+  Users,
+  UserPlus,
+  MessageSquare,
+  Share2,
+  Info
+} from "lucide-react";
 
 const Me = () => {
-  const ref = useRef(0);
-  const navigate = useNavigate();
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1
+  });
 
-  if (
-    localStorage.getItem("token") === null ||
-    localStorage.getItem("user") === null
-  ) {
+  const statsRef = useRef(null);
+  const navigate = useNavigate();
+  const [showStatsTooltip, setShowStatsTooltip] = useState(false);
+
+  // Authentication check
+  if (!localStorage.getItem("token") || !localStorage.getItem("user")) {
     window.location.href = "/login";
   }
+
   const user = JSON.parse(localStorage.getItem("user"));
+  const [tweets, setTweets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const slideUp = () => {
-    ref.current.scrollIntoView({ behavior: "smooth" });
+    statsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const [tweets, setTweets] = useState([]);
+  // Chart data
+  const socialData = [
+    { name: "Followers", value: user.followers.users.length },
+    { name: "Following", value: user.following.users.length }
+  ];
+
+  const COLORS = ["#0ea5e9", "#0284c7"];
 
   const getTweets = async () => {
-    const token = JSON.parse(localStorage.getItem("token"));
-    // console.log(token);
-
-    await axios
-      .post(
+    try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      const response = await axios.post(
         `${BASE_URL}/api/v1/users/showTweets`,
-        {}, // Send empty body (optional)
+        {},
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }
         }
-      )
-      .then((response) => {
-        console.log("Success:", response.data.data);
-        //     console.log(user._id);
+      );
 
-        for (let i = 0; i < response.data.data.length; i++) {
-          if (response.data.data[i].user._id === user._id) {
-            console.log(response.data.data[i].user._id, user._id);
-            if (tweets.reverse().includes(response.data.data[i]) === false)
-              setTweets((tweets) => [...tweets, response.data.data[i]]);
-          }
-        }
-        console.log(tweets);
-
-        // alert("Tweets fetched successfully");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      const userTweets = response.data.data
+        .filter(tweet => tweet.user._id === user._id)
+        .reverse();
+      
+      setTweets(userTweets);
+    } catch (error) {
+      console.error("Error fetching tweets:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  console.log(user.followers.users.length)
-  console.log(user)
 
   useEffect(() => {
     getTweets();
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div>
-      <div className="relative min-h-screen w-full bg-white">
-        <Navbar />
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-100">
+      <Navbar />
 
-        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+      {/* Background Pattern */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] pointer-events-none" />
 
-        <p className="text-center pr-96 pt-36 text-6xl font-extrabold ">
-          Welcome
-        </p>
-        <Zoom triggerOnce={true} duration={1500}>
-          <p className="text-center text-8xl font-extrabold ">
-            {user.fullName} !
-          </p>
-        </Zoom>
-        <div className="flex justify-around pt-8 flex-wrap">
-          <span>
-            <dotlottie-player
-              src="https://lottie.host/f34ac4e7-126b-4fd6-a695-499d2915a8f1/PuyTiVUtS7.json"
-              background="transparent"
-              speed="0.5"
-              style={{ width: "275px", height: "275px" }}
-              loop
-              autoplay
-            ></dotlottie-player>
-            <Fade triggerOnce={true} delay={1500} bottom duration={1500}>
-              <p className="text-center text-3xl">Spark ideas,</p>
-            </Fade>
-          </span>
-          {/* </Fade> */}
-          <span className="pt-16">
-            <dotlottie-player
-              src="https://lottie.host/66815490-488b-473c-aabc-5d2090cec74d/RAF0m2lcbq.json"
-              background="transparent"
-              speed="0.75"
-              style={{ width: "150px", height: "150px" }}
-              loop
-              autoplay
-            ></dotlottie-player>
-            <Fade triggerOnce={true} delay={3000} bottom duration={1500}>
-              <p className="text-center text-3xl pt-14">Raise Issues, </p>
-            </Fade>
-          </span>
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="pt-32 pb-16 text-center relative z-10"
+      >
+        <motion.h1
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-5xl font-bold text-gray-900 mb-4"
+        >
+          Welcome Back
+        </motion.h1>
+        <motion.h2
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-7xl font-extrabold bg-gradient-to-r from-cyan-500 to-blue-600 text-transparent bg-clip-text"
+        >
+          {user.fullName}!
+        </motion.h2>
+      </motion.div>
 
-          <span>
-            <dotlottie-player
-              src="https://lottie.host/925c768e-93f0-4b29-a025-4a2fca344f10/QpI0bC7CWd.json"
-              background="transparent"
-              speed="0.75"
-              style={{ width: "275px", height: "275px" }}
-              loop
-              autoplay
-            ></dotlottie-player>
-            <Fade triggerOnce={true} delay={4500} bottom duration={1500}>
-              <p className="text-center text-3xl"> Share thoughts!</p>
-            </Fade>
-          </span>
-        </div>
-        <div className="flex justify-center">
-          <button className="md:absolute bottom-16 " onClick={slideUp}>
-            <lord-icon
-              style={{ width: "130px", height: "130px" }}
-              src="https://cdn.lordicon.com/xcrjfuzb.json"
-              trigger="hover"
-            ></lord-icon>
-          </button>
-        </div>
-      </div>
-      <div className="flex justify-between items-center mt-6 w-full md:w-1/2 mb-8 mx-auto rounded-lg border border-black p-16" ref={ref}>
-        <div className="flex flex-col items-center">
-          <span className="text-3xl font-semibold text-gray-900">Followers</span>
-          <span className="text-5xl font-bold text-blue-600">{user.followers.users.length}</span>
-        </div>
+      {/* Features Grid */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4 py-12"
+      >
+        {[
+          {
+            title: "Spark Ideas",
+            icon: MessageSquare,
+            description: "Share your thoughts with the world",
+            color: "from-cyan-400 to-blue-500"
+          },
+          {
+            title: "Connect",
+            icon: Share2,
+            description: "Build meaningful connections",
+            color: "from-blue-400 to-indigo-500"
+          },
+          {
+            title: "Grow Together",
+            icon: Users,
+            description: "Learn and grow with the community",
+            color: "from-indigo-400 to-purple-500"
+          }
+        ].map((feature, index) => (
+          <motion.div
+            key={index}
+            variants={itemVariants}
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className="bg-white rounded-xl shadow-lg p-6 relative overflow-hidden group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+            <feature.icon className="w-12 h-12 mb-4 text-gray-700" />
+            <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+            <p className="text-gray-600">{feature.description}</p>
+          </motion.div>
+        ))}
+      </motion.div>
 
-        <div className="flex flex-col items-center">
-          <span className="text-3xl font-semibold text-gray-900">Following</span>
-          <span className="text-5xl font-bold text-blue-600">{user.following.users.length}</span>
-        </div>
-      </div>
+      {/* Scroll Button */}
+      <motion.button
+        onClick={slideUp}
+        whileHover={{ y: -5 }}
+        whileTap={{ scale: 0.95 }}
+        className="mx-auto block mb-16"
+        title="View Your Stats"
+      >
+        <ChevronDown className="w-12 h-12 text-gray-400 animate-bounce" />
+      </motion.button>
 
-      <div className="h-24 bg-gradient-to-b from-white to-slate-300"></div>
+      {/* Stats Section */}
+      <div ref={statsRef} className="bg-white py-16 relative z-10">
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="max-w-6xl mx-auto px-4"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Social Stats */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Social Overview</h3>
+                <motion.button
+                  onHoverStart={() => setShowStatsTooltip(true)}
+                  onHoverEnd={() => setShowStatsTooltip(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <Info className="w-5 h-5" />
+                </motion.button>
+              </div>
+              <AnimatePresence>
+                {showStatsTooltip && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute bg-gray-900 text-white p-2 rounded text-sm"
+                  >
+                    Your network growth statistics
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={socialData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {socialData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="text-center">
+                  <p className="text-gray-600">Followers</p>
+                  <p className="text-3xl font-bold text-cyan-500">{user.followers.users.length}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-gray-600">Following</p>
+                  <p className="text-3xl font-bold text-blue-500">{user.following.users.length}</p>
+                </div>
+              </div>
+            </div>
 
-      <div className="bg-slate-300" >
-        <h1 className="text-5xl text-center font-extrabold pb-20 pt-24">
-          Your Posts
-        </h1>
-
-        <div>
-          {tweets.reverse().map((tweet, index) => {
-            return <TweetCardForMe key={index} tweet={tweet} />;
-          })}
-        </div>
-
-        {/* <div className="h-24 bg-gradient-to-b from-slate-300 to-slate-600"></div> */}
-
-        <div className="bg-slate-800 h-24 flex justify-center items-center">
-          <div className="w-full text-center text-white">
-            <NavLink to="/aboutApp">
-              <button className="">About App</button>
-            </NavLink>
+            {/* Activity Stats */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Tweet Activity</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={[{ name: 'Tweets', count: tweets.length }]}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="#0ea5e9" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
+
+      {/* Tweets Section */}
+      <div className="bg-slate-100 py-16">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="px-4 bg-gray-50 "
+        >
+          <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r pt-8 from-cyan-500 to-blue-600 text-transparent bg-clip-text">
+            Your Posts
+          </h2>
+
+          {isLoading ? (
+            <div className="flex justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500" />
+            </div>
+          ) : (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="space-y-6"
+            >
+              {tweets.map((tweet, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                  className="bg-white relative z-10"
+                >
+                  <TweetCardForMe tweet={tweet} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </motion.div>
+      </div>
+
+      {/* Footer */}
+      <motion.footer
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="bg-slate-800 text-white py-8"
+      >
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <NavLink
+            to="/aboutApp"
+            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors"
+          >
+            <Info className="w-4 h-4" />
+            <span>About App</span>
+          </NavLink>
+        </div>
+      </motion.footer>
     </div>
   );
 };

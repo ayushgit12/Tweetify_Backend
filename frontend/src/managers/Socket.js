@@ -38,4 +38,15 @@ export const joinChat = (roomId, username) => {
 
 
    };
-   
+
+   export const listenForOnlineUsers = (socket, callback) => {
+    if (typeof callback !== "function") {
+      throw new Error("Callback must be a function");
+    }
+  
+    socket.off("onlineUsers"); // Ensure no duplicate listeners
+    socket.on("onlineUsers", (users) => {
+      callback(users); // Pass the users to the callback function
+    });
+  };
+

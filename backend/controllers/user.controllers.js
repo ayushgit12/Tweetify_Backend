@@ -454,6 +454,11 @@ const getFollowings = asyncHandler(async (req, res) => {
 
 })
 
+const noOfUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  return res.status(200).json({ noOfUsers: users.length });
+});
+
 
 export {
   registerUser,
@@ -472,5 +477,6 @@ export {
   emailToUserID,
   getAllUsers,
   followUser,
-  getFollowings
+  getFollowings,
+  noOfUsers
 };

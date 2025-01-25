@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
-import { joinChat, leaveChat, sendMessage as sendChatMessage, listenForMessages } from "./Socket";
+import { joinChat, leaveChat, sendMessage as sendChatMessage, listenForMessages, listenForOnlineUsers } from "./Socket";
 import { SOCKET_URL } from "./helper";
 import io from "socket.io-client";
 
@@ -17,22 +17,22 @@ const WorldChat = () => {
 
   const [onlineUsers, setOnlineUsers] = useState([]); // State to store online users
 
-useEffect(() => {
-  const handleOnlineUsers = (users) => {
-    console.log(users);
-    setOnlineUsers(users || []); // Update the state with the list of online users
-  };
+  useEffect(() => {
+    const handleOnlineUsers = (users) => {
+      console.log(users);
+      setOnlineUsers(users || []); // Ensure users is always an array
+    };
 
-  socket.on('onlineUsers', ()=>{
-    console.log('onlineUsers');
-    handleOnlineUsers();
-  }); // Listen for online user updates
+    listenForOnlineUsers(socket, handleOnlineUsers)
+    
+     // Listen for online user updates
 
-  return () => {
-    socket.off('onlineUsers', handleOnlineUsers); // Clean up listener on unmount
-  };
-}, [socket]);
-
+    return () => {
+      if (socket) {
+        socket.off("onlineUsers", handleOnlineUsers); // Clean up listener on unmount
+      }
+    };
+  }, []);
   
 
   useEffect(() => {

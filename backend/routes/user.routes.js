@@ -14,6 +14,8 @@ import { forgotPassword } from "../controllers/user.controllers.js";
 import { emailToUserID } from "../controllers/user.controllers.js";
 import { getAllUsers } from "../controllers/user.controllers.js";
 import { followUser } from "../controllers/user.controllers.js";
+import { noOfTweets } from "../controllers/tweet.controllers.js";
+import { noOfUsers } from "../controllers/user.controllers.js";
 
 
 
@@ -37,6 +39,9 @@ router.route('/emailToUserID').post(emailToUserID);
 router.route('/getAllUsers').get(getAllUsers);
 router.route('/followUser').post(verifyJWT, followUser);
 router.route('/getFollowings').post(verifyJWT, getFollowings);
+
+router.route('/noOfUsers').get(noOfUsers);
+router.route('/noOfTweets').get(noOfTweets);
 
 
 
