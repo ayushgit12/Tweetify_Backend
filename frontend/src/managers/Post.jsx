@@ -1,234 +1,312 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Navbar from "../components/Navbar";
 import { BASE_URL } from "./helper";
-import { FaPaperclip } from "react-icons/fa6";
-import { ClipLoader } from "react-spinners"; // Import the spinner
-import "./rainbowbtn.css"
+import {
+  ImagePlus,
+  Send,
+  X,
+  Sparkles,
+  MessageSquare,
+  Image as ImageIcon,
+  AlertCircle
+} from "lucide-react";
+import { ClipLoader } from "react-spinners";
 import TweetGeneratorPopup from "./TweetGenerator";
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const Post = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  }, []);
 
-  const [isLoading, setIsLoading] = useState(false);  
-  if (
-    localStorage.getItem("token") === null ||
-    localStorage.getItem("user") === null
-  ) {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [charCount, setCharCount] = useState(0);
+  const MAX_CHARS = 280; // Twitter-like character limit
+
+  if (!localStorage.getItem("token") || !localStorage.getItem("user")) {
     window.location.href = "/login";
   }
 
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
-  const [tweet, settweet] = useState("");
-  const [image, setImage] = useState(null); // State to store the selected image
+  const [tweet, setTweet] = useState("");
+  const [image, setImage] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const handleTweetChange = (e) => {
-    settweet(e.target.value);
+    const text = e.target.value;
+    if (text.length <= MAX_CHARS) {
+      setTweet(text);
+      setCharCount(text.length);
+    }
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]); // Store the selected image file
+    const file = e.target.files[0];
+    if (file) {
+      handleImageFile(file);
+    }
+  };
+
+  const handleImageFile = (file) => {
+    if (file && file.type.startsWith('image/')) {
+      setImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      toast.error("Please upload an image file");
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    handleImageFile(file);
+  };
+
+  const removeImage = () => {
+    setImage(null);
+    setPreviewUrl(null);
   };
 
   const uploadToCloudinary = async (file) => {
     try {
-      // Replace these with your Cloudinary credentials
       const CLOUD_NAME = "dktqwjd5t";
       const UPLOAD_PRESET = "tweetify";
-  
-      // FormData to hold the image and Cloudinary parameters
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", UPLOAD_PRESET);
-  
-      // Cloudinary URL
       const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
-  
-      // Post the image to Cloudinary
       const response = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
-  
-      // Return the URL of the uploaded image
       return response.data.secure_url;
     } catch (error) {
       console.error("Error uploading to Cloudinary:", error);
-      
       toast.error("Failed to upload image");
       return null;
     }
   };
 
   const handlePost = async () => {
-    // e.preventDefault();
-
-    if(tweet.length === 0) {
+    if (tweet.trim().length === 0) {
+      toast.error("Please write something to post");
       return;
     }
 
     const token = JSON.parse(localStorage.getItem("token"));
-
-    if (token === null) {
-      alert("Please login first");
+    if (!token) {
+      toast.error("Please login first");
       navigate("/login");
       return;
     }
 
-    
-
     let imageUrl = null;
-    if(image) {
+    if (image) {
       imageUrl = await uploadToCloudinary(image);
-      // imageUrl = "https://res.cloudinary.com/dktqwjd5t/image/upload/v1733337561/ikjre648j4acorvky5nm.gif";
-      if(imageUrl === null) {
-        return;
-      }
-      console.log(imageUrl);
+      if (imageUrl === null) return;
     }
-    
-    await axios
-      .post(`${BASE_URL}/api/v1/users/postTweet`, 
+
+    try {
+      await axios.post(
+        `${BASE_URL}/api/v1/users/postTweet`,
         {
           tweet: tweet,
           user: user._id,
-          image: image ? imageUrl : null,
-        }, {
-        headers: {
-          Authorization: `Bearer ${token}`
+          image: imageUrl,
         },
-      })
-      .then((response) => {
-        console.log("Success:", response.data);
-        toast.success("Tweet posted successfully");
-        settweet("");
-        setImage(null); // Reset image after successful post
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        toast.error("Failed to post the tweet");
-      });
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success("Tweet posted successfully");
+      setTweet("");
+      setImage(null);
+      setPreviewUrl(null);
+      setCharCount(0);
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to post the tweet");
+    }
   };
 
   const handlePostClick = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Show loader
-    await handlePost(); // Call the post handler (ensure it's async if necessary)
-    setIsLoading(false); // Hide loader after completion
-  }
-
-  const [showPopup, setShowPopup] = useState(false);
+    setIsLoading(true);
+    await handlePost();
+    setIsLoading(false);
+  };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-100">
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-
-      <div className="flex min-h-full flex-1 flex-col justify-center">
-        <Navbar />
-
-        <div className="main m-10 mt-16">
-          <h1 className="text-5xl p-5 font-bold text-center">POST HERE!</h1>
-
-          <div>
-            <div className="flex justify-between items-center">
-            <div>
-            <label
-              htmlFor="tweet"
-              className="block text-2xl font-bold leading-6 text-gray-900"
-            >
-              Tweet Here
-            </label>
-
-            </div>
-            <button onClick={() => setShowPopup(true)} className="rainbow-button">Generate with AI</button>
-            </div>
-            {showPopup && (
-        <TweetGeneratorPopup
-          onClose={() => setShowPopup(false)}
-        />
-      )}
-            <div className="mt-2">
-            <textarea
-        id="tweet"
-        name="tweet"
-        value={tweet}
-        onChange={handleTweetChange}
-        required
-        className="px-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6 h-80 whitespace-pre-wrap
-        focus:outline-none"
-        
-      ></textarea>
-
       
-            </div>
-            <div className="mt-4">
-      <label
-        htmlFor="image"
-        className="block text-lg font-bold leading-6 text-gray-900 mb-2"
-      >
-        Add an Image
-      </label>
+      {/* Background Pattern */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] pointer-events-none" />
 
-      {/* Styled Button with Clip Icon */}
-      <label
-        htmlFor="image"
-        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-100 cursor-pointer"
-      >
-        <FaPaperclip className="h-5 w-5 text-gray-500 mr-2" />
-        Upload Image
-      </label>
-      <input
-        id="image"
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        className="hidden" // Hide the default input
-      />
+      <Navbar />
 
-      {/* Display Selected Image */}
-      {image && (
-        <div className="mt-4">
-          <p className="text-sm text-gray-700">Selected Image:</p>
-          <img
-            src={URL.createObjectURL(image)}
-            alt="Selected"
-            className="mt-2 h-32 w-32 object-cover rounded-md border border-gray-300"
-          />
-        </div>
-      )}
-    </div>
-            <div className="flex gap-5 items-center mt-5">
-              <button
-                className={`
-                  ${tweet.length === 0 ? "cursor-not-allowed bg-gray-500" : "bg-blue-700 "}
-                   p-3 rounded-lg text-white flex items-center gap-1`}
-                   disabled={isLoading || tweet.length === 0}
-                onClick={handlePostClick}
-              >
-                {isLoading ? (
-          <ClipLoader color="#ffffff" size={24} /> // Spinner with react-spinners
-        ) : (
-          <>
-            <lord-icon
-              src="https://cdn.lordicon.com/zfzufhzk.json"
-              trigger="hover"
-              delay="1500"
-              state="hover-line"
-              style={{ width: "30px", height: "30px" }}
-            ></lord-icon>
-            POST
-          </>
-        )}
-              </button>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-4xl mx-auto px-4 pt-32 pb-16"
+      >
+        <motion.h1
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-500 to-blue-600 text-transparent bg-clip-text"
+        >
+          Share Your Thoughts
+        </motion.h1>
+
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="bg-white rounded-xl shadow-lg p-6 relative"
+        >
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="w-6 h-6 text-cyan-500" />
+              <h2 className="text-2xl font-semibold text-gray-900">Create Post</h2>
             </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowPopup(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+            >
+              <Sparkles className="w-5 h-5" />
+              <span>AI Assist</span>
+            </motion.button>
           </div>
-        </div>
-      </div>
+
+          <div className="space-y-6">
+            <div>
+              <textarea
+                value={tweet}
+                onChange={handleTweetChange}
+                placeholder="What's on your mind?"
+                className="w-full h-40 p-4 text-lg text-gray-900 rounded-lg border border-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 resize-none"
+              />
+              <div className="flex justify-end mt-2">
+                <span className={`text-sm ${charCount > MAX_CHARS * 0.8 ? 'text-orange-500' : 'text-gray-500'}`}>
+                  {charCount}/{MAX_CHARS}
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-300 ${
+                isDragging ? 'border-cyan-500 bg-cyan-50' : 'border-gray-300'
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              {previewUrl ? (
+                <div className="relative">
+                  <motion.img
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    src={previewUrl}
+                    alt="Preview"
+                    className="max-h-64 mx-auto rounded-lg"
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={removeImage}
+                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </motion.button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <ImageIcon className="w-12 h-12 mx-auto text-gray-400" />
+                  <div className="space-y-2">
+                    <p className="text-gray-600">Drag and drop an image, or</p>
+                    <label className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors">
+                      <ImagePlus className="w-5 h-5 mr-2" />
+                      <span>Browse</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={isLoading || tweet.trim().length === 0}
+              onClick={handlePostClick}
+              className={`w-full py-3 rounded-lg text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
+                tweet.trim().length === 0
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg'
+              }`}
+            >
+              {isLoading ? (
+                <ClipLoader color="#ffffff" size={24} />
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  <span>Post</span>
+                </>
+              )}
+            </motion.button>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      <AnimatePresence>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <TweetGeneratorPopup onClose={() => setShowPopup(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

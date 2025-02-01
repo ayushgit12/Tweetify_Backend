@@ -16,6 +16,7 @@ import { getAllUsers } from "../controllers/user.controllers.js";
 import { followUser } from "../controllers/user.controllers.js";
 import { noOfTweets } from "../controllers/tweet.controllers.js";
 import { noOfUsers } from "../controllers/user.controllers.js";
+import { abc } from "../controllers/user.controllers.js";
 
 
 
@@ -42,7 +43,7 @@ router.route('/getFollowings').post(verifyJWT, getFollowings);
 
 router.route('/noOfUsers').get(noOfUsers);
 router.route('/noOfTweets').get(noOfTweets);
-
+router.route("/abc").get(abc);
 
 
 export default router;

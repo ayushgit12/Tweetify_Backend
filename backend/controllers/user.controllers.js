@@ -12,6 +12,10 @@ const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, password } = await req.body;
   // console.log(username, fullName, email, password)
 
+  if(!fullName || !email || !password){
+    throw new ApiError(400, "All fields are required");
+  }
+
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
@@ -82,6 +86,11 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!email && !username) {
     throw new ApiError(400, "Email or username is required");
   }
+
+  if (!password) {
+    throw new ApiError(400, "Password is required");
+  }
+
 
   const user = await User.findOne({ email });
 
@@ -175,6 +184,10 @@ const getUserDetails = asyncHandler(async (req, res) => {
 const postTweet = asyncHandler(async (req, res) => {
 
   const { tweet, image } = req.body;
+
+  if (!tweet) {
+    throw new ApiError(400, "Tweet is required");
+  }
 
   const newTweet = await Tweet.create({
     tweet,
@@ -460,6 +473,21 @@ const noOfUsers = asyncHandler(async (req, res) => {
 });
 
 
+const abc = asyncHandler(async (req, res) => {
+  // console.log(req)
+  let g = req.query;
+
+  const user = await User.find({ email: g.email });
+
+  if(!user)
+    throw new ApiError(404, "User not found");
+
+  return res
+    .status(200)
+    .json(new APIresponse(200, user, "User found successfully"));
+})
+
+
 export {
   registerUser,
   loginUser,
@@ -478,5 +506,6 @@ export {
   getAllUsers,
   followUser,
   getFollowings,
-  noOfUsers
+  noOfUsers,
+  abc
 };

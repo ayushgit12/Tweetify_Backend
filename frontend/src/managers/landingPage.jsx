@@ -7,7 +7,6 @@ import {
   Zap, 
   Globe, 
   ArrowRight, 
-  Twitter,
   Clock,
   MessageCircle,
   Hash,
@@ -135,7 +134,7 @@ function landingPage() {
   ];
 
   const stats = [
-    { number: 20, label: "Active Users", suffix: "+" },
+    { number: 50, label: "Active Users", suffix: "+" },
     { number: 10, label: "Daily Posts", suffix: "+" },
     { number: 30, label: "AI-Generated Tweets", suffix: "+" }
   ];
@@ -192,9 +191,9 @@ function landingPage() {
 
         {/* Hero Section */}
         <div
-  className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20"
+  className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20 bg-slate-600"
   style={{
-    backgroundImage: `url(${bg})`,
+    // backgroundImage: `url(${bg})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
