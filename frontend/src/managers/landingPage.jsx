@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useAnimation } from 'framer-motion';
+import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import logo from "../assets/logo2.png"
 import { 
+  Bird, 
   MessageSquare, 
   Users, 
   Zap, 
   Globe, 
   ArrowRight, 
-  Clock,
-  MessageCircle,
-  Hash,
+  Bot, 
   Sparkles,
-  Languages,
+  Hash,
   TrendingUp,
   Shield,
   Heart,
-  Bot,
   Wand2,
   Pencil,
-  CheckCircle2
+  CheckCircle2,
+  Clock,
+  MessageCircle,
+  Languages
 } from 'lucide-react';
-import {useNavigate} from "react-router-dom"
-import logo from "../assets/logo2.png"
-import bg from "../assets/bgtw.avif"
+import { useNavigate } from "react-router-dom";
 
 // Counter component for animated statistics
 const Counter = ({ from = 0, to, duration = 2, suffix = '' }) => {
@@ -53,12 +53,95 @@ const Counter = ({ from = 0, to, duration = 2, suffix = '' }) => {
   return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
 };
 
-function landingPage() {
-  const navigate = useNavigate()
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1
-  });
+// Flying Bird Component
+const FlyingBird = ({ delay = 0 }) => {
+  const pathVariants = {
+    start: { x: -100, y: Math.random() * 500 },
+    end: { 
+      x: window.innerWidth + 100,
+      y: Math.random() * 500,
+      transition: {
+        duration: 15,
+        delay,
+        repeat: Infinity,
+        ease: "linear"
+      }
+    }
+  };
+
+  return (
+    <motion.div
+      className="absolute"
+      variants={pathVariants}
+      initial="start"
+      animate="end"
+    >
+      <Bird className="w-6 h-6 text-slate-400" />
+    </motion.div>
+  );
+};
+
+// Message Cloud Component
+const MessageCloud = ({ children, className = "" }) => {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className={`relative p-4 bg-white rounded-2xl shadow-lg cursor-pointer ${className}`}
+    >
+      <div className="absolute -bottom-2 left-6 w-4 h-4 bg-white transform rotate-45" />
+      {children}
+    </motion.div>
+  );
+};
+
+// Floating Animation Component
+const FloatingElement = ({ children, delay = 0 }) => {
+  return (
+    <motion.div
+      animate={{
+        y: [0, -10, 0],
+      }}
+      transition={{
+        duration: 2,
+        repeat: Infinity,
+        delay
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// Bubble Component
+const Bubble = ({ size = 'w-4 h-4', delay = 0, duration = 20 }) => {
+  return (
+    <motion.div
+      className={`absolute ${size} rounded-full bg-white/10 backdrop-blur-sm`}
+      initial={{ y: '100vh', x: Math.random() * 100 - 50 }}
+      animate={{ 
+        y: '-100vh',
+        x: Math.random() * 200 - 100
+      }}
+      transition={{
+        duration: duration,
+        repeat: Infinity,
+        delay: delay,
+        ease: "linear"
+      }}
+    />
+  );
+};
+
+function LandingPage() {
+  const navigate = useNavigate();
+  const [birds, setBirds] = useState([]);
+  const [bubbles, setBubbles] = useState([]);
+
+  useEffect(() => {
+    setBirds(Array.from({ length: 5 }, (_, i) => i));
+    setBubbles(Array.from({ length: 15 }, (_, i) => i));
+  }, []);
 
   const features = [
     {
@@ -134,55 +217,43 @@ function landingPage() {
   ];
 
   const stats = [
-    { number: 50, label: "Active Users", suffix: "+" },
-    { number: 10, label: "Daily Posts", suffix: "+" },
-    { number: 30, label: "AI-Generated Tweets", suffix: "+" }
+    { number: 50, label: "Active Users", suffix: "M+" },
+    { number: 10, label: "Daily Posts", suffix: "M+" },
+    { number: 30, label: "AI-Generated Tweets", suffix: "M+" }
   ];
 
   return (
-    <div className="relative">
-      {/* Hero Background */}
-      <div 
-        className="fixed inset-0 z-0" 
-        style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=2940")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.1
-        }}
-      />
-
+    <div className="relative overflow-hidden">
       {/* Content */}
-      <div className="relative z-10">
+      <div className="relative">
         {/* Navigation */}
-        <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-lg shadow-sm z-50">
+        <nav className="fixed top-0 w-full bg-white/70 backdrop-blur-lg shadow-lg z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex justify-between items-center">
-              <motion.div
-              onClick={()=>window.location.reload()}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
-                <img src={logo} className='w-10' alt="" />
-                <span className="text-2xl font-bold text-slate-800">Tweetify</span>
-              </motion.div>
+              <FloatingElement>
+                <div className="flex items-center space-x-2 cursor-pointer">
+                  <img src={logo} className='h-10' alt="" />
+                  <span className="text-2xl font-bold text-slate-800">
+                    Tweetify
+                  </span>
+                </div>
+              </FloatingElement>
               <div className="flex space-x-4">
                 <motion.button
-                onClick={() => navigate('/login')}
+                  onClick={() => navigate('/login')}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 rounded-full bg-slate-800 text-white hover:bg-slate-600 transition-colors cursor-pointer"
+                  className="px-6 py-2 rounded-full bg-slate-800 text-white shadow-lg hover:shadow-xl transition-all"
                 >
                   Sign In
                 </motion.button>
                 <motion.button
-                onClick={() => navigate('/register')}
+                  onClick={() => navigate('/register')}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 rounded-full bg-white text-slate-500 border border-slate-500 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="px-6 py-2 rounded-full bg-white text-slate-800 border-2 border-slate-800 hover:bg-slate-50 transition-all"
                 >
-                  Sign Up
+                  Join Free
                 </motion.button>
               </div>
             </div>
@@ -190,49 +261,86 @@ function landingPage() {
         </nav>
 
         {/* Hero Section */}
-        <div
-  className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20 bg-slate-600"
-  style={{
-    // backgroundImage: `url(${bg})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  }}
->
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8 }}
-    className="text-center bg-white/80 backdrop-blur-sm p-10 rounded-lg"
-  >
-    <motion.div
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="w-24 h-24 mx-auto mb-8 rounded-full flex items-center justify-center"
-    >
-      <img src={logo} alt="" />
-    </motion.div>
-    <h1 className="text-5xl sm:text-7xl font-bold text-gray-900 mb-6">
-      Share Your Story
-      <br />
-      <span className="text-slate-800">With The World</span>
-    </h1>
-    <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-      Join others who use our platform to connect, share, and make their voice heard.
-    </p>
-    <motion.button
-    onClick={()=>navigate("/register")}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="px-8 py-4 rounded-full bg-slate-900 text-white text-lg font-semibold hover:bg-slate-600 transition-colors inline-flex items-center space-x-2 cursor-pointer"
-    >
-      <span>Get Started</span>
-      <ArrowRight className="w-5 h-5" />
-    </motion.button>
-  </motion.div>
-</div>
+        <div className="min-h-screen relative overflow-hidden">
+          {/* Hero Background */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900"
+            style={{
+              backgroundImage: 'url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2944")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundBlendMode: 'overlay',
+            }}
+          />
 
+          {/* Animated Bubbles */}
+          {bubbles.map((_, index) => (
+            <Bubble 
+              key={index}
+              size={index % 3 === 0 ? 'w-8 h-8' : index % 3 === 1 ? 'w-6 h-6' : 'w-4 h-4'}
+              delay={index * 2}
+              duration={15 + Math.random() * 10}
+            />
+          ))}
+
+          {/* Flying Birds */}
+          {birds.map((_, index) => (
+            <FlyingBird key={index} delay={index * 2} />
+          ))}
+
+          <div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+              {/* Decorative Message Clouds */}
+              <AnimatePresence>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="absolute -top-20 left-20"
+                >
+                  <MessageCloud className="bg-white/90">
+                    <p className="text-slate-800">Hello! 👋</p>
+                  </MessageCloud>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="absolute -bottom-10 right-40"
+                >
+                  <MessageCloud className="bg-white/90">
+                    <p className="text-slate-800">Join the fun! ✨</p>
+                  </MessageCloud>
+                </motion.div>
+              </AnimatePresence>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center"
+              >
+                <FloatingElement>
+                  <h1 className="text-6xl sm:text-7xl font-bold mb-6 text-white">
+                    Share Your Story
+                  </h1>
+                </FloatingElement>
+                <p className="text-xl text-slate-200 mb-8 max-w-2xl mx-auto">
+                  Join our vibrant community where every tweet sparkles with possibility! ✨
+                </p>
+                <motion.button
+                  onClick={() => navigate("/register")}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-4 rounded-full bg-white text-slate-800 text-lg font-semibold shadow-lg hover:shadow-xl transition-all inline-flex items-center space-x-2"
+                >
+                  <span>Start Your Journey</span>
+                  <ArrowRight className="w-5 h-5" />
+                </motion.button>
+              </motion.div>
+            </div>
+          </div>
+        </div>
 
         {/* World Chat Section */}
         <div className="py-20 bg-gradient-to-b from-white to-slate-50">
@@ -244,8 +352,8 @@ function landingPage() {
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Connect Globally, Chat Instantly</h2>
-              <p className="text-xl text-gray-600">Break down barriers and join conversations that matter.</p>
+              <h2 className="text-4xl font-bold text-slate-800 mb-4">Connect Globally, Chat Instantly</h2>
+              <p className="text-xl text-slate-600">Break down barriers and join conversations that matter.</p>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -264,8 +372,8 @@ function landingPage() {
                   >
                     {feature.icon}
                   </motion.div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <h3 className="text-xl font-semibold text-slate-800 mb-2">{feature.title}</h3>
+                  <p className="text-slate-600">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -273,7 +381,7 @@ function landingPage() {
         </div>
 
         {/* Features Section */}
-        <div ref={ref} className="py-20 bg-white/80 backdrop-blur-lg">
+        <div className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -282,8 +390,8 @@ function landingPage() {
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Us?</h2>
-              <p className="text-xl text-gray-600">Everything you need to express yourself and connect with others.</p>
+              <h2 className="text-4xl font-bold text-slate-800 mb-4">Why Choose Us?</h2>
+              <p className="text-xl text-slate-600">Everything you need to express yourself and connect with others.</p>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -297,8 +405,8 @@ function landingPage() {
                   className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
                 >
                   <div className="text-slate-500 mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <h3 className="text-xl font-semibold text-slate-800 mb-2">{feature.title}</h3>
+                  <p className="text-slate-600">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -315,27 +423,27 @@ function landingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">Engage in Meaningful Debates</h2>
+                <h2 className="text-4xl font-bold text-slate-800 mb-6">Engage in Meaningful Debates</h2>
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
                     <Hash className="w-6 h-6 text-slate-500 mt-1" />
                     <div>
                       <h3 className="text-xl font-semibold mb-2">Topic-based Discussions</h3>
-                      <p className="text-gray-600">Join conversations about topics that matter to you.</p>
+                      <p className="text-slate-600">Join conversations about topics that matter to you.</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
                     <Sparkles className="w-6 h-6 text-slate-500 mt-1" />
                     <div>
                       <h3 className="text-xl font-semibold mb-2">Smart Matching</h3>
-                      <p className="text-gray-600">Connect with people who share your interests.</p>
+                      <p className="text-slate-600">Connect with people who share your interests.</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
                     <TrendingUp className="w-6 h-6 text-slate-500 mt-1" />
                     <div>
                       <h3 className="text-xl font-semibold mb-2">Trending Topics</h3>
-                      <p className="text-gray-600">Stay updated with what's hot in your community.</p>
+                      <p className="text-slate-600">Stay updated with what's hot in your community.</p>
                     </div>
                   </div>
                 </div>
@@ -371,8 +479,8 @@ function landingPage() {
               className="text-center mb-16"
             >
               <Bot className="w-16 h-16 text-slate-800 mx-auto mb-6" />
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">AI-Powered Experience</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <h2 className="text-4xl font-bold text-slate-800 mb-4">AI-Powered Experience</h2>
+              <p className="text-xl text-slate-600 max-w-3xl mx-auto">
                 Enhance your social media presence with our cutting-edge AI features
               </p>
             </motion.div>
@@ -389,11 +497,11 @@ function landingPage() {
                 >
                   <motion.div 
                     whileHover={{ scale: 1.1 }}
-                    className="text-slate-900 mb-4"
+                    className="text-slate-800 mb-4"
                   >
                     {feature.icon}
                   </motion.div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                  <h3 className="text-xl font-semibold text-slate-800 mb-2">{feature.title}</h3>
                   <p className="text-slate-600 mb-4">{feature.description}</p>
                   <div className="bg-slate-50 p-3 rounded-lg">
                     <p className="text-sm text-slate-700">{feature.example}</p>
@@ -413,7 +521,7 @@ function landingPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="bg-gradient-to-r from-slate-500 to-slate-600 p-8 rounded-xl text-white"
+                className="bg-slate-800 p-8 rounded-xl text-white"
               >
                 <h3 className="text-2xl font-bold mb-6">Watch AI in Action</h3>
                 <div className="space-y-4">
@@ -457,37 +565,12 @@ function landingPage() {
           </div>
         </div>
 
-        {/* Statistics Section */}
-        <div className="py-20 bg-slate-800 text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                  className="p-8 rounded-lg bg-slate-600 backdrop-blur-lg"
-                >
-                  <div className="text-5xl font-bold mb-2">
-                    <Counter to={stat.number} suffix={stat.suffix} />
-                  </div>
-                  <div className="text-xl">{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
+       
 
-        {/* Community Section */}
-        
         {/* Footer */}
-        <footer className="bg-gray-900 text-white py-12">
+        <footer className="bg-slate-900 text-white py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              
-              
-            <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
+            <div className="mt-8 pt-8 border-t border-slate-800 text-center text-slate-400">
               <p>© 2024 Tweetify. All rights reserved.</p>
             </div>
           </div>
@@ -497,4 +580,4 @@ function landingPage() {
   );
 }
 
-export default landingPage;
+export default LandingPage;
