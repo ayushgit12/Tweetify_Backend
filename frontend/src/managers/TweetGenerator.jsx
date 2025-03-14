@@ -8,7 +8,7 @@ import axios from "axios";
 const TweetGeneratorPopup = ({ onClose }) => {
   const [topic, setTopic] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const [tweet, settweet] = useState("");
   const [copyText, setCopyText] = useState("Copy");
 
@@ -95,6 +95,7 @@ const generateTweet = async (topic) => {
      )
      .catch((error) => {
           console.error("Error:", error);
+          setError("Failed to generate tweet. Please try again.");
      }
      );
 
